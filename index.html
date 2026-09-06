@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - v6</title>
+  <title>CO Connectée - v6 (Bilan par Élève)</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -46,16 +46,15 @@
     .result-missing { background:#fff3cd; color:#7a5c00; }
     #scoreArea { margin-top:14px; padding:15px; border-radius:12px; background:#e9f2e6; font-weight:800; text-align:center; color:var(--dark); }
     .dashboard-controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
-    .dashboard-layout { display:grid; grid-template-columns:1.05fr 1.45fr; gap:16px; }
+    .dashboard-layout { display:grid; grid-template-columns:1fr; gap:16px; }
     table { width:100%; border-collapse:collapse; background:#fff; }
-    th, td { border:1px solid #e5e7eb; padding:10px; text-align:left; vertical-align:middle; }
+    th, td { border:1px solid #e5e7eb; padding:10px; text-align:center; vertical-align:middle; }
     th { background:var(--primary); color:#fff; }
     tr:nth-child(even) td { background:#f8faf8; }
     .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-size:.85rem; font-weight:700; }
     .pill.active { background:#d8f3dc; color:#166534; }
     .pill.inactive { background:#fee2e2; color:#991b1b; }
     .empty-box { padding:14px; border:1px dashed #b9c5b6; border-radius:12px; background:rgba(255,255,255,.55); color:var(--muted); }
-    @media (max-width:900px) { .dashboard-layout { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -163,9 +162,32 @@
       <div class="dashboard-controls" style="margin-top:12px;">
         <button id="startLessonBtn" class="control-btn">▶️ Démarrer une leçon</button>
         <button id="loadHistoryBtn" class="secondary-btn">🕘 Historique</button>
-        <button id="exportCsvBtn" class="secondary-btn" disabled>📊 Export CSV</button>
-        <button id="exportPdfBtn" class="secondary-btn" disabled>📄 Export PDF</button>
+        <button id="exportCsvBtn" class="secondary-btn" disabled>📊 Export CSV Bilan</button>
+        <button id="exportPdfBtn" class="secondary-btn" disabled>📄 Export PDF Bilan</button>
         <button id="closeLessonBtn" class="danger-btn" disabled>⛔ Clôturer la séance</button>
+      </div>
+    </div>
+
+    <!-- TABLEAU BILAN PAR ELEVE -->
+    <div class="panel">
+      <h3>📈 Bilan individuel des élèves sur la leçon</h3>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left;">Classe</th>
+              <th style="text-align:left;">Élève</th>
+              <th>Balises trouvées</th>
+              <th>Erreurs</th>
+              <th>Temps total</th>
+              <th>Passages</th>
+              <th>Dernier passage</th>
+            </tr>
+          </thead>
+          <tbody id="resultsTableBody">
+            <tr><td colspan="7" style="color:var(--muted);">En attente de résultats...</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -227,20 +249,6 @@
             <table>
               <thead><tr><th>Nom</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
               <tbody id="historyTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <div class="panel">
-          <h3>Résultats</h3>
-          <div style="overflow:auto;">
-            <table>
-              <thead>
-                <tr><th>Classe</th><th>Élève</th><th>Parcours</th><th>Score</th><th>Temps</th><th>Heure</th></tr>
-              </thead>
-              <tbody id="resultsTableBody"></tbody>
             </table>
           </div>
         </div>
@@ -332,7 +340,7 @@ const DONNEES_SHEET_DEFAUT = {
 
 let DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
 const NOMBRE_BALISES_SAISIE = 5;
-const NOMBRE_PARCOURS = 25;
+const NOMBRE_PARCOURS = 15;
 const TEACHER_CODE = "16170";
 
 const firebaseConfig = {
@@ -390,7 +398,7 @@ const refreshClassesBtn = document.getElementById("refreshClassesBtn");
 const classesListContainer = document.getElementById("classesListContainer");
 const classManagerMessage = document.getElementById("classManagerMessage");
 
-// Éléments spécifiques aux balises
+// Éléments balises
 const sheetUrlInput = document.getElementById("sheetUrlInput");
 const syncSheetBtn = document.getElementById("syncSheetBtn");
 const balisesFileInput = document.getElementById("balisesFileInput");
@@ -486,6 +494,16 @@ function formatTime(minutes, secondes) {
   return String(minutes).padStart(2, "0") + ":" + String(secondes).padStart(2, "0");
 }
 
+function formatTotalSeconds(totalSec) {
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) {
+    return h + "h " + String(m).padStart(2, "0") + "m " + String(s).padStart(2, "0") + "s";
+  }
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
 function verifyTags() {
   let correctes = 0;
   let tentatives = 0;
@@ -575,7 +593,6 @@ function findHeaderIndex(headers, possibleNames) {
   return normalized.findIndex(function(h) { return possibleNames.includes(h); });
 }
 
-/* --- PARSER BALISES CSV --- */
 function parseBalisesCSV(text) {
   const cleanText = (text || "").replace(/^\uFEFF/, "").trim();
   if (!cleanText) throw new Error("Le fichier est vide.");
@@ -621,7 +638,6 @@ function parseBalisesCSV(text) {
   return result;
 }
 
-/* --- GESTION SYNCHRO GOOGLE SHEETS & FIRESTORE --- */
 function extractSheetId(urlOrId) {
   const trimmed = (urlOrId || "").trim();
   const match = trimmed.match(/\/d\/([a-zA-Z0-9-_]+)/);
@@ -640,7 +656,6 @@ async function syncBalisesFromGoogleSheet() {
     return;
   }
 
-  // URL directe d'export CSV pour les classeurs publics
   const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
 
   try {
@@ -731,7 +746,6 @@ function listenToBalisesConfig() {
 syncSheetBtn.addEventListener("click", syncBalisesFromGoogleSheet);
 uploadBalisesBtn.addEventListener("click", uploadLocalBalisesFile);
 
-/* --- GESTION CSV PRONOTE --- */
 function parsePronoteCSV(text) {
   const cleanText = (text || "").replace(/^﻿/, "").trim();
   if (!cleanText) throw new Error("Le fichier est vide.");
@@ -1005,6 +1019,9 @@ async function startLesson() {
 }
 startLessonBtn.addEventListener('click', startLesson);
 
+// --- BILAN ELEVE : AGRÉGATION DES RÉSULTATS PAR ÉLÈVE ---
+let aggregatedSummary = [];
+
 async function openLesson(lessonId, lessonName) {
   currentTeacherLesson = { id: lessonId, name: lessonName || lessonId };
   if (!lessonName) {
@@ -1017,27 +1034,69 @@ async function openLesson(lessonId, lessonName) {
   exportCsvBtn.disabled = false;
   exportPdfBtn.disabled = false;
   closeLessonBtn.disabled = false;
-  resultsTableBody.innerHTML = '';
+  resultsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);">Chargement du bilan...</td></tr>';
 
   unsubscribeFromResults = db.collection('lecons').doc(lessonId).collection('resultats').onSnapshot(function(snapshot) {
     const docs = snapshot.docs.map(doc => doc.data());
-    docs.sort(function(a,b) {
-      const ta = a.timestamp && a.timestamp.toDate ? a.timestamp.toDate().getTime() : 0;
-      const tb = b.timestamp && b.timestamp.toDate ? b.timestamp.toDate().getTime() : 0;
-      return ta - tb;
-    });
-    resultsTableBody.innerHTML = '';
+    
+    // Regroupement par élève
+    const studentsAgg = {};
     docs.forEach(function(item) {
+      const key = (item.classeLabel || item.classe || 'Inconnue') + '__' + (item.eleveNomComplet || item.eleveId || 'Inconnu');
+      if (!studentsAgg[key]) {
+        studentsAgg[key] = {
+          classe: item.classeLabel || item.classe || '—',
+          eleve: item.eleveNomComplet || item.eleveId || '—',
+          balisesTrouvees: 0,
+          erreurs: 0,
+          totalSecondes: 0,
+          passages: 0,
+          dernierTimestamp: 0
+        };
+      }
+      
+      const bonnes = item.scoreCorrectes || 0;
+      const tent = item.scoreTentatives || 0;
+      studentsAgg[key].balisesTrouvees += bonnes;
+      studentsAgg[key].erreurs += Math.max(0, tent - bonnes);
+      
+      const m = item.tempsMinutes || 0;
+      const s = item.tempsSecondes || 0;
+      studentsAgg[key].totalSecondes += (m * 60 + s);
+      studentsAgg[key].passages += 1;
+
+      const t = item.timestamp && item.timestamp.toDate ? item.timestamp.toDate().getTime() : 0;
+      if (t > studentsAgg[key].dernierTimestamp) {
+        studentsAgg[key].dernierTimestamp = t;
+      }
+    });
+
+    aggregatedSummary = Object.values(studentsAgg);
+
+    // Tri alphabétique par classe puis élève
+    aggregatedSummary.sort((a, b) => {
+      const c = a.classe.localeCompare(b.classe, 'fr');
+      if (c !== 0) return c;
+      return a.eleve.localeCompare(b.eleve, 'fr');
+    });
+
+    resultsTableBody.innerHTML = '';
+    if (aggregatedSummary.length === 0) {
+      resultsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);">Aucune donnée enregistrée pour le moment.</td></tr>';
+      return;
+    }
+
+    aggregatedSummary.forEach(function(st) {
       const tr = document.createElement('tr');
-      const score = String(item.scoreCorrectes || 0) + '/' + String(item.scoreTentatives || 0);
-      const temps = formatTime(item.tempsMinutes || 0, item.tempsSecondes || 0);
-      const heure = item.timestamp && item.timestamp.toDate ? item.timestamp.toDate().toLocaleTimeString('fr-FR') : '—';
-      tr.innerHTML = '<td>' + (item.classeLabel || item.classe || '—') + '</td>' +
-        '<td>' + (item.eleveNomComplet || item.eleveId || '—') + '</td>' +
-        '<td>' + (item.parcoursId || '—') + '</td>' +
-        '<td>' + score + '</td>' +
-        '<td>' + temps + '</td>' +
-        '<td>' + heure + '</td>';
+      const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
+      tr.innerHTML = 
+        '<td style="text-align:left; font-weight:700;">' + st.classe + '</td>' +
+        '<td style="text-align:left; font-weight:700; color:var(--dark);">' + st.eleve + '</td>' +
+        '<td style="font-weight:800; color:#166534; background:#f0fdf4;">' + st.balisesTrouvees + '</td>' +
+        '<td style="font-weight:800; color:#b91c1c; background:#fef2f2;">' + st.erreurs + '</td>' +
+        '<td style="font-weight:700;">' + formatTotalSeconds(st.totalSecondes) + '</td>' +
+        '<td>' + st.passages + '</td>' +
+        '<td style="color:var(--muted);">' + dernierHoraire + '</td>';
       resultsTableBody.appendChild(tr);
     });
   }, function(error) {
@@ -1104,7 +1163,7 @@ closeLessonBtn.addEventListener('click', async function() {
     currentTeacherLesson = null;
     lessonStatus.textContent = 'Aucune leçon active';
     lessonStatus.className = 'pill inactive';
-    resultsTableBody.innerHTML = '';
+    resultsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);">En attente de résultats...</td></tr>';
     exportCsvBtn.disabled = true;
     exportPdfBtn.disabled = true;
     closeLessonBtn.disabled = true;
@@ -1122,18 +1181,27 @@ function getTableRowsData() {
 }
 
 exportCsvBtn.addEventListener('click', function() {
-  const data = getTableRowsData();
-  if (data.length === 0) { alert('Aucun résultat à exporter.'); return; }
+  if (aggregatedSummary.length === 0) { alert('Aucun résultat à exporter.'); return; }
   const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'resultats';
-  const lines = ['Classe;Élève;Parcours;Score;Temps;Heure'];
-  data.forEach(function(row) {
+  const lines = ['Classe;Élève;Balises trouvées;Erreurs;Temps total;Passages;Dernier passage'];
+  aggregatedSummary.forEach(function(st) {
+    const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
+    const row = [
+      st.classe,
+      st.eleve,
+      st.balisesTrouvees,
+      st.erreurs,
+      formatTotalSeconds(st.totalSecondes),
+      st.passages,
+      dernierHoraire
+    ];
     lines.push(row.map(value => '"' + String(value || '').replace(/"/g, '""') + '"').join(';'));
   });
   const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'resultats_' + lessonName.replace(/\s+/g, '_') + '.csv';
+  a.download = 'bilan_' + lessonName.replace(/\s+/g, '_') + '.csv';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -1141,21 +1209,37 @@ exportCsvBtn.addEventListener('click', function() {
 });
 
 exportPdfBtn.addEventListener('click', function() {
-  const data = getTableRowsData();
-  if (data.length === 0) { alert('Aucun résultat à exporter.'); return; }
+  if (aggregatedSummary.length === 0) { alert('Aucun résultat à exporter.'); return; }
   const jsPDF = window.jspdf.jsPDF;
   const doc = new jsPDF();
-  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Résultats';
-  doc.text('Résultats - ' + lessonName, 14, 18);
+  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Bilan de séance';
+  
+  doc.setFontSize(16);
+  doc.text('Bilan Élèves - ' + lessonName, 14, 18);
+  
+  const bodyData = aggregatedSummary.map(st => [
+    st.classe,
+    st.eleve,
+    st.balisesTrouvees,
+    st.erreurs,
+    formatTotalSeconds(st.totalSecondes),
+    st.passages,
+    st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—'
+  ]);
+
   doc.autoTable({
     startY: 24,
-    head: [['Classe','Élève','Parcours','Score','Temps','Heure']],
-    body: data,
+    head: [['Classe', 'Élève', 'Balises', 'Erreurs', 'Temps Total', 'Passages', 'Dernier']],
+    body: bodyData,
     theme: 'striped',
-    headStyles: { fillColor: [88, 129, 87] },
-    styles: { fontSize: 9 }
+    headStyles: { fillColor: [88, 129, 87], halign: 'center' },
+    styles: { fontSize: 9, halign: 'center' },
+    columnStyles: {
+      0: { halign: 'left' },
+      1: { halign: 'left' }
+    }
   });
-  doc.save('resultats_' + lessonName.replace(/\s+/g, '_') + '.pdf');
+  doc.save('bilan_' + lessonName.replace(/\s+/g, '_') + '.pdf');
 });
 
 async function submitStudentResult(event) {
