@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - v6 (Bilan par Élève)</title>
+  <title>CO Connectée - v6 (Bilan Détaillé)</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -11,7 +11,7 @@
     }
     * { box-sizing:border-box; }
     body { margin:0; font-family:Segoe UI,Tahoma,Verdana,sans-serif; background:var(--bg); color:#1f2937; }
-    .container { max-width:1150px; margin:22px auto; padding:22px; background:rgba(255,255,255,.98); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.22); border:2px solid var(--primary); }
+    .container { max-width:1250px; margin:22px auto; padding:22px; background:rgba(255,255,255,.98); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.22); border:2px solid var(--primary); }
     h1,h2,h3 { color:var(--dark); margin-top:0; }
     h1 { text-align:center; margin-bottom:18px; }
     .topbar { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
@@ -46,7 +46,6 @@
     .result-missing { background:#fff3cd; color:#7a5c00; }
     #scoreArea { margin-top:14px; padding:15px; border-radius:12px; background:#e9f2e6; font-weight:800; text-align:center; color:var(--dark); }
     .dashboard-controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
-    .dashboard-layout { display:grid; grid-template-columns:1fr; gap:16px; }
     table { width:100%; border-collapse:collapse; background:#fff; }
     th, td { border:1px solid #e5e7eb; padding:10px; text-align:center; vertical-align:middle; }
     th { background:var(--primary); color:#fff; }
@@ -191,67 +190,61 @@
       </div>
     </div>
 
-    <div class="dashboard-layout">
-      <div>
-        <!-- GESTION DES BALISES (GOOGLE SHEET & CSV) -->
-        <div class="panel">
-          <h3>Codes des Balises</h3>
-          <p class="mini-note" id="balisesInfoText">Chargement du statut des balises...</p>
+    <div class="panel">
+      <h3>Codes des Balises</h3>
+      <p class="mini-note" id="balisesInfoText">Chargement du statut des balises...</p>
 
-          <label for="sheetUrlInput" style="margin-top:10px;">Lien ou ID Google Sheets (Partagé en lecture)</label>
-          <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/.../edit">
-          
-          <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:12px;">
-            <button id="syncSheetBtn" class="success-btn">🔄 Synchroniser Google Sheets</button>
-          </div>
+      <label for="sheetUrlInput" style="margin-top:10px;">Lien ou ID Google Sheets (Partagé en lecture)</label>
+      <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/.../edit">
+      
+      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:12px;">
+        <button id="syncSheetBtn" class="success-btn">🔄 Synchroniser Google Sheets</button>
+      </div>
 
-          <hr style="border:0; border-top:1px dashed var(--border); margin:14px 0;">
+      <hr style="border:0; border-top:1px dashed var(--border); margin:14px 0;">
 
-          <label for="balisesFileInput">Ou importer un fichier local (CSV / TXT)</label>
-          <input type="file" id="balisesFileInput" accept=".csv,.txt">
-          <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:0;">
-            <button id="uploadBalisesBtn" class="secondary-btn">💾 Importer fichier local</button>
-          </div>
+      <label for="balisesFileInput">Ou importer un fichier local (CSV / TXT)</label>
+      <input type="file" id="balisesFileInput" accept=".csv,.txt">
+      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:0;">
+        <button id="uploadBalisesBtn" class="secondary-btn">💾 Importer fichier local</button>
+      </div>
 
-          <p id="balisesStatusMessage" class="message"></p>
+      <p id="balisesStatusMessage" class="message"></p>
+    </div>
+
+    <div class="panel">
+      <h3>Gestion des classes Pronote</h3>
+      <div class="grid-2">
+        <div>
+          <label for="newClassNameInput">Nom de la classe</label>
+          <input type="text" id="newClassNameInput" placeholder="Ex : 4A">
         </div>
-
-        <!-- GESTION DES CLASSES PRONOTE -->
-        <div class="panel">
-          <h3>Gestion des classes Pronote</h3>
-          <div class="grid-2">
-            <div>
-              <label for="newClassNameInput">Nom de la classe</label>
-              <input type="text" id="newClassNameInput" placeholder="Ex : 4A">
-            </div>
-            <div>
-              <label for="classCsvInput">Fichier CSV Pronote</label>
-              <input type="file" id="classCsvInput" accept=".csv,.txt">
-            </div>
-          </div>
-          <div class="dashboard-controls" style="justify-content:flex-start; margin-top:12px; margin-bottom:0;">
-            <button id="createClassBtn" class="success-btn">➕ Créer / mettre à jour la classe</button>
-            <button id="refreshClassesBtn" class="secondary-btn">🔄 Actualiser</button>
-          </div>
-          <p class="mini-note">Les classes et les élèves sont enregistrés en ligne dans Firestore.</p>
-          <p id="classManagerMessage" class="message"></p>
+        <div>
+          <label for="classCsvInput">Fichier CSV Pronote</label>
+          <input type="file" id="classCsvInput" accept=".csv,.txt">
         </div>
+      </div>
+      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:12px; margin-bottom:0;">
+        <button id="createClassBtn" class="success-btn">➕ Créer / mettre à jour la classe</button>
+        <button id="refreshClassesBtn" class="secondary-btn">🔄 Actualiser</button>
+      </div>
+      <p class="mini-note">Les classes et les élèves sont enregistrés en ligne dans Firestore.</p>
+      <p id="classManagerMessage" class="message"></p>
+    </div>
 
-        <div class="panel">
-          <h3>Classes enregistrées</h3>
-          <div id="classesListContainer" class="empty-box">Aucune classe enregistrée.</div>
-        </div>
+    <div class="panel">
+      <h3>Classes enregistrées</h3>
+      <div id="classesListContainer" class="empty-box">Aucune classe enregistrée.</div>
+    </div>
 
-        <div id="historyPanel" class="panel hidden">
-          <h3>Historique des leçons</h3>
-          <div style="margin-bottom:10px;"><button id="closeHistoryBtn" class="secondary-btn">Fermer</button></div>
-          <div style="overflow:auto;">
-            <table>
-              <thead><tr><th>Nom</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
-              <tbody id="historyTableBody"></tbody>
-            </table>
-          </div>
-        </div>
+    <div id="historyPanel" class="panel hidden">
+      <h3>Historique des leçons</h3>
+      <div style="margin-bottom:10px;"><button id="closeHistoryBtn" class="secondary-btn">Fermer</button></div>
+      <div style="overflow:auto;">
+        <table>
+          <thead><tr><th>Nom</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
       </div>
     </div>
   </section>
@@ -398,7 +391,6 @@ const refreshClassesBtn = document.getElementById("refreshClassesBtn");
 const classesListContainer = document.getElementById("classesListContainer");
 const classManagerMessage = document.getElementById("classManagerMessage");
 
-// Éléments balises
 const sheetUrlInput = document.getElementById("sheetUrlInput");
 const syncSheetBtn = document.getElementById("syncSheetBtn");
 const balisesFileInput = document.getElementById("balisesFileInput");
@@ -507,6 +499,8 @@ function formatTotalSeconds(totalSec) {
 function verifyTags() {
   let correctes = 0;
   let tentatives = 0;
+  const listeTrouvees = [];
+  const listeErreurs = [];
   resultsList.innerHTML = "";
 
   for (let i = 0; i < NOMBRE_BALISES_SAISIE; i++) {
@@ -525,13 +519,16 @@ function verifyTags() {
         message = "Balise " + num + " (" + couleur + ") : ✅ CORRECT";
         resultClass = "result-correct";
         correctes++;
+        listeTrouvees.push(num);
       } else {
         message = "Balise " + num + " (" + couleur + ") : ❌ INCORRECT";
         resultClass = "result-incorrect";
+        listeErreurs.push(num);
       }
     } else {
       message = "Balise " + (i + 1) + " : ⚠️ Informations incomplètes";
       resultClass = "result-missing";
+      listeErreurs.push(num || ("B" + (i + 1)));
     }
 
     const li = document.createElement("li");
@@ -539,7 +536,7 @@ function verifyTags() {
     li.textContent = message;
     resultsList.appendChild(li);
   }
-  return { correctes, tentatives };
+  return { correctes, tentatives, listeTrouvees, listeErreurs };
 }
 
 function displayLocalResults(correctes, tentatives, minutes, secondes) {
@@ -1019,7 +1016,7 @@ async function startLesson() {
 }
 startLessonBtn.addEventListener('click', startLesson);
 
-// --- BILAN ELEVE : AGRÉGATION DES RÉSULTATS PAR ÉLÈVE ---
+// --- BILAN ELEVE AVEC DETAIL DES BALISES ---
 let aggregatedSummary = [];
 
 async function openLesson(lessonId, lessonName) {
@@ -1047,8 +1044,10 @@ async function openLesson(lessonId, lessonName) {
         studentsAgg[key] = {
           classe: item.classeLabel || item.classe || '—',
           eleve: item.eleveNomComplet || item.eleveId || '—',
-          balisesTrouvees: 0,
-          erreurs: 0,
+          balisesTrouveesCount: 0,
+          balisesTrouveesList: [],
+          erreursCount: 0,
+          erreursList: [],
           totalSecondes: 0,
           passages: 0,
           dernierTimestamp: 0
@@ -1057,8 +1056,15 @@ async function openLesson(lessonId, lessonName) {
       
       const bonnes = item.scoreCorrectes || 0;
       const tent = item.scoreTentatives || 0;
-      studentsAgg[key].balisesTrouvees += bonnes;
-      studentsAgg[key].erreurs += Math.max(0, tent - bonnes);
+      studentsAgg[key].balisesTrouveesCount += bonnes;
+      studentsAgg[key].erreursCount += Math.max(0, tent - bonnes);
+
+      if (Array.isArray(item.listeTrouvees)) {
+        studentsAgg[key].balisesTrouveesList.push(...item.listeTrouvees);
+      }
+      if (Array.isArray(item.listeErreurs)) {
+        studentsAgg[key].erreursList.push(...item.listeErreurs);
+      }
       
       const m = item.tempsMinutes || 0;
       const s = item.tempsSecondes || 0;
@@ -1073,7 +1079,6 @@ async function openLesson(lessonId, lessonName) {
 
     aggregatedSummary = Object.values(studentsAgg);
 
-    // Tri alphabétique par classe puis élève
     aggregatedSummary.sort((a, b) => {
       const c = a.classe.localeCompare(b.classe, 'fr');
       if (c !== 0) return c;
@@ -1089,11 +1094,20 @@ async function openLesson(lessonId, lessonName) {
     aggregatedSummary.forEach(function(st) {
       const tr = document.createElement('tr');
       const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
+      
+      const txtTrouvees = st.balisesTrouveesList.length > 0 
+        ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(', ') + ')' 
+        : String(st.balisesTrouveesCount);
+
+      const txtErreurs = st.erreursList.length > 0 
+        ? st.erreursCount + ' (' + st.erreursList.join(', ') + ')' 
+        : String(st.erreursCount);
+
       tr.innerHTML = 
         '<td style="text-align:left; font-weight:700;">' + st.classe + '</td>' +
         '<td style="text-align:left; font-weight:700; color:var(--dark);">' + st.eleve + '</td>' +
-        '<td style="font-weight:800; color:#166534; background:#f0fdf4;">' + st.balisesTrouvees + '</td>' +
-        '<td style="font-weight:800; color:#b91c1c; background:#fef2f2;">' + st.erreurs + '</td>' +
+        '<td style="font-weight:700; color:#166534; background:#f0fdf4;">' + txtTrouvees + '</td>' +
+        '<td style="font-weight:700; color:#b91c1c; background:#fef2f2;">' + txtErreurs + '</td>' +
         '<td style="font-weight:700;">' + formatTotalSeconds(st.totalSecondes) + '</td>' +
         '<td>' + st.passages + '</td>' +
         '<td style="color:var(--muted);">' + dernierHoraire + '</td>';
@@ -1183,14 +1197,16 @@ function getTableRowsData() {
 exportCsvBtn.addEventListener('click', function() {
   if (aggregatedSummary.length === 0) { alert('Aucun résultat à exporter.'); return; }
   const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'resultats';
-  const lines = ['Classe;Élève;Balises trouvées;Erreurs;Temps total;Passages;Dernier passage'];
+  const lines = ['Classe;Élève;Balises trouvées;Détail trouvées;Erreurs;Détail erreurs;Temps total;Passages;Dernier passage'];
   aggregatedSummary.forEach(function(st) {
     const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
     const row = [
       st.classe,
       st.eleve,
-      st.balisesTrouvees,
-      st.erreurs,
+      st.balisesTrouveesCount,
+      st.balisesTrouveesList.join(' - '),
+      st.erreursCount,
+      st.erreursList.join(' - '),
       formatTotalSeconds(st.totalSecondes),
       st.passages,
       dernierHoraire
@@ -1217,15 +1233,19 @@ exportPdfBtn.addEventListener('click', function() {
   doc.setFontSize(16);
   doc.text('Bilan Élèves - ' + lessonName, 14, 18);
   
-  const bodyData = aggregatedSummary.map(st => [
-    st.classe,
-    st.eleve,
-    st.balisesTrouvees,
-    st.erreurs,
-    formatTotalSeconds(st.totalSecondes),
-    st.passages,
-    st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—'
-  ]);
+  const bodyData = aggregatedSummary.map(st => {
+    const txtTrouvees = st.balisesTrouveesList.length > 0 ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(',') + ')' : String(st.balisesTrouveesCount);
+    const txtErreurs = st.erreursList.length > 0 ? st.erreursCount + ' (' + st.erreursList.join(',') + ')' : String(st.erreursCount);
+    return [
+      st.classe,
+      st.eleve,
+      txtTrouvees,
+      txtErreurs,
+      formatTotalSeconds(st.totalSecondes),
+      st.passages,
+      st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—'
+    ];
+  });
 
   doc.autoTable({
     startY: 24,
@@ -1233,10 +1253,12 @@ exportPdfBtn.addEventListener('click', function() {
     body: bodyData,
     theme: 'striped',
     headStyles: { fillColor: [88, 129, 87], halign: 'center' },
-    styles: { fontSize: 9, halign: 'center' },
+    styles: { fontSize: 8, halign: 'center' },
     columnStyles: {
-      0: { halign: 'left' },
-      1: { halign: 'left' }
+      0: { halign: 'left', cellWidth: 20 },
+      1: { halign: 'left', cellWidth: 35 },
+      2: { cellWidth: 40 },
+      3: { cellWidth: 30 }
     }
   });
   doc.save('bilan_' + lessonName.replace(/\s+/g, '_') + '.pdf');
@@ -1259,6 +1281,7 @@ async function submitStudentResult(event) {
   const secondes = parseInt(durationS, 10);
   if (isNaN(minutes) || isNaN(secondes) || minutes < 0 || secondes < 0 || secondes > 59) { showGlobalError('Temps invalide : secondes entre 0 et 59.', 'error'); return; }
   if (minutes === 0 && secondes === 0) { showGlobalError('Le temps de course ne peut pas être zéro.', 'error'); return; }
+  
   const verify = verifyTags();
   const correctes = verify.correctes;
   const tentatives = verify.tentatives;
@@ -1276,6 +1299,8 @@ async function submitStudentResult(event) {
     parcoursId: parcoursId,
     scoreCorrectes: correctes,
     scoreTentatives: tentatives,
+    listeTrouvees: verify.listeTrouvees,
+    listeErreurs: verify.listeErreurs,
     tempsMinutes: minutes,
     tempsSecondes: secondes,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
