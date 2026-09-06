@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - v6 (Bilan Détaillé)</title>
+  <title>CO Connectée - v6 (Bilan Détaillé & Classement)</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -163,6 +163,7 @@
         <button id="loadHistoryBtn" class="secondary-btn">🕘 Historique</button>
         <button id="exportCsvBtn" class="secondary-btn" disabled>📊 Export CSV Bilan</button>
         <button id="exportPdfBtn" class="secondary-btn" disabled>📄 Export PDF Bilan</button>
+        <button id="exportRankingBtn" class="control-btn" disabled>🏆 Classement PDF</button>
         <button id="closeLessonBtn" class="danger-btn" disabled>⛔ Clôturer la séance</button>
       </div>
     </div>
@@ -379,6 +380,7 @@ const loadHistoryBtn = document.getElementById("loadHistoryBtn");
 const closeHistoryBtn = document.getElementById("closeHistoryBtn");
 const exportCsvBtn = document.getElementById("exportCsvBtn");
 const exportPdfBtn = document.getElementById("exportPdfBtn");
+const exportRankingBtn = document.getElementById("exportRankingBtn");
 const closeLessonBtn = document.getElementById("closeLessonBtn");
 const lessonStatus = document.getElementById("lessonStatus");
 const resultsTableBody = document.getElementById("resultsTableBody");
@@ -1016,7 +1018,7 @@ async function startLesson() {
 }
 startLessonBtn.addEventListener('click', startLesson);
 
-// --- BILAN ELEVE AVEC DETAIL DES BALISES ---
+// --- BILAN ELEVE ET REGROUPEMENT ---
 let aggregatedSummary = [];
 
 async function openLesson(lessonId, lessonName) {
@@ -1030,6 +1032,7 @@ async function openLesson(lessonId, lessonName) {
   lessonStatus.className = 'pill active';
   exportCsvBtn.disabled = false;
   exportPdfBtn.disabled = false;
+  exportRankingBtn.disabled = false;
   closeLessonBtn.disabled = false;
   resultsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);">Chargement du bilan...</td></tr>';
 
@@ -1097,11 +1100,11 @@ async function openLesson(lessonId, lessonName) {
       
       const txtTrouvees = st.balisesTrouveesList.length > 0 
         ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(', ') + ')' 
-        : String(st.balisesTrouveesCount);
+        : (st.balisesTrouveesCount > 0 ? st.balisesTrouveesCount + ' (non détaillées)' : '0');
 
       const txtErreurs = st.erreursList.length > 0 
         ? st.erreursCount + ' (' + st.erreursList.join(', ') + ')' 
-        : String(st.erreursCount);
+        : (st.erreursCount > 0 ? st.erreursCount + ' (non détaillées)' : '0');
 
       tr.innerHTML = 
         '<td style="text-align:left; font-weight:700;">' + st.classe + '</td>' +
@@ -1180,6 +1183,7 @@ closeLessonBtn.addEventListener('click', async function() {
     resultsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);">En attente de résultats...</td></tr>';
     exportCsvBtn.disabled = true;
     exportPdfBtn.disabled = true;
+    exportRankingBtn.disabled = true;
     closeLessonBtn.disabled = true;
     alert('Séance clôturée.');
   } catch (error) {
@@ -1187,12 +1191,6 @@ closeLessonBtn.addEventListener('click', async function() {
     alert('Clôture impossible : ' + (error.message || error));
   }
 });
-
-function getTableRowsData() {
-  return Array.from(resultsTableBody.querySelectorAll('tr')).map(function(row) {
-    return Array.from(row.querySelectorAll('td')).map(td => td.innerText);
-  });
-}
 
 exportCsvBtn.addEventListener('click', function() {
   if (aggregatedSummary.length === 0) { alert('Aucun résultat à exporter.'); return; }
@@ -1262,6 +1260,66 @@ exportPdfBtn.addEventListener('click', function() {
     }
   });
   doc.save('bilan_' + lessonName.replace(/\s+/g, '_') + '.pdf');
+});
+
+// --- EXPORT CLASSEMENT PDF (CRITÈRE : PLUS DE BALISES PUIS MOINS DE TEMPS) ---
+exportRankingBtn.addEventListener('click', function() {
+  if (aggregatedSummary.length === 0) { alert('Aucun résultat pour établir un classement.'); return; }
+  
+  const sortedRanking = [...aggregatedSummary].sort((a, b) => {
+    if (b.balisesTrouveesCount !== a.balisesTrouveesCount) {
+      return b.balisesTrouveesCount - a.balisesTrouveesCount; // Balises décroissantes
+    }
+    if (a.totalSecondes !== b.totalSecondes) {
+      return a.totalSecondes - b.totalSecondes; // Temps croissant
+    }
+    return a.erreursCount - b.erreursCount; // Erreurs croissantes
+  });
+
+  const jsPDF = window.jspdf.jsPDF;
+  const doc = new jsPDF();
+  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Séance';
+
+  doc.setFontSize(16);
+  doc.text('Classement de la séance : ' + lessonName, 14, 18);
+  doc.setFontSize(10);
+  doc.setTextColor(100);
+  doc.text('Critères : 1. Nombre de balises trouvées (max) | 2. Temps de course total (min)', 14, 25);
+
+  const bodyData = sortedRanking.map((st, index) => {
+    const rang = (index + 1) === 1 ? '1er' : (index + 1) + 'e';
+    const txtTrouvees = st.balisesTrouveesList.length > 0 
+      ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(',') + ')' 
+      : String(st.balisesTrouveesCount);
+    
+    return [
+      rang,
+      st.classe,
+      st.eleve,
+      txtTrouvees,
+      st.erreursCount,
+      formatTotalSeconds(st.totalSecondes)
+    ];
+  });
+
+  doc.autoTable({
+    startY: 30,
+    head: [['Rang', 'Classe', 'Élève', 'Balises validées', 'Erreurs', 'Temps total']],
+    body: bodyData,
+    theme: 'striped',
+    headStyles: { fillColor: [52, 78, 65], halign: 'center' },
+    styles: { fontSize: 9, halign: 'center' },
+    columnStyles: {
+      0: { halign: 'center', fontStyle: 'bold', cellWidth: 20 },
+      1: { halign: 'left', cellWidth: 25 },
+      2: { halign: 'left', fontStyle: 'bold', cellWidth: 50 },
+      3: { halign: 'center', cellWidth: 40 },
+      4: { halign: 'center', cellWidth: 25 },
+      5: { halign: 'center', fontStyle: 'bold', cellWidth: 30 }
+    }
+  });
+
+  doc.save('classement_' + lessonName.replace(/\s+/g, '_') + '.pdf');
 });
 
 async function submitStudentResult(event) {
