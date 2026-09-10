@@ -476,7 +476,7 @@ teacherCodeInput.addEventListener("keydown", function(event) {
 });
 
 function populateParcours() {
-  parcoursSelect.innerHTML = '<option value="">Choisir un parcours / shaker</option>';
+  parcoursSelect.innerHTML = '<option value="">Choisir un parcours </option>';
   for (let i = 1; i <= NOMBRE_PARCOURS; i++) {
     const option = document.createElement("option");
     option.value = "Parcours " + i;
