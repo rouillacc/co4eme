@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - v6 (Bilan Détaillé & Classement)</title>
+  <title>CO Connectée - v7 (Leçon 3 Shakers)</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -26,7 +26,7 @@
     .hidden { display:none !important; }
     .banner { text-align:center; padding:12px 16px; margin-bottom:16px; border-radius:12px; color:#fff; background:#6b7280; font-weight:700; }
     .panel, .form-section { background:var(--soft); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:18px; }
-    .grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; }
     .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
     label { display:block; margin-bottom:8px; font-weight:700; color:var(--dark); }
     input, select { width:100%; padding:12px; border:1px solid #b8c3b3; border-radius:10px; background:#fff; font-size:1rem; }
@@ -74,7 +74,7 @@
     <form id="tagForm">
       <div class="form-section">
         <h2>Identification</h2>
-        <div class="grid-3">
+        <div class="grid-4">
           <div>
             <label for="classeSelect">Classe</label>
             <select id="classeSelect" required>
@@ -88,8 +88,16 @@
             </select>
           </div>
           <div>
-            <label for="parcoursSelect">Parcours</label>
+            <label for="parcoursSelect">Parcours / Shaker</label>
             <select id="parcoursSelect" required></select>
+          </div>
+          <div>
+            <label for="niveauSelect">Niveau de difficulté</label>
+            <select id="niveauSelect" required>
+              <option value="1" selected>🟢 Niveau 1 (1 pt)</option>
+              <option value="2">🔵 Niveau 2 (2 pts)</option>
+              <option value="3">🔴 Niveau 3 (3 pts)</option>
+            </select>
           </div>
         </div>
       </div>
@@ -102,7 +110,7 @@
           <span>:</span>
           <input type="number" id="durationSeconds" min="0" max="59" placeholder="Sec" required>
         </div>
-        <p class="mini-note">Exemple : 12 min 34 sec</p>
+        <p class="mini-note">Exemple : 08 min 45 sec</p>
       </div>
 
       <div class="form-section">
@@ -163,7 +171,7 @@
         <button id="loadHistoryBtn" class="secondary-btn">🕘 Historique</button>
         <button id="exportCsvBtn" class="secondary-btn" disabled>📊 Export CSV Bilan</button>
         <button id="exportPdfBtn" class="secondary-btn" disabled>📄 Export PDF Bilan</button>
-        <button id="exportRankingBtn" class="control-btn" disabled>🏆 Classement PDF</button>
+        <button id="exportRankingBtn" class="control-btn" disabled>🏆 Classement Points</button>
         <button id="closeLessonBtn" class="danger-btn" disabled>⛔ Clôturer la séance</button>
       </div>
     </div>
@@ -177,6 +185,7 @@
             <tr>
               <th style="text-align:left;">Classe</th>
               <th style="text-align:left;">Élève</th>
+              <th style="background:#2d6a4f;">Points</th>
               <th>Balises trouvées</th>
               <th>Erreurs</th>
               <th>Temps total</th>
@@ -185,7 +194,7 @@
             </tr>
           </thead>
           <tbody id="resultsTableBody">
-            <tr><td colspan="7" style="color:var(--muted);">En attente de résultats...</td></tr>
+            <tr><td colspan="8" style="color:var(--muted);">En attente de résultats...</td></tr>
           </tbody>
         </table>
       </div>
@@ -287,6 +296,13 @@ const DONNEES_SHEET_DEFAUT = {
   35: { BLEU: "GF", NOIR: "BZ", ORANGE: "G0", VERT: "LK", ROSE: "4L", GRIS: "N1", ROUGE: "VD", MARRON: "3V" },
   36: { BLEU: "VQ", NOIR: "P3", ORANGE: "3Y", VERT: "85", ROSE: "SG", GRIS: "0S", ROUGE: "8J", MARRON: "9D" },
   37: { BLEU: "DZ", NOIR: "O3", ORANGE: "9B", VERT: "S8", ROSE: "5T", GRIS: "HD", ROUGE: "ST", MARRON: "ZP" },
+  51: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" },
+  52: { BLEU: "6H", NOIR: "1X", ORANGE: "5N", VERT: "7T", ROSE: "2P", GRIS: "4F", ROUGE: "8L", MARRON: "3M" },
+  53: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" },
+  54: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" },
+  55: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" },
+  56: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" },
+  57: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" },
   58: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },
   59: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },
   60: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },
@@ -297,39 +313,32 @@ const DONNEES_SHEET_DEFAUT = {
   65: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },
   66: { BLEU: "2T", NOIR: "8B", ORANGE: "7H", VERT: "4E", ROSE: "6C", GRIS: "5W", ROUGE: "1G", MARRON: "3L" },
   67: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },
+  68: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" },
   69: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },
   70: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },
+  71: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" },
   72: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },
-  74: { BLEU: "5C", NOIR: "7J", ORANGE: "2D", VERT: "8R", ROSE: "3B", GRIS: "1L", ROUGE: "4Y", MARRON: "6P" },
+  73: { BLEU: "7U", NOIR: "4M", ORANGE: "8R", VERT: "3P", ROSE: "6E", GRIS: "1B", ROUGE: "5A", MARRON: "2Z" },
   75: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },
   76: { BLEU: "6R", NOIR: "4A", ORANGE: "1O", VERT: "3S", ROSE: "7M", GRIS: "5U", ROUGE: "8J", MARRON: "2X" },
   77: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },
   78: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
-  79: { BLEU: "7P", NOIR: "6K", ORANGE: "8J", VERT: "1X", ROSE: "5O", GRIS: "3R", ROUGE: "2Z", MARRON: "4M" },
   80: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
+  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
   82: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
   83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
   84: { BLEU: "1M", NOIR: "3H", ORANGE: "4K", VERT: "2W", ROSE: "5A", GRIS: "8X", ROUGE: "7F", MARRON: "6T" },
   85: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },
+  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
   87: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },
-  88: { BLEU: "6Y", NOIR: "1X", ORANGE: "7R", VERT: "3J", ROSE: "8U", GRIS: "5D", ROUGE: "2P", MARRON: "4Z" },
   89: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
   90: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
-  92: { BLEU: "2A", NOIR: "5D", ORANGE: "8G", VERT: "4L", ROSE: "7H", GRIS: "1T", ROUGE: "6N", MARRON: "3C" },
+  91: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" },
   93: { BLEU: "7Z", NOIR: "3W", ORANGE: "1X", VERT: "2K", ROSE: "5S", GRIS: "4J", ROUGE: "8M", MARRON: "6F" },
-  94: { BLEU: "5L", NOIR: "6O", ORANGE: "4B", VERT: "7U", ROSE: "3P", GRIS: "2E", ROUGE: "1D", MARRON: "8R" },
+  95: { BLEU: "2M", NOIR: "6P", ORANGE: "8Y", VERT: "5E", ROSE: "3K", GRIS: "4N", ROUGE: "9A", MARRON: "7R" },
   96: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },
-  97: { BLEU: "3C", NOIR: "2J", ORANGE: "8D", VERT: "5R", ROSE: "7B", GRIS: "6L", ROUGE: "4Y", MARRON: "1P" },
   98: { BLEU: "2F", NOIR: "8E", ORANGE: "7W", VERT: "4H", ROSE: "6N", GRIS: "5K", ROUGE: "1T", MARRON: "3G" },
-  99: { BLEU: "8R", NOIR: "7A", ORANGE: "6O", VERT: "1S", ROSE: "5M", GRIS: "4U", ROUGE: "3J", MARRON: "2X" },
-  100: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" },
-  101: { BLEU: "6S", NOIR: "5L", ORANGE: "4T", VERT: "2G", ROSE: "1W", GRIS: "3F", ROUGE: "8A", MARRON: "7N" },
-  102: { BLEU: "5P", NOIR: "4K", ORANGE: "1J", VERT: "8X", ROSE: "3O", GRIS: "2R", ROUGE: "7Z", MARRON: "6M" },
-  103: { BLEU: "4G", NOIR: "1U", ORANGE: "3E", VERT: "7B", ROSE: "2Y", GRIS: "8H", ROUGE: "6L", MARRON: "5D" },
-  104: { BLEU: "1X", NOIR: "3C", ORANGE: "6A", VERT: "4N", ROSE: "8T", GRIS: "2S", ROUGE: "7K", MARRON: "5W" },
-  105: { BLEU: "4B", NOIR: "2F", ORANGE: "3Z", VERT: "5M", ROSE: "6J", GRIS: "7P", ROUGE: "1U", MARRON: "8O" },
-  106: { BLEU: "5N", NOIR: "7R", ORANGE: "2L", VERT: "8D", ROSE: "3E", GRIS: "1G", ROUGE: "4C", MARRON: "6Y" },
-  107: { BLEU: "8M", NOIR: "1H", ORANGE: "7K", VERT: "6W", ROSE: "2A", GRIS: "4X", ROUGE: "5F", MARRON: "3T" }
+  100: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }
 };
 
 let DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
@@ -366,6 +375,7 @@ const activeLessonBanner = document.getElementById("activeLessonBanner");
 const classeSelect = document.getElementById("classeSelect");
 const teamSelect = document.getElementById("teamSelect");
 const parcoursSelect = document.getElementById("parcoursSelect");
+const niveauSelect = document.getElementById("niveauSelect");
 const durationMinutesInput = document.getElementById("durationMinutes");
 const durationSecondsInput = document.getElementById("durationSeconds");
 const tagForm = document.getElementById("tagForm");
@@ -466,7 +476,7 @@ teacherCodeInput.addEventListener("keydown", function(event) {
 });
 
 function populateParcours() {
-  parcoursSelect.innerHTML = '<option value="">Choisir un parcours</option>';
+  parcoursSelect.innerHTML = '<option value="">Choisir un parcours / shaker</option>';
   for (let i = 1; i <= NOMBRE_PARCOURS; i++) {
     const option = document.createElement("option");
     option.value = "Parcours " + i;
@@ -482,6 +492,7 @@ function resetFormForNewEntry() {
   scoreArea.classList.add("hidden");
   teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
   parcoursSelect.selectedIndex = 0;
+  niveauSelect.value = "1";
 }
 
 function formatTime(minutes, secondes) {
@@ -541,9 +552,9 @@ function verifyTags() {
   return { correctes, tentatives, listeTrouvees, listeErreurs };
 }
 
-function displayLocalResults(correctes, tentatives, minutes, secondes) {
+function displayLocalResults(correctes, tentatives, pointsGagnes, minutes, secondes) {
   scoreArea.classList.remove("hidden");
-  scoreArea.innerHTML = "Score : " + correctes + "/" + tentatives + " balise(s) valide(s) — Temps : " + formatTime(minutes, secondes);
+  scoreArea.innerHTML = "Score : " + correctes + "/" + tentatives + " balise(s) valide(s) [+" + pointsGagnes + " pt(s)] — Temps : " + formatTime(minutes, secondes);
 }
 
 function slugifyClassId(name) {
@@ -992,7 +1003,7 @@ refreshClassesBtn.addEventListener('click', async function() { await loadClasses
 
 async function startLesson() {
   clearMessages();
-  const lessonName = prompt('Entrez un nom pour cette leçon', 'Leçon du jour');
+  const lessonName = prompt('Entrez un nom pour cette leçon', 'Leçon 3 - Shakers');
   if (!lessonName) return;
   const now = new Date();
   const lessonId = 'lecon_' + now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + '_' + lessonName.replace(/\s+/g, '-');
@@ -1018,7 +1029,7 @@ async function startLesson() {
 }
 startLessonBtn.addEventListener('click', startLesson);
 
-// --- BILAN ELEVE ET REGROUPEMENT ---
+// --- BILAN ELEVE AVEC SYSTEME DE POINTS SHAKERS ---
 let aggregatedSummary = [];
 
 async function openLesson(lessonId, lessonName) {
@@ -1034,7 +1045,7 @@ async function openLesson(lessonId, lessonName) {
   exportPdfBtn.disabled = false;
   exportRankingBtn.disabled = false;
   closeLessonBtn.disabled = false;
-  resultsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);">Chargement du bilan...</td></tr>';
+  resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">Chargement du bilan...</td></tr>';
 
   unsubscribeFromResults = db.collection('lecons').doc(lessonId).collection('resultats').onSnapshot(function(snapshot) {
     const docs = snapshot.docs.map(doc => doc.data());
@@ -1047,6 +1058,7 @@ async function openLesson(lessonId, lessonName) {
         studentsAgg[key] = {
           classe: item.classeLabel || item.classe || '—',
           eleve: item.eleveNomComplet || item.eleveId || '—',
+          pointsTotal: 0,
           balisesTrouveesCount: 0,
           balisesTrouveesList: [],
           erreursCount: 0,
@@ -1059,6 +1071,9 @@ async function openLesson(lessonId, lessonName) {
       
       const bonnes = item.scoreCorrectes || 0;
       const tent = item.scoreTentatives || 0;
+      const pts = item.pointsGagnes !== undefined ? item.pointsGagnes : (bonnes * (item.niveau || 1));
+      
+      studentsAgg[key].pointsTotal += pts;
       studentsAgg[key].balisesTrouveesCount += bonnes;
       studentsAgg[key].erreursCount += Math.max(0, tent - bonnes);
 
@@ -1090,7 +1105,7 @@ async function openLesson(lessonId, lessonName) {
 
     resultsTableBody.innerHTML = '';
     if (aggregatedSummary.length === 0) {
-      resultsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);">Aucune donnée enregistrée pour le moment.</td></tr>';
+      resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">Aucune donnée enregistrée pour le moment.</td></tr>';
       return;
     }
 
@@ -1100,17 +1115,18 @@ async function openLesson(lessonId, lessonName) {
       
       const txtTrouvees = st.balisesTrouveesList.length > 0 
         ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(', ') + ')' 
-        : (st.balisesTrouveesCount > 0 ? st.balisesTrouveesCount + ' (non détaillées)' : '0');
+        : String(st.balisesTrouveesCount);
 
       const txtErreurs = st.erreursList.length > 0 
         ? st.erreursCount + ' (' + st.erreursList.join(', ') + ')' 
-        : (st.erreursCount > 0 ? st.erreursCount + ' (non détaillées)' : '0');
+        : String(st.erreursCount);
 
       tr.innerHTML = 
         '<td style="text-align:left; font-weight:700;">' + st.classe + '</td>' +
         '<td style="text-align:left; font-weight:700; color:var(--dark);">' + st.eleve + '</td>' +
-        '<td style="font-weight:700; color:#166534; background:#f0fdf4;">' + txtTrouvees + '</td>' +
-        '<td style="font-weight:700; color:#b91c1c; background:#fef2f2;">' + txtErreurs + '</td>' +
+        '<td style="font-weight:900; font-size:1.1rem; color:#1b4332; background:#d8f3dc;">' + st.pointsTotal + ' pts</td>' +
+        '<td style="font-weight:700; color:#166534;">' + txtTrouvees + '</td>' +
+        '<td style="font-weight:700; color:#b91c1c;">' + txtErreurs + '</td>' +
         '<td style="font-weight:700;">' + formatTotalSeconds(st.totalSecondes) + '</td>' +
         '<td>' + st.passages + '</td>' +
         '<td style="color:var(--muted);">' + dernierHoraire + '</td>';
@@ -1180,7 +1196,7 @@ closeLessonBtn.addEventListener('click', async function() {
     currentTeacherLesson = null;
     lessonStatus.textContent = 'Aucune leçon active';
     lessonStatus.className = 'pill inactive';
-    resultsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);">En attente de résultats...</td></tr>';
+    resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de résultats...</td></tr>';
     exportCsvBtn.disabled = true;
     exportPdfBtn.disabled = true;
     exportRankingBtn.disabled = true;
@@ -1195,12 +1211,13 @@ closeLessonBtn.addEventListener('click', async function() {
 exportCsvBtn.addEventListener('click', function() {
   if (aggregatedSummary.length === 0) { alert('Aucun résultat à exporter.'); return; }
   const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'resultats';
-  const lines = ['Classe;Élève;Balises trouvées;Détail trouvées;Erreurs;Détail erreurs;Temps total;Passages;Dernier passage'];
+  const lines = ['Classe;Élève;Points;Balises trouvées;Détail trouvées;Erreurs;Détail erreurs;Temps total;Passages;Dernier passage'];
   aggregatedSummary.forEach(function(st) {
     const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
     const row = [
       st.classe,
       st.eleve,
+      st.pointsTotal,
       st.balisesTrouveesCount,
       st.balisesTrouveesList.join(' - '),
       st.erreursCount,
@@ -1237,6 +1254,7 @@ exportPdfBtn.addEventListener('click', function() {
     return [
       st.classe,
       st.eleve,
+      st.pointsTotal + ' pts',
       txtTrouvees,
       txtErreurs,
       formatTotalSeconds(st.totalSecondes),
@@ -1247,7 +1265,7 @@ exportPdfBtn.addEventListener('click', function() {
 
   doc.autoTable({
     startY: 24,
-    head: [['Classe', 'Élève', 'Balises', 'Erreurs', 'Temps Total', 'Passages', 'Dernier']],
+    head: [['Classe', 'Élève', 'Points', 'Balises', 'Erreurs', 'Temps Total', 'Passages', 'Dernier']],
     body: bodyData,
     theme: 'striped',
     headStyles: { fillColor: [88, 129, 87], halign: 'center' },
@@ -1255,36 +1273,37 @@ exportPdfBtn.addEventListener('click', function() {
     columnStyles: {
       0: { halign: 'left', cellWidth: 20 },
       1: { halign: 'left', cellWidth: 35 },
-      2: { cellWidth: 40 },
-      3: { cellWidth: 30 }
+      2: { fontStyle: 'bold', cellWidth: 20 },
+      3: { cellWidth: 35 },
+      4: { cellWidth: 25 }
     }
   });
   doc.save('bilan_' + lessonName.replace(/\s+/g, '_') + '.pdf');
 });
 
-// --- EXPORT CLASSEMENT PDF (CRITÈRE : PLUS DE BALISES PUIS MOINS DE TEMPS) ---
+// --- CLASSEMENT PDF PAR POINTS ET TEMPS ---
 exportRankingBtn.addEventListener('click', function() {
   if (aggregatedSummary.length === 0) { alert('Aucun résultat pour établir un classement.'); return; }
   
   const sortedRanking = [...aggregatedSummary].sort((a, b) => {
-    if (b.balisesTrouveesCount !== a.balisesTrouveesCount) {
-      return b.balisesTrouveesCount - a.balisesTrouveesCount; // Balises décroissantes
+    if (b.pointsTotal !== a.pointsTotal) {
+      return b.pointsTotal - a.pointsTotal; // 1. Plus grand total de points
     }
     if (a.totalSecondes !== b.totalSecondes) {
-      return a.totalSecondes - b.totalSecondes; // Temps croissant
+      return a.totalSecondes - b.totalSecondes; // 2. Plus petit temps de course
     }
-    return a.erreursCount - b.erreursCount; // Erreurs croissantes
+    return a.erreursCount - b.erreursCount; // 3. Moins d'erreurs
   });
 
   const jsPDF = window.jspdf.jsPDF;
   const doc = new jsPDF();
-  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Séance';
+  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Séance Shakers';
 
   doc.setFontSize(16);
   doc.text('Classement de la séance : ' + lessonName, 14, 18);
   doc.setFontSize(10);
   doc.setTextColor(100);
-  doc.text('Critères : 1. Nombre de balises trouvées (max) | 2. Temps de course total (min)', 14, 25);
+  doc.text('Critères : 1. Total de points gagnés | 2. Temps de course total | 3. Nombre d\'erreurs', 14, 25);
 
   const bodyData = sortedRanking.map((st, index) => {
     const rang = (index + 1) === 1 ? '1er' : (index + 1) + 'e';
@@ -1296,6 +1315,7 @@ exportRankingBtn.addEventListener('click', function() {
       rang,
       st.classe,
       st.eleve,
+      st.pointsTotal + ' pts',
       txtTrouvees,
       st.erreursCount,
       formatTotalSeconds(st.totalSecondes)
@@ -1304,18 +1324,19 @@ exportRankingBtn.addEventListener('click', function() {
 
   doc.autoTable({
     startY: 30,
-    head: [['Rang', 'Classe', 'Élève', 'Balises validées', 'Erreurs', 'Temps total']],
+    head: [['Rang', 'Classe', 'Élève', 'Points', 'Balises validées', 'Erreurs', 'Temps total']],
     body: bodyData,
     theme: 'striped',
     headStyles: { fillColor: [52, 78, 65], halign: 'center' },
     styles: { fontSize: 9, halign: 'center' },
     columnStyles: {
-      0: { halign: 'center', fontStyle: 'bold', cellWidth: 20 },
-      1: { halign: 'left', cellWidth: 25 },
-      2: { halign: 'left', fontStyle: 'bold', cellWidth: 50 },
-      3: { halign: 'center', cellWidth: 40 },
-      4: { halign: 'center', cellWidth: 25 },
-      5: { halign: 'center', fontStyle: 'bold', cellWidth: 30 }
+      0: { halign: 'center', fontStyle: 'bold', cellWidth: 18 },
+      1: { halign: 'left', cellWidth: 22 },
+      2: { halign: 'left', fontStyle: 'bold', cellWidth: 45 },
+      3: { halign: 'center', fontStyle: 'bold', cellWidth: 25 },
+      4: { halign: 'center', cellWidth: 35 },
+      5: { halign: 'center', cellWidth: 20 },
+      6: { halign: 'center', fontStyle: 'bold', cellWidth: 25 }
     }
   });
 
@@ -1332,6 +1353,7 @@ async function submitStudentResult(event) {
   const studentId = teamSelect.value;
   const student = currentStudentMap[studentId];
   const parcoursId = parcoursSelect.value;
+  const niveau = parseInt(niveauSelect.value, 10) || 1;
   const durationM = durationMinutesInput.value;
   const durationS = durationSecondsInput.value;
   if (!classId || !studentId || !parcoursId || durationM === '' || durationS === '') { showGlobalError(`Veuillez remplir tous les champs d'identification et le temps.`, 'error'); return; }
@@ -1344,7 +1366,9 @@ async function submitStudentResult(event) {
   const correctes = verify.correctes;
   const tentatives = verify.tentatives;
   if (tentatives === 0) { showGlobalError('Veuillez saisir au moins une balise.', 'error'); return; }
-  displayLocalResults(correctes, tentatives, minutes, secondes);
+  
+  const pointsGagnes = correctes * niveau;
+  displayLocalResults(correctes, tentatives, pointsGagnes, minutes, secondes);
 
   const payload = {
     lessonId: lessonId,
@@ -1355,10 +1379,12 @@ async function submitStudentResult(event) {
     eleveNom: student ? student.nom : '',
     elevePrenom: student ? student.prenom : '',
     parcoursId: parcoursId,
+    niveau: niveau,
+    pointsGagnes: pointsGagnes,
     scoreCorrectes: correctes,
     scoreTentatives: tentatives,
-    listeTrouvees: verify.listeTrouvees,
-    listeErreurs: verify.listeErreurs,
+    listeTrouvees: verify.listeTrouvees || [],
+    listeErreurs: verify.listeErreurs || [],
     tempsMinutes: minutes,
     tempsSecondes: secondes,
     timestamp: firebase.firestore.FieldValue.serverTimestamp()
