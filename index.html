@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - v7 (Leçon 3 Shakers)</title>
+  <title>CO Connectée - v8 (Couleur Unique par Parcours)</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -26,7 +26,7 @@
     .hidden { display:none !important; }
     .banner { text-align:center; padding:12px 16px; margin-bottom:16px; border-radius:12px; color:#fff; background:#6b7280; font-weight:700; }
     .panel, .form-section { background:var(--soft); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:18px; }
-    .grid-4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; }
+    .grid-5 { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; }
     .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
     label { display:block; margin-bottom:8px; font-weight:700; color:var(--dark); }
     input, select { width:100%; padding:12px; border:1px solid #b8c3b3; border-radius:10px; background:#fff; font-size:1rem; }
@@ -34,7 +34,7 @@
     .time-input-group span { font-weight:800; font-size:1.4rem; color:var(--dark); }
     .mini-note { color:var(--muted); font-size:.92rem; margin-top:6px; }
     .tag-group { border:2px dashed var(--primary); border-radius:12px; padding:12px; margin-bottom:12px; background:rgba(255,255,255,.5); }
-    .tag-inputs { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; align-items:end; }
+    .tag-inputs { display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:end; }
     .primary-submit { width:100%; padding:16px; background:var(--primary); color:#fff; font-size:1.08rem; }
     .message { margin:10px 0; font-weight:700; }
     .error { color:#b91c1c; }
@@ -74,7 +74,7 @@
     <form id="tagForm">
       <div class="form-section">
         <h2>Identification</h2>
-        <div class="grid-4">
+        <div class="grid-5">
           <div>
             <label for="classeSelect">Classe</label>
             <select id="classeSelect" required>
@@ -92,7 +92,21 @@
             <select id="parcoursSelect" required></select>
           </div>
           <div>
-            <label for="niveauSelect">Niveau de difficulté</label>
+            <label for="couleurParcoursSelect">Couleur du parcours</label>
+            <select id="couleurParcoursSelect" required>
+              <option value="">Choisir la couleur</option>
+              <option value="BLEU">BLEU</option>
+              <option value="NOIR">NOIR</option>
+              <option value="ORANGE">ORANGE</option>
+              <option value="VERT">VERT</option>
+              <option value="ROSE">ROSE</option>
+              <option value="GRIS">GRIS</option>
+              <option value="ROUGE">ROUGE</option>
+              <option value="MARRON">MARRON</option>
+            </select>
+          </div>
+          <div>
+            <label for="niveauSelect">Niveau</label>
             <select id="niveauSelect" required>
               <option value="1" selected>🟢 Niveau 1 (1 pt)</option>
               <option value="2">🔵 Niveau 2 (2 pts)</option>
@@ -114,32 +128,27 @@
       </div>
 
       <div class="form-section">
-        <h2>Saisie des balises (5 max)</h2>
+        <h2>Saisie des balises du parcours (5 max)</h2>
         <div id="tagEntriesContainer">
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum0">Balise 1 - Numéro</label><input type="number" id="baliseNum0" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCouleur0">Couleur</label><select id="baliseCouleur0"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode0">Code</label><input type="text" id="baliseCode0" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode0">Code écrit</label><input type="text" id="baliseCode0" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum1">Balise 2 - Numéro</label><input type="number" id="baliseNum1" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCouleur1">Couleur</label><select id="baliseCouleur1"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode1">Code</label><input type="text" id="baliseCode1" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode1">Code écrit</label><input type="text" id="baliseCode1" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum2">Balise 3 - Numéro</label><input type="number" id="baliseNum2" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCouleur2">Couleur</label><select id="baliseCouleur2"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode2">Code</label><input type="text" id="baliseCode2" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode2">Code écrit</label><input type="text" id="baliseCode2" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum3">Balise 4 - Numéro</label><input type="number" id="baliseNum3" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCouleur3">Couleur</label><select id="baliseCouleur3"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode3">Code</label><input type="text" id="baliseCode3" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode3">Code écrit</label><input type="text" id="baliseCode3" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum4">Balise 5 - Numéro</label><input type="number" id="baliseNum4" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCouleur4">Couleur</label><select id="baliseCouleur4"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode4">Code</label><input type="text" id="baliseCode4" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode4">Code écrit</label><input type="text" id="baliseCode4" placeholder="Ex : 5B"></div>
           </div></div>
         </div>
       </div>
@@ -265,7 +274,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
-// Balises inférieures à 51 conservées à l'identique[cite: 2] ; balises >= 51 décalées de -11
+// Balises renumérotées (-11 à partir de 51) sans la balise 3 ni la 84
 const DONNEES_SHEET_DEFAUT = {
   8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
   9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
@@ -290,60 +299,45 @@ const DONNEES_SHEET_DEFAUT = {
   28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },
   29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" },
   30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },
-  31: { BLEU: "5V", NOIR: "PF", ORANGE: "WM", VERT: "28", ROSE: "QL", GRIS: "PE", ROUGE: "EV", MARRON: "DQ" },
-  32: { BLEU: "UI", NOIR: "52", ORANGE: "VR", VERT: "8V", ROSE: "BJ", GRIS: "FP", ROUGE: "46", MARRON: "VF" },
-  33: { BLEU: "RJ", NOIR: "RI", ORANGE: "FL", VERT: "WR", ROSE: "93", GRIS: "GP", ROUGE: "MF", MARRON: "SG" },
-  34: { BLEU: "C4", NOIR: "HC", ORANGE: "UC", VERT: "IH", ROSE: "JL", GRIS: "YL", ROUGE: "AP", MARRON: "PV" },
-  35: { BLEU: "GF", NOIR: "BZ", ORANGE: "G0", VERT: "LK", ROSE: "4L", GRIS: "N1", ROUGE: "VD", MARRON: "3V" },
-  36: { BLEU: "VQ", NOIR: "P3", ORANGE: "3Y", VERT: "85", ROSE: "SG", GRIS: "0S", ROUGE: "8J", MARRON: "9D" },
-  37: { BLEU: "DZ", NOIR: "O3", ORANGE: "9B", VERT: "S8", ROSE: "5T", GRIS: "HD", ROUGE: "ST", MARRON: "ZP" },
-  // Conversion effectuée (-11 pour chaque balise >= 51)
-  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" }, // Ex-51[cite: 2]
-  41: { BLEU: "6H", NOIR: "1X", ORANGE: "5N", VERT: "7T", ROSE: "2P", GRIS: "4F", ROUGE: "8L", MARRON: "3M" }, // Ex-52[cite: 2]
-  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" }, // Ex-53[cite: 2]
-  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" }, // Ex-54[cite: 2]
-  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" }, // Ex-55[cite: 2]
-  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" }, // Ex-56[cite: 2]
-  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" }, // Ex-57[cite: 2]
-  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" }, // Ex-58[cite: 2]
-  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" }, // Ex-59[cite: 2]
-  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" }, // Ex-60[cite: 2]
-  50: { BLEU: "7M", NOIR: "3H", ORANGE: "1K", VERT: "2W", ROSE: "5A", GRIS: "4X", ROUGE: "8F", MARRON: "6T" }, // Ex-61[cite: 2]
-  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" }, // Ex-62[cite: 2]
-  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" }, // Ex-63[cite: 2]
-  53: { BLEU: "1O", NOIR: "3G", ORANGE: "2F", VERT: "6T", ROSE: "8K", GRIS: "7M", ROUGE: "5S", MARRON: "4A" }, // Ex-64[cite: 2]
-  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" }, // Ex-65[cite: 2]
-  55: { BLEU: "2T", NOIR: "8B", ORANGE: "7H", VERT: "4E", ROSE: "6C", GRIS: "5W", ROUGE: "1G", MARRON: "3L" }, // Ex-66[cite: 2]
-  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" }, // Ex-67[cite: 2]
-  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" }, // Ex-68[cite: 2]
-  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" }, // Ex-69[cite: 2]
-  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" }, // Ex-70[cite: 2]
-  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" }, // Ex-71[cite: 2]
-  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" }, // Ex-72[cite: 2]
-  62: { BLEU: "7U", NOIR: "4M", ORANGE: "8R", VERT: "3P", ROSE: "6E", GRIS: "1B", ROUGE: "5A", MARRON: "2Z" }, // Ex-73[cite: 2]
-  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" }, // Ex-75[cite: 2]
-  65: { BLEU: "6R", NOIR: "4A", ORANGE: "1O", VERT: "3S", ROSE: "7M", GRIS: "5U", ROUGE: "8J", MARRON: "2X" }, // Ex-76[cite: 2]
-  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" }, // Ex-77[cite: 2]
-  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" }, // Ex-78[cite: 2]
-  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" }, // Ex-80[cite: 2]
-  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" }, // Ex-81[cite: 2]
-  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" }, // Ex-82[cite: 2]
-  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" }, // Ex-83[cite: 2]
-  73: { BLEU: "1M", NOIR: "3H", ORANGE: "4K", VERT: "2W", ROSE: "5A", GRIS: "8X", ROUGE: "7F", MARRON: "6T" }, // Ex-84[cite: 2]
-  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" }, // Ex-85[cite: 2]
-  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" }, // Ex-86[cite: 2]
-  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" }, // Ex-87[cite: 2]
-  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" }, // Ex-89[cite: 2]
-  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" }, // Ex-90[cite: 2]
-  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" }, // Ex-91[cite: 2]
-  82: { BLEU: "7Z", NOIR: "3W", ORANGE: "1X", VERT: "2K", ROSE: "5S", GRIS: "4J", ROUGE: "8M", MARRON: "6F" }, // Ex-93[cite: 2]
-  84: { BLEU: "2M", NOIR: "6P", ORANGE: "8Y", VERT: "5E", ROSE: "3K", GRIS: "4N", ROUGE: "9A", MARRON: "7R" }, // Ex-95[cite: 2]
-  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" }, // Ex-96[cite: 2]
-  87: { BLEU: "2F", NOIR: "8E", ORANGE: "7W", VERT: "4H", ROSE: "6N", GRIS: "5K", ROUGE: "1T", MARRON: "3G" }, // Ex-98[cite: 2]
-  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }  // Ex-100[cite: 2]
+  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" },
+  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" },
+  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" },
+  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" },
+  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" },
+  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" },
+  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },
+  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },
+  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },
+  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },
+  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },
+  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },
+  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },
+  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" },
+  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },
+  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },
+  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" },
+  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },
+  62: { BLEU: "7U", NOIR: "4M", ORANGE: "8R", VERT: "3P", ROSE: "6E", GRIS: "1B", ROUGE: "5A", MARRON: "2Z" },
+  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },
+  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },
+  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
+  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
+  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
+  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
+  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
+  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },
+  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
+  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },
+  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
+  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
+  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" },
+  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
+  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
+  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },
+  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
+  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }
 };
 
-// Fonction de conversion systématique pour les imports externes
 function remapBalisesObject(obj) {
   const adjusted = {};
   for (const key in obj) {
@@ -358,7 +352,7 @@ function remapBalisesObject(obj) {
 
 let DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
 const NOMBRE_BALISES_SAISIE = 5;
-const NOMBRE_PARCOURS = 60;
+const NOMBRE_PARCOURS = 40;
 const TEACHER_CODE = "16170";
 
 const firebaseConfig = {
@@ -390,6 +384,7 @@ const activeLessonBanner = document.getElementById("activeLessonBanner");
 const classeSelect = document.getElementById("classeSelect");
 const teamSelect = document.getElementById("teamSelect");
 const parcoursSelect = document.getElementById("parcoursSelect");
+const couleurParcoursSelect = document.getElementById("couleurParcoursSelect");
 const niveauSelect = document.getElementById("niveauSelect");
 const durationMinutesInput = document.getElementById("durationMinutes");
 const durationSecondsInput = document.getElementById("durationSeconds");
@@ -507,6 +502,7 @@ function resetFormForNewEntry() {
   scoreArea.classList.add("hidden");
   teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
   parcoursSelect.selectedIndex = 0;
+  couleurParcoursSelect.selectedIndex = 0;
   niveauSelect.value = "1";
 }
 
@@ -524,7 +520,8 @@ function formatTotalSeconds(totalSec) {
   return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 }
 
-function verifyTags() {
+// Vérification avec la couleur unique du parcours
+function verifyTags(couleurParcours) {
   let correctes = 0;
   let tentatives = 0;
   const listeTrouvees = [];
@@ -533,28 +530,27 @@ function verifyTags() {
 
   for (let i = 0; i < NOMBRE_BALISES_SAISIE; i++) {
     const num = document.getElementById("baliseNum" + i).value;
-    const couleur = document.getElementById("baliseCouleur" + i).value;
     const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();
-    if (!num && !couleur && !code) continue;
+    if (!num && !code) continue;
     tentatives++;
 
     let message = "";
     let resultClass = "result-missing";
 
-    if (num && couleur && code) {
+    if (num && code) {
       const numInt = parseInt(num, 10);
-      if (DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleur] === code) {
-        message = "Balise " + num + " (" + couleur + ") : ✅ CORRECT";
+      if (DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleurParcours] === code) {
+        message = "Balise " + num + " (" + couleurParcours + ") : ✅ CORRECT";
         resultClass = "result-correct";
         correctes++;
         listeTrouvees.push(num);
       } else {
-        message = "Balise " + num + " (" + couleur + ") : ❌ INCORRECT";
+        message = "Balise " + num + " (" + couleurParcours + ") : ❌ INCORRECT";
         resultClass = "result-incorrect";
         listeErreurs.push(num);
       }
     } else {
-      message = "Balise " + (i + 1) + " : ⚠️ Informations incomplètes";
+      message = "Balise " + (i + 1) + " : ⚠️ Numéro ou code manquant";
       resultClass = "result-missing";
       listeErreurs.push(num || ("B" + (i + 1)));
     }
@@ -647,7 +643,6 @@ function parseBalisesCSV(text) {
     let num = parseInt(cols[numIndex], 10);
     if (isNaN(num)) continue;
 
-    // Décalage automatique si fichier importé non décalé
     if (num >= 51) num = num - 11;
 
     result[num] = {};
@@ -766,7 +761,7 @@ function listenToBalisesConfig() {
       }
     } else {
       DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
-      balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises (Grille par défaut décalée intégrée).`;
+      balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises (Grille par défaut intégrée).`;
     }
   });
 }
@@ -1047,7 +1042,6 @@ async function startLesson() {
 }
 startLessonBtn.addEventListener('click', startLesson);
 
-// --- BILAN ELEVE AVEC SYSTEME DE POINTS SHAKERS ---
 let aggregatedSummary = [];
 
 async function openLesson(lessonId, lessonName) {
@@ -1068,7 +1062,6 @@ async function openLesson(lessonId, lessonName) {
   unsubscribeFromResults = db.collection('lecons').doc(lessonId).collection('resultats').onSnapshot(function(snapshot) {
     const docs = snapshot.docs.map(doc => doc.data());
     
-    // Regroupement par élève
     const studentsAgg = {};
     docs.forEach(function(item) {
       const key = (item.classeLabel || item.classe || 'Inconnue') + '__' + (item.eleveNomComplet || item.eleveId || 'Inconnu');
@@ -1299,7 +1292,6 @@ exportPdfBtn.addEventListener('click', function() {
   doc.save('bilan_' + lessonName.replace(/\s+/g, '_') + '.pdf');
 });
 
-// --- CLASSEMENT PDF PAR POINTS ET TEMPS ---
 exportRankingBtn.addEventListener('click', function() {
   if (aggregatedSummary.length === 0) { alert('Aucun résultat pour établir un classement.'); return; }
   
@@ -1371,16 +1363,22 @@ async function submitStudentResult(event) {
   const studentId = teamSelect.value;
   const student = currentStudentMap[studentId];
   const parcoursId = parcoursSelect.value;
+  const couleurParcours = couleurParcoursSelect.value;
   const niveau = parseInt(niveauSelect.value, 10) || 1;
   const durationM = durationMinutesInput.value;
   const durationS = durationSecondsInput.value;
-  if (!classId || !studentId || !parcoursId || durationM === '' || durationS === '') { showGlobalError(`Veuillez remplir tous les champs d'identification et le temps.`, 'error'); return; }
+
+  if (!classId || !studentId || !parcoursId || !couleurParcours || durationM === '' || durationS === '') {
+    showGlobalError(`Veuillez remplir tous les champs d'identification, la couleur du parcours et le temps.`, 'error');
+    return;
+  }
+
   const minutes = parseInt(durationM, 10);
   const secondes = parseInt(durationS, 10);
   if (isNaN(minutes) || isNaN(secondes) || minutes < 0 || secondes < 0 || secondes > 59) { showGlobalError('Temps invalide : secondes entre 0 et 59.', 'error'); return; }
   if (minutes === 0 && secondes === 0) { showGlobalError('Le temps de course ne peut pas être zéro.', 'error'); return; }
   
-  const verify = verifyTags();
+  const verify = verifyTags(couleurParcours);
   const correctes = verify.correctes;
   const tentatives = verify.tentatives;
   if (tentatives === 0) { showGlobalError('Veuillez saisir au moins une balise.', 'error'); return; }
@@ -1397,6 +1395,7 @@ async function submitStudentResult(event) {
     eleveNom: student ? student.nom : '',
     elevePrenom: student ? student.prenom : '',
     parcoursId: parcoursId,
+    couleurParcours: couleurParcours,
     niveau: niveau,
     pointsGagnes: pointsGagnes,
     scoreCorrectes: correctes,
