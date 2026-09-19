@@ -62,13 +62,46 @@
       z-index: 1000; padding: 16px;
     }
     .modal-card {
-      background: #fff; border-radius: 18px; padding: 20px; width: 100%; max-width: 420px;
+      background: #fff; border-radius: 18px; padding: 20px; width: 100%; max-width: 440px;
       text-align: center; border: 3px solid var(--primary); box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      max-height: 90vh; overflow-y: auto;
     }
-    .modal-card h2 { font-size: 1.4rem; margin-bottom: 10px; color: var(--dark); }
+    .modal-card h2 { font-size: 1.35rem; margin-bottom: 10px; color: var(--dark); }
     .popup-stat { background: var(--soft); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px; margin-bottom: 10px; }
-    .popup-stat-label { font-size: 0.85rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
-    .popup-stat-val { font-size: 1.7rem; font-weight: 900; color: var(--dark); margin-top: 2px; }
+    .popup-stat-label { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    .popup-stat-val { font-size: 1.6rem; font-weight: 900; color: var(--dark); margin-top: 2px; }
+
+    /* DETAIL BALISES DANS LE POP-UP */
+    .popup-details-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .popup-box {
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .popup-box-valid {
+      background: #d8f3dc;
+      color: #166534;
+      border: 1px solid #b7e4c7;
+    }
+    .popup-box-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .popup-box-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      font-weight: 900;
+      margin-bottom: 4px;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -222,23 +255,35 @@
   </section>
 </div>
 
-<!-- MODALE POP-UP ELEVE -->
+<!-- MODALE POP-UP ELEVE AVEC DETAIL DES BALISES -->
 <div id="resultModal" class="modal-overlay hidden">
   <div class="modal-card">
-    <h2>🏁 Parcours validé !</h2>
+    <h2>🏁 Résumé de la course</h2>
+    
     <div class="popup-stat">
       <div class="popup-stat-label">⏱️ Temps de course</div>
       <div class="popup-stat-val" id="popupTime">00:00</div>
     </div>
+    
     <div class="popup-stat">
-      <div class="popup-stat-label">🎯 Balises justes</div>
+      <div class="popup-stat-label">🎯 Total validé</div>
       <div class="popup-stat-val" id="popupTags" style="color:#166534;">0 / 0</div>
+      <div style="font-weight:900; font-size:1.1rem; color:#2d6a4f; margin-top:4px;" id="popupScore">+0 pt(s)</div>
     </div>
-    <div class="popup-stat">
-      <div class="popup-stat-label">⭐ Points obtenus</div>
-      <div class="popup-stat-val" id="popupScore" style="color:#2d6a4f;">+0 pts</div>
+
+    <!-- DÉTAIL PAR BALISE -->
+    <div class="popup-details-container">
+      <div id="popupValidBox" class="popup-box popup-box-valid">
+        <span class="popup-box-title">✅ Balises justes</span>
+        <div id="popupValidList">Aucune</div>
+      </div>
+      <div id="popupErrorBox" class="popup-box popup-box-error">
+        <span class="popup-box-title">❌ Balises fausses / manquantes</span>
+        <div id="popupErrorList">Aucune</div>
+      </div>
     </div>
-    <button type="button" id="closeModalBtn" class="primary-submit" style="margin-top:10px;">Fermer / Suivant ➡️</button>
+
+    <button type="button" id="closeModalBtn" class="primary-submit" style="margin-top:4px;">Fermer / Suivant ➡️</button>
   </div>
 </div>
 
@@ -361,12 +406,16 @@ const DONNEES_SHEET = {
   89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }
 };
 
-// --- VALIDATION & POP-UP ---
+// --- VALIDATION & GESTION POP-UP ---
 const tagForm = document.getElementById("tagForm");
 const resultModal = document.getElementById("resultModal");
 const popupTime = document.getElementById("popupTime");
 const popupTags = document.getElementById("popupTags");
 const popupScore = document.getElementById("popupScore");
+const popupValidList = document.getElementById("popupValidList");
+const popupErrorList = document.getElementById("popupErrorList");
+const popupValidBox = document.getElementById("popupValidBox");
+const popupErrorBox = document.getElementById("popupErrorBox");
 const closeModalBtn = document.getElementById("closeModalBtn");
 const resultsList = document.getElementById("resultsList");
 const resultsTableBody = document.getElementById("resultsTableBody");
@@ -390,6 +439,8 @@ tagForm.addEventListener("submit", function(e) {
 
   let correctes = 0;
   let tentatives = 0;
+  const valides = [];
+  const erreurs = [];
   resultsList.innerHTML = "";
 
   for (let i = 0; i < 5; i++) {
@@ -400,13 +451,17 @@ tagForm.addEventListener("submit", function(e) {
 
     const numInt = parseInt(num, 10);
     const li = document.createElement("li");
-    if (DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleur] === code) {
+
+    if (num && code && DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleur] === code) {
       correctes++;
+      valides.push("Balise " + num);
       li.className = "result-correct";
       li.textContent = "Balise " + num + " (" + couleur + ") : ✅ CORRECT";
     } else {
+      const detailErr = num ? "Balise " + num + " (Code : " + (code || "vide") + ")" : "Balise " + (i + 1) + " incomplète";
+      erreurs.push(detailErr);
       li.className = "result-incorrect";
-      li.textContent = "Balise " + num + " (" + couleur + ") : ❌ INCORRECT";
+      li.textContent = "Balise " + (num || (i + 1)) + " (" + couleur + ") : ❌ INCORRECT";
     }
     resultsList.appendChild(li);
   }
@@ -418,13 +473,28 @@ tagForm.addEventListener("submit", function(e) {
 
   const points = correctes * niveau;
 
-  // Affichage Pop-up
+  // Remplissage du résumé et des listes détaillées dans le pop-up
   popupTime.textContent = formatTime(m, s);
   popupTags.textContent = correctes + " / " + tentatives;
   popupScore.textContent = "+" + points + " pt(s)";
+
+  if (valides.length > 0) {
+    popupValidList.innerHTML = valides.join(", ");
+    popupValidBox.classList.remove("hidden");
+  } else {
+    popupValidList.innerHTML = "Aucune balise validée";
+  }
+
+  if (erreurs.length > 0) {
+    popupErrorList.innerHTML = erreurs.join("<br>");
+    popupErrorBox.classList.remove("hidden");
+  } else {
+    popupErrorList.innerHTML = "Aucune erreur !";
+  }
+
   resultModal.classList.remove("hidden");
 
-  // Ajout au tableau professeur
+  // Enregistrement dans le tableau professeur
   const now = new Date().toLocaleTimeString("fr-FR");
   const tr = document.createElement("tr");
   tr.innerHTML = "<td><b>" + eleve + "</b></td><td style='color:#1b4332; font-weight:bold;'>+" + points + " pts</td><td>" + correctes + "/" + tentatives + "</td><td>" + formatTime(m, s) + "</td><td>" + now + "</td>";
