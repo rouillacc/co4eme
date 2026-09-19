@@ -102,7 +102,7 @@
           <div>
             <label for="classeSelect">Classe</label>
             <select id="classeSelect" required>
-              <option value="">Chargement des classes...</option>
+              <option value="">Sélectionner la classe</option>
             </select>
           </div>
           <div>
@@ -298,7 +298,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
-// --- NAVIGATION INTERFACE (IMMEDIATE) ---
+// --- ÉCOUTEURS DE NAVIGATION IMMÉDIATS (AUCUN BLOCAGE RÉSEAU) ---
 const studentView = document.getElementById("studentView");
 const teacherDashboard = document.getElementById("teacherDashboard");
 const teacherLoginContainer = document.getElementById("teacherLoginContainer");
@@ -350,7 +350,7 @@ teacherCodeInput.addEventListener("keydown", function(e) {
   if (e.key === "Enter") { e.preventDefault(); teacherCodeSubmitBtn.click(); }
 });
 
-// --- PARCOURS VERROUILLES (1 à 40) ---
+// --- PARCOURS VERROUILLÉS (1 à 40) ---
 const NOMBRE_PARCOURS = 40;[span_11](start_span)[span_11](end_span)
 const parcoursSelect = document.getElementById("parcoursSelect");
 parcoursSelect.innerHTML = '<option value="">Choisir un parcours</option>';
@@ -424,7 +424,7 @@ const DONNEES_SHEET = {
   89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }[span_73](start_span)[span_73](end_span)
 };
 
-// --- CONFIGURATION FIREBASE FIRESTORE ---
+// --- INITIALISATION FIREBASE ---
 const firebaseConfig = {
   apiKey: "AIzaSyD3Cu1X0_JSF1qePFRzcq-RY-MYTB32a-8",
   authDomain: "co-rouillac.firebaseapp.com",
@@ -434,7 +434,9 @@ const firebaseConfig = {
   appId: "1:729910930573:web:f8c0e93c702416fcd446c4"
 };[span_74](start_span)[span_74](end_span)
 
-firebase.initializeApp(firebaseConfig);[span_75](start_span)[span_75](end_span)
+try {
+  firebase.initializeApp(firebaseConfig);[span_75](start_span)[span_75](end_span)
+} catch(e) {}
 const db = firebase.firestore();[span_76](start_span)[span_76](end_span)
 
 let unsubscribeFromResults = null;[span_77](start_span)[span_77](end_span)
@@ -442,7 +444,7 @@ let currentActiveLessonId = null;[span_78](start_span)[span_78](end_span)
 let currentTeacherLesson = null;[span_79](start_span)[span_79](end_span)
 let currentStudentMap = {};[span_80](start_span)[span_80](end_span)
 
-// --- ELEMENTS DOM ---
+// Éléments
 const activeLessonBanner = document.getElementById("activeLessonBanner");[span_81](start_span)[span_81](end_span)
 const classeSelect = document.getElementById("classeSelect");[span_82](start_span)[span_82](end_span)
 const teamSelect = document.getElementById("teamSelect");[span_83](start_span)[span_83](end_span)
@@ -470,7 +472,7 @@ const exportCsvBtn = document.getElementById("exportCsvBtn");[span_104](start_sp
 const exportPdfBtn = document.getElementById("exportPdfBtn");[span_105](start_span)[span_105](end_span)
 const closeLessonBtn = document.getElementById("closeLessonBtn");[span_106](start_span)[span_106](end_span)
 
-// POP-UP
+// Pop-up
 const resultModal = document.getElementById("resultModal");[span_107](start_span)[span_107](end_span)
 const popupTime = document.getElementById("popupTime");[span_108](start_span)[span_108](end_span)
 const popupTags = document.getElementById("popupTags");[span_109](start_span)[span_109](end_span)
@@ -489,221 +491,258 @@ function formatTotalSeconds(totalSec) {
   return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");[span_117](start_span)[span_117](end_span)
 }
 
-// --- CHARGEMENT DES CLASSES DEPUIS FIRESTORE ---
+// Timeout de secours pour ne pas bloquer si Firebase ne répond pas
+function promiseWithTimeout(promise, ms = 4000) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms))
+  ]);
+}
+
+// --- CHARGEMENT FIRESTORE SÉCURISÉ ---
 async function loadStudentClasses() {
   try {
-    const selected = classeSelect.value;[span_118](start_span)[span_118](end_span)
-    const snap = await db.collection("classes").get();[span_119](start_span)[span_119](end_span)
-    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(item => item.active !== false).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[span_120](start_span)[span_120](end_span)
-    classeSelect.innerHTML = '<option value="">Choisir une classe</option>';[span_121](start_span)[span_121](end_span)
+    const snap = await promiseWithTimeout(db.collection("classes").get());
+    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(item => item.active !== false).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[span_118](start_span)[span_118](end_span)
+    
+    classeSelect.innerHTML = '<option value="">Choisir une classe</option>';[span_119](start_span)[span_119](end_span)
     classes.forEach(item => {
-      const opt = document.createElement("option");[span_122](start_span)[span_122](end_span)
-      opt.value = item.id;[span_123](start_span)[span_123](end_span)
-      opt.textContent = item.className || item.id;[span_124](start_span)[span_124](end_span)
-      classeSelect.appendChild(opt);[span_125](start_span)[span_125](end_span)
+      const opt = document.createElement("option");[span_120](start_span)[span_120](end_span)
+      opt.value = item.id;[span_121](start_span)[span_121](end_span)
+      opt.textContent = item.className || item.id;[span_122](start_span)[span_122](end_span)
+      classeSelect.appendChild(opt);[span_123](start_span)[span_123](end_span)
     });
-    if (selected && classes.some(i => i.id === selected)) classeSelect.value = selected;[span_126](start_span)[span_126](end_span)
+    // Mise en cache locale
+    localStorage.setItem("cached_classes_list", JSON.stringify(classes));
   } catch (err) {
-    console.error(err);
-    classeSelect.innerHTML = '<option value="">Classes indisponibles</option>';[span_127](start_span)[span_127](end_span)
+    console.warn("Firestore injoignable, tentative depuis le cache local...");
+    const cached = localStorage.getItem("cached_classes_list");
+    if (cached) {
+      const classes = JSON.parse(cached);
+      classeSelect.innerHTML = '<option value="">Choisir une classe (Cache)</option>';
+      classes.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.id;
+        opt.textContent = item.className || item.id;
+        classeSelect.appendChild(opt);
+      });
+    } else {
+      classeSelect.innerHTML = '<option value="">Aucune classe chargée (Vérifier réseau)</option>';
+    }
   }
 }
 
 async function loadStudentsForSelectedClass() {
-  const classId = classeSelect.value;[span_128](start_span)[span_128](end_span)
-  currentStudentMap = {};[span_129](start_span)[span_129](end_span)
+  const classId = classeSelect.value;[span_124](start_span)[span_124](end_span)
+  currentStudentMap = {};[span_125](start_span)[span_125](end_span)
   if (!classId) {
-    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';[span_130](start_span)[span_130](end_span)
-    return;[span_131](start_span)[span_131](end_span)
+    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';[span_126](start_span)[span_126](end_span)
+    return;[span_127](start_span)[span_127](end_span)
   }
-  teamSelect.innerHTML = '<option value="">Chargement des élèves...</option>';[span_132](start_span)[span_132](end_span)
-  const snap = await db.collection("classes").doc(classId).collection("eleves").get();[span_133](start_span)[span_133](end_span)
-  const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));[span_134](start_span)[span_134](end_span)
-  teamSelect.innerHTML = '<option value="">Choisir un élève</option>';[span_135](start_span)[span_135](end_span)
-  students.forEach(st => {
-    currentStudentMap[st.id] = st;[span_136](start_span)[span_136](end_span)
-    const opt = document.createElement("option");[span_137](start_span)[span_137](end_span)
-    opt.value = st.id;[span_138](start_span)[span_138](end_span)
-    opt.textContent = st.nomComplet || ((st.nom || "") + " " + (st.prenom || "")).trim();[span_139](start_span)[span_139](end_span)
-    teamSelect.appendChild(opt);[span_140](start_span)[span_140](end_span)
-  });
+  teamSelect.innerHTML = '<option value="">Chargement des élèves...</option>';[span_128](start_span)[span_128](end_span)
+  try {
+    const snap = await promiseWithTimeout(db.collection("classes").doc(classId).collection("eleves").get());
+    const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));[span_129](start_span)[span_129](end_span)
+    teamSelect.innerHTML = '<option value="">Choisir un élève</option>';[span_130](start_span)[span_130](end_span)
+    students.forEach(st => {
+      currentStudentMap[st.id] = st;[span_131](start_span)[span_131](end_span)
+      const opt = document.createElement("option");[span_132](start_span)[span_132](end_span)
+      opt.value = st.id;[span_133](start_span)[span_133](end_span)
+      opt.textContent = st.nomComplet || ((st.nom || "") + " " + (st.prenom || "")).trim();[span_134](start_span)[span_134](end_span)
+      teamSelect.appendChild(opt);[span_135](start_span)[span_135](end_span)
+    });
+    localStorage.setItem("cached_students_" + classId, JSON.stringify(students));
+  } catch (e) {
+    const cached = localStorage.getItem("cached_students_" + classId);
+    if (cached) {
+      const students = JSON.parse(cached);
+      teamSelect.innerHTML = '<option value="">Choisir un élève (Cache)</option>';
+      students.forEach(st => {
+        currentStudentMap[st.id] = st;
+        const opt = document.createElement("option");
+        opt.value = st.id;
+        opt.textContent = st.nomComplet || st.nom;
+        teamSelect.appendChild(opt);
+      });
+    }
+  }
 }
 
-classeSelect.addEventListener("change", loadStudentsForSelectedClass);[span_141](start_span)[span_141](end_span)
+classeSelect.addEventListener("change", loadStudentsForSelectedClass);[span_136](start_span)[span_136](end_span)
 
 async function loadClassesOverview() {
   try {
-    const snap = await db.collection("classes").get();[span_142](start_span)[span_142](end_span)
-    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[span_143](start_span)[span_143](end_span)
+    const snap = await promiseWithTimeout(db.collection("classes").get());
+    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[span_137](start_span)[span_137](end_span)
     if (docs.length === 0) {
-      classesListContainer.innerHTML = 'Aucune classe enregistrée.';[span_144](start_span)[span_144](end_span)
-      return;[span_145](start_span)[span_145](end_span)
+      classesListContainer.innerHTML = 'Aucune classe enregistrée.';[span_138](start_span)[span_138](end_span)
+      return;[span_139](start_span)[span_139](end_span)
     }
-    let html = '<table><thead><tr><th>Classe</th><th>Élèves</th><th>Action</th></tr></thead><tbody>';[span_146](start_span)[span_146](end_span)
+    let html = '<table><thead><tr><th>Classe</th><th>Élèves</th><th>Action</th></tr></thead><tbody>';[span_140](start_span)[span_140](end_span)
     docs.forEach(item => {
       html += `<tr>
         <td style="font-weight:700;">${item.className || item.id}</td>
         <td>${item.studentCount || 0} élève(s)</td>
         <td><button class="danger-btn delete-class-btn" data-id="${item.id}" data-name="${item.className || item.id}" style="padding:4px 8px; font-size:0.8rem;">Supprimer</button></td>
-      </tr>`;[span_147](start_span)[span_147](end_span)
+      </tr>`;[span_141](start_span)[span_141](end_span)
     });
-    html += '</tbody></table>';[span_148](start_span)[span_148](end_span)
-    classesListContainer.innerHTML = html;[span_149](start_span)[span_149](end_span)
+    html += '</tbody></table>';[span_142](start_span)[span_142](end_span)
+    classesListContainer.innerHTML = html;[span_143](start_span)[span_143](end_span)
 
     document.querySelectorAll('.delete-class-btn').forEach(btn => {
       btn.addEventListener('click', async function() {
-        if (!confirm(`Supprimer la classe "${this.dataset.name}" ?`)) return;[span_150](start_span)[span_150](end_span)
-        await db.collection("classes").doc(this.dataset.id).delete();[span_151](start_span)[span_151](end_span)
-        loadClassesOverview();[span_152](start_span)[span_152](end_span)
-        loadStudentClasses();[span_153](start_span)[span_153](end_span)
+        if (!confirm(`Supprimer la classe "${this.dataset.name}" ?`)) return;[span_144](start_span)[span_144](end_span)
+        await db.collection("classes").doc(this.dataset.id).delete();[span_145](start_span)[span_145](end_span)
+        loadClassesOverview();[span_146](start_span)[span_146](end_span)
+        loadStudentClasses();[span_147](start_span)[span_147](end_span)
       });
     });
   } catch (err) {
-    classesListContainer.innerHTML = 'Impossible de charger les classes.';[span_154](start_span)[span_154](end_span)
+    classesListContainer.innerHTML = 'Connexion à la base impossible.';
   }
 }
 
-// --- IMPORT PRONOTE CSV FIRESTORE ---
+// --- IMPORT PRONOTE CSV ---
 createClassBtn.addEventListener('click', async function() {
-  const className = newClassNameInput.value.trim().toUpperCase();[span_155](start_span)[span_155](end_span)
-  const file = classCsvInput.files[0];[span_156](start_span)[span_156](end_span)
+  const className = newClassNameInput.value.trim().toUpperCase();[span_148](start_span)[span_148](end_span)
+  const file = classCsvInput.files[0];[span_149](start_span)[span_149](end_span)
   if (!className || !file) {
-    classManagerMessage.textContent = 'Indiquez un nom de classe et sélectionnez un fichier.';[span_157](start_span)[span_157](end_span)
-    classManagerMessage.className = 'message error';[span_158](start_span)[span_158](end_span)
-    return;[span_159](start_span)[span_159](end_span)
+    classManagerMessage.textContent = 'Indiquez un nom de classe et sélectionnez un fichier.';[span_150](start_span)[span_150](end_span)
+    classManagerMessage.className = 'message error';[span_151](start_span)[span_151](end_span)
+    return;[span_152](start_span)[span_152](end_span)
   }
 
-  const reader = new FileReader();[span_160](start_span)[span_160](end_span)
+  const reader = new FileReader();[span_153](start_span)[span_153](end_span)
   reader.onload = async function(e) {
     try {
-      const text = e.target.result;[span_161](start_span)[span_161](end_span)
-      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);[span_162](start_span)[span_162](end_span)
-      const students = [];[span_163](start_span)[span_163](end_span)
+      const text = e.target.result;[span_154](start_span)[span_154](end_span)
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);[span_155](start_span)[span_155](end_span)
+      const students = [];[span_156](start_span)[span_156](end_span)
       for (let i = 1; i < lines.length; i++) {
-        const parts = lines[i].split(/[;,]/).map(p => p.replace(/^"|"$/g, '').trim());[span_164](start_span)[span_164](end_span)
+        const parts = lines[i].split(/[;,]/).map(p => p.replace(/^"|"$/g, '').trim());[span_157](start_span)[span_157](end_span)
         if (parts.length >= 2 && parts[0] && parts[1]) {
-          students.push({ nom: parts[0].toUpperCase(), prenom: parts[1], nomComplet: parts[0].toUpperCase() + " " + parts[1] });[span_165](start_span)[span_165](end_span)
+          students.push({ nom: parts[0].toUpperCase(), prenom: parts[1], nomComplet: parts[0].toUpperCase() + " " + parts[1] });[span_158](start_span)[span_158](end_span)
         } else if (parts[0]) {
-          students.push({ nom: parts[0], prenom: "", nomComplet: parts[0] });[span_166](start_span)[span_166](end_span)
+          students.push({ nom: parts[0], prenom: "", nomComplet: parts[0] });[span_159](start_span)[span_159](end_span)
         }
       }
 
-      const classId = className.replace(/[^a-zA-Z0-9_-]/g, '-');[span_167](start_span)[span_167](end_span)
-      const classRef = db.collection("classes").doc(classId);[span_168](start_span)[span_168](end_span)
+      const classId = className.replace(/[^a-zA-Z0-9_-]/g, '-');[span_160](start_span)[span_160](end_span)
+      const classRef = db.collection("classes").doc(classId);[span_161](start_span)[span_161](end_span)
       await classRef.set({
         classId: classId,
         className: className,
         active: true,
-        studentCount: students.length,[span_169](start_span)[span_169](end_span)
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()[span_170](start_span)[span_170](end_span)
-      }, { merge: true });[span_171](start_span)[span_171](end_span)
+        studentCount: students.length,[span_162](start_span)[span_162](end_span)
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()[span_163](start_span)[span_163](end_span)
+      }, { merge: true });[span_164](start_span)[span_164](end_span)
 
-      let batch = db.batch();[span_172](start_span)[span_172](end_span)
+      let batch = db.batch();[span_165](start_span)[span_165](end_span)
       students.forEach(st => {
-        const ref = classRef.collection("eleves").doc();[span_173](start_span)[span_173](end_span)
-        batch.set(ref, { nomComplet: st.nomComplet, nom: st.nom, prenom: st.prenom, active: true });[span_174](start_span)[span_174](end_span)
+        const ref = classRef.collection("eleves").doc();[span_166](start_span)[span_166](end_span)
+        batch.set(ref, { nomComplet: st.nomComplet, nom: st.nom, prenom: st.prenom, active: true });[span_167](start_span)[span_167](end_span)
       });
-      await batch.commit();[span_175](start_span)[span_175](end_span)
+      await batch.commit();[span_168](start_span)[span_168](end_span)
 
-      classManagerMessage.textContent = `Classe ${className} enregistrée avec succès (${students.length} élèves).`;
-      classManagerMessage.className = 'message success';[span_176](start_span)[span_176](end_span)
-      newClassNameInput.value = '';[span_177](start_span)[span_177](end_span)
-      classCsvInput.value = '';[span_178](start_span)[span_178](end_span)
-      loadClassesOverview();[span_179](start_span)[span_179](end_span)
-      loadStudentClasses();[span_180](start_span)[span_180](end_span)
+      classManagerMessage.textContent = `Classe ${className} enregistrée avec ${students.length} élève(s).`;
+      classManagerMessage.className = 'message success';[span_169](start_span)[span_169](end_span)
+      newClassNameInput.value = '';[span_170](start_span)[span_170](end_span)
+      classCsvInput.value = '';[span_171](start_span)[span_171](end_span)
+      loadClassesOverview();[span_172](start_span)[span_172](end_span)
+      loadStudentClasses();[span_173](start_span)[span_173](end_span)
     } catch (err) {
       classManagerMessage.textContent = 'Erreur lors de l\'enregistrement.';
-      classManagerMessage.className = 'message error';[span_181](start_span)[span_181](end_span)
+      classManagerMessage.className = 'message error';[span_174](start_span)[span_174](end_span)
     }
   };
-  reader.readAsText(file, "utf-8");[span_182](start_span)[span_182](end_span)
+  reader.readAsText(file, "utf-8");[span_175](start_span)[span_175](end_span)
 });
 
 refreshClassesBtn.addEventListener('click', function() {
-  loadClassesOverview();[span_183](start_span)[span_183](end_span)
-  loadStudentClasses();[span_184](start_span)[span_184](end_span)
+  loadClassesOverview();[span_176](start_span)[span_176](end_span)
+  loadStudentClasses();[span_177](start_span)[span_177](end_span)
 });
 
-// --- GESTION DES SEANCES PROFESSEUR ---
+// --- SÉANCES PROFESSEUR ---
 startLessonBtn.addEventListener('click', async function() {
-  const lessonName = prompt('Nom de la séance :', 'Séance Shakers');[span_185](start_span)[span_185](end_span)
-  if (!lessonName) return;[span_186](start_span)[span_186](end_span)
-  const now = new Date();[span_187](start_span)[span_187](end_span)
-  const lessonId = 'lecon_' + now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + '_' + lessonName.replace(/\s+/g, '-');[span_188](start_span)[span_188](end_span)
+  const lessonName = prompt('Nom de la séance :', 'Séance Shakers');[span_178](start_span)[span_178](end_span)
+  if (!lessonName) return;[span_179](start_span)[span_179](end_span)
+  const now = new Date();[span_180](start_span)[span_180](end_span)
+  const lessonId = 'lecon_' + now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + '_' + lessonName.replace(/\s+/g, '-');[span_181](start_span)[span_181](end_span)
   
   await db.collection('lecons').doc(lessonId).set({
     lessonId: lessonId,
     lessonName: lessonName,
-    status: 'active',[span_189](start_span)[span_189](end_span)
-    startedAt: firebase.firestore.FieldValue.serverTimestamp()[span_190](start_span)[span_190](end_span)
-  }, { merge: true });[span_191](start_span)[span_191](end_span)
+    status: 'active',[span_182](start_span)[span_182](end_span)
+    startedAt: firebase.firestore.FieldValue.serverTimestamp()[span_183](start_span)[span_183](end_span)
+  }, { merge: true });[span_184](start_span)[span_184](end_span)
 
   await db.collection('config').doc('activeLesson').set({
     lessonId: lessonId,
     lessonName: lessonName,
-    startedAt: firebase.firestore.FieldValue.serverTimestamp()[span_192](start_span)[span_192](end_span)
-  });[span_193](start_span)[span_193](end_span)
+    startedAt: firebase.firestore.FieldValue.serverTimestamp()[span_185](start_span)[span_185](end_span)
+  });[span_186](start_span)[span_186](end_span)
 
-  openLesson(lessonId, lessonName);[span_194](start_span)[span_194](end_span)
+  openLesson(lessonId, lessonName);[span_187](start_span)[span_187](end_span)
 });
 
 closeLessonBtn.addEventListener('click', async function() {
   if (!currentActiveLessonId) { alert('Aucune leçon active.'); return; }
-  if (!confirm('Clôturer la séance en cours ?')) return;[span_195](start_span)[span_195](end_span)
-  await db.collection('lecons').doc(currentActiveLessonId).set({ status: 'closed' }, { merge: true });[span_196](start_span)[span_196](end_span)
-  await db.collection('config').doc('activeLesson').delete();[span_197](start_span)[span_197](end_span)
-  currentActiveLessonId = null;[span_198](start_span)[span_198](end_span)
-  lessonStatus.textContent = 'Aucune leçon active';[span_199](start_span)[span_199](end_span)
-  lessonStatus.className = 'pill inactive';[span_200](start_span)[span_200](end_span)
+  if (!confirm('Clôturer la séance en cours ?')) return;[span_188](start_span)[span_188](end_span)
+  await db.collection('lecons').doc(currentActiveLessonId).set({ status: 'closed' }, { merge: true });[span_189](start_span)[span_189](end_span)
+  await db.collection('config').doc('activeLesson').delete();[span_190](start_span)[span_190](end_span)
+  currentActiveLessonId = null;[span_191](start_span)[span_191](end_span)
+  lessonStatus.textContent = 'Aucune leçon active';[span_192](start_span)[span_192](end_span)
+  lessonStatus.className = 'pill inactive';[span_193](start_span)[span_193](end_span)
 });
 
-let aggregatedSummary = [];[span_201](start_span)[span_201](end_span)
+let aggregatedSummary = [];[span_194](start_span)[span_194](end_span)
 
 function openLesson(lessonId, lessonName) {
-  currentTeacherLesson = { id: lessonId, name: lessonName || lessonId };[span_202](start_span)[span_202](end_span)
+  currentTeacherLesson = { id: lessonId, name: lessonName || lessonId };[span_195](start_span)[span_195](end_span)
   lessonStatus.textContent = 'Séance : ' + currentTeacherLesson.name;
-  lessonStatus.className = 'pill active';[span_203](start_span)[span_203](end_span)
-  if (unsubscribeFromResults) unsubscribeFromResults();[span_204](start_span)[span_204](end_span)
+  lessonStatus.className = 'pill active';[span_196](start_span)[span_196](end_span)
+  if (unsubscribeFromResults) unsubscribeFromResults();[span_197](start_span)[span_197](end_span)
 
   unsubscribeFromResults = db.collection('lecons').doc(lessonId).collection('resultats').onSnapshot(function(snapshot) {
-    const docs = snapshot.docs.map(doc => doc.data());[span_205](start_span)[span_205](end_span)
-    const studentsAgg = {};[span_206](start_span)[span_206](end_span)
+    const docs = snapshot.docs.map(doc => doc.data());[span_198](start_span)[span_198](end_span)
+    const studentsAgg = {};[span_199](start_span)[span_199](end_span)
 
     docs.forEach(item => {
-      const key = (item.classeLabel || item.classe || '—') + '__' + (item.eleveNomComplet || item.eleveId || '—');[span_207](start_span)[span_207](end_span)
+      const key = (item.classeLabel || item.classe || '—') + '__' + (item.eleveNomComplet || item.eleveId || '—');[span_200](start_span)[span_200](end_span)
       if (!studentsAgg[key]) {
         studentsAgg[key] = {
-          classe: item.classeLabel || item.classe || '—',[span_208](start_span)[span_208](end_span)
-          eleve: item.eleveNomComplet || item.eleveId || '—',[span_209](start_span)[span_209](end_span)
-          pointsTotal: 0,[span_210](start_span)[span_210](end_span)
-          balisesTrouveesCount: 0,[span_211](start_span)[span_211](end_span)
-          erreursCount: 0,[span_212](start_span)[span_212](end_span)
-          totalSecondes: 0,[span_213](start_span)[span_213](end_span)
-          passages: 0,[span_214](start_span)[span_214](end_span)
-          dernierTimestamp: 0[span_215](start_span)[span_215](end_span)
+          classe: item.classeLabel || item.classe || '—',[span_201](start_span)[span_201](end_span)
+          eleve: item.eleveNomComplet || item.eleveId || '—',[span_202](start_span)[span_202](end_span)
+          pointsTotal: 0,[span_203](start_span)[span_203](end_span)
+          balisesTrouveesCount: 0,[span_204](start_span)[span_204](end_span)
+          erreursCount: 0,[span_205](start_span)[span_205](end_span)
+          totalSecondes: 0,[span_206](start_span)[span_206](end_span)
+          passages: 0,[span_207](start_span)[span_207](end_span)
+          dernierTimestamp: 0[span_208](start_span)[span_208](end_span)
         };
       }
-      const bonnes = item.scoreCorrectes || 0;[span_216](start_span)[span_216](end_span)
-      const tent = item.scoreTentatives || 0;[span_217](start_span)[span_217](end_span)
-      studentsAgg[key].pointsTotal += (item.pointsGagnes || (bonnes * (item.niveau || 1)));[span_218](start_span)[span_218](end_span)
-      studentsAgg[key].balisesTrouveesCount += bonnes;[span_219](start_span)[span_219](end_span)
-      studentsAgg[key].erreursCount += Math.max(0, tent - bonnes);[span_220](start_span)[span_220](end_span)
-      studentsAgg[key].totalSecondes += ((item.tempsMinutes || 0) * 60 + (item.tempsSecondes || 0));[span_221](start_span)[span_221](end_span)
-      studentsAgg[key].passages += 1;[span_222](start_span)[span_222](end_span)
-      const t = item.timestamp && item.timestamp.toDate ? item.timestamp.toDate().getTime() : 0;[span_223](start_span)[span_223](end_span)
-      if (t > studentsAgg[key].dernierTimestamp) studentsAgg[key].dernierTimestamp = t;[span_224](start_span)[span_224](end_span)
+      const bonnes = item.scoreCorrectes || 0;[span_209](start_span)[span_209](end_span)
+      const tent = item.scoreTentatives || 0;[span_210](start_span)[span_210](end_span)
+      studentsAgg[key].pointsTotal += (item.pointsGagnes || (bonnes * (item.niveau || 1)));[span_211](start_span)[span_211](end_span)
+      studentsAgg[key].balisesTrouveesCount += bonnes;[span_212](start_span)[span_212](end_span)
+      studentsAgg[key].erreursCount += Math.max(0, tent - bonnes);[span_213](start_span)[span_213](end_span)
+      studentsAgg[key].totalSecondes += ((item.tempsMinutes || 0) * 60 + (item.tempsSecondes || 0));[span_214](start_span)[span_214](end_span)
+      studentsAgg[key].passages += 1;[span_215](start_span)[span_215](end_span)
+      const t = item.timestamp && item.timestamp.toDate ? item.timestamp.toDate().getTime() : 0;[span_216](start_span)[span_216](end_span)
+      if (t > studentsAgg[key].dernierTimestamp) studentsAgg[key].dernierTimestamp = t;[span_217](start_span)[span_217](end_span)
     });
 
-    aggregatedSummary = Object.values(studentsAgg).sort((a, b) => b.pointsTotal - a.pointsTotal);[span_225](start_span)[span_225](end_span)
-    resultsTableBody.innerHTML = '';[span_226](start_span)[span_226](end_span)
+    aggregatedSummary = Object.values(studentsAgg).sort((a, b) => b.pointsTotal - a.pointsTotal);[span_218](start_span)[span_218](end_span)
+    resultsTableBody.innerHTML = '';[span_219](start_span)[span_219](end_span)
     if (aggregatedSummary.length === 0) {
       resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de validations...</td></tr>';
-      return;[span_227](start_span)[span_227](end_span)
+      return;[span_220](start_span)[span_220](end_span)
     }
 
     aggregatedSummary.forEach(st => {
-      const tr = document.createElement('tr');[span_228](start_span)[span_228](end_span)
-      const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';[span_229](start_span)[span_229](end_span)
+      const tr = document.createElement('tr');[span_221](start_span)[span_221](end_span)
+      const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';[span_222](start_span)[span_222](end_span)
       tr.innerHTML = `
         <td style="font-weight:700;">${st.classe}</td>
         <td style="text-align:left; font-weight:700;">${st.eleve}</td>
@@ -713,47 +752,47 @@ function openLesson(lessonId, lessonName) {
         <td style="font-weight:700;">${formatTotalSeconds(st.totalSecondes)}</td>
         <td>${st.passages}</td>
         <td style="color:var(--muted);">${dernierHoraire}</td>
-      `;[span_230](start_span)[span_230](end_span)
-      resultsTableBody.appendChild(tr);[span_231](start_span)[span_231](end_span)
+      `;[span_223](start_span)[span_223](end_span)
+      resultsTableBody.appendChild(tr);[span_224](start_span)[span_224](end_span)
     });
   });
 }
 
-// --- HISTORIQUE PROFESSEUR ---
+// --- HISTORIQUE ---
 loadHistoryBtn.addEventListener('click', async function() {
-  historyPanel.classList.remove('hidden');[span_232](start_span)[span_232](end_span)
-  historyTableBody.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';[span_233](start_span)[span_233](end_span)
-  const snap = await db.collection('lecons').get();[span_234](start_span)[span_234](end_span)
-  const lessons = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));[span_235](start_span)[span_235](end_span)
-  historyTableBody.innerHTML = '';[span_236](start_span)[span_236](end_span)
+  historyPanel.classList.remove('hidden');[span_225](start_span)[span_225](end_span)
+  historyTableBody.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';[span_226](start_span)[span_226](end_span)
+  const snap = await db.collection('lecons').get();[span_227](start_span)[span_227](end_span)
+  const lessons = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));[span_228](start_span)[span_228](end_span)
+  historyTableBody.innerHTML = '';[span_229](start_span)[span_229](end_span)
   lessons.forEach(item => {
-    const tr = document.createElement('tr');[span_237](start_span)[span_237](end_span)
-    tr.innerHTML = `<td>${item.lessonName || item.id}</td><td>${item.lessonDate || '—'}</td><td>${item.status || 'active'}</td><td><button class="success-btn history-btn" data-id="${item.id}" data-name="${item.lessonName || item.id}" style="padding:4px 8px; font-size:0.8rem;">Rouvrir</button></td>`;[span_238](start_span)[span_238](end_span)
-    historyTableBody.appendChild(tr);[span_239](start_span)[span_239](end_span)
+    const tr = document.createElement('tr');[span_230](start_span)[span_230](end_span)
+    tr.innerHTML = `<td>${item.lessonName || item.id}</td><td>${item.lessonDate || '—'}</td><td>${item.status || 'active'}</td><td><button class="success-btn history-btn" data-id="${item.id}" data-name="${item.lessonName || item.id}" style="padding:4px 8px; font-size:0.8rem;">Rouvrir</button></td>`;[span_231](start_span)[span_231](end_span)
+    historyTableBody.appendChild(tr);[span_232](start_span)[span_232](end_span)
   });
   document.querySelectorAll('.history-btn').forEach(btn => {
     btn.addEventListener('click', async function() {
-      await db.collection('config').doc('activeLesson').set({ lessonId: this.dataset.id, lessonName: this.dataset.name });[span_240](start_span)[span_240](end_span)
-      await db.collection('lecons').doc(this.dataset.id).set({ status: 'active' }, { merge: true });[span_241](start_span)[span_241](end_span)
-      openLesson(this.dataset.id, this.dataset.name);[span_242](start_span)[span_242](end_span)
-      historyPanel.classList.add('hidden');[span_243](start_span)[span_243](end_span)
+      await db.collection('config').doc('activeLesson').set({ lessonId: this.dataset.id, lessonName: this.dataset.name });[span_233](start_span)[span_233](end_span)
+      await db.collection('lecons').doc(this.dataset.id).set({ status: 'active' }, { merge: true });[span_234](start_span)[span_234](end_span)
+      openLesson(this.dataset.id, this.dataset.name);[span_235](start_span)[span_235](end_span)
+      historyPanel.classList.add('hidden');[span_236](start_span)[span_236](end_span)
     });
   });
 });
-closeHistoryBtn.addEventListener('click', function() { historyPanel.classList.add('hidden'); });[span_244](start_span)[span_244](end_span)
+closeHistoryBtn.addEventListener('click', function() { historyPanel.classList.add('hidden'); });[span_237](start_span)[span_237](end_span)
 
-// --- VALIDATION ELEVE & POP-UP ---
+// --- VALIDATION ÉLÈVE & POP-UP ---
 tagForm.addEventListener("submit", async function(e) {
-  e.preventDefault();[span_245](start_span)[span_245](end_span)
-  const classId = classeSelect.value;[span_246](start_span)[span_246](end_span)
-  const classLabel = classeSelect.options[classeSelect.selectedIndex] ? classeSelect.options[classeSelect.selectedIndex].text : '';[span_247](start_span)[span_247](end_span)
-  const studentId = teamSelect.value;[span_248](start_span)[span_248](end_span)
-  const student = currentStudentMap[studentId];[span_249](start_span)[span_249](end_span)
+  e.preventDefault();[span_238](start_span)[span_238](end_span)
+  const classId = classeSelect.value;[span_239](start_span)[span_239](end_span)
+  const classLabel = classeSelect.options[classeSelect.selectedIndex] ? classeSelect.options[classeSelect.selectedIndex].text : '';[span_240](start_span)[span_240](end_span)
+  const studentId = teamSelect.value;[span_241](start_span)[span_241](end_span)
+  const student = currentStudentMap[studentId];[span_242](start_span)[span_242](end_span)
   const parcours = parcoursSelect.value;
-  const couleur = couleurParcoursSelect.value;[span_250](start_span)[span_250](end_span)
-  const m = parseInt(durationMinutesInput.value, 10) || 0;[span_251](start_span)[span_251](end_span)
-  const s = parseInt(durationSecondsInput.value, 10) || 0;[span_252](start_span)[span_252](end_span)
-  const niveau = parseInt(niveauSelect.value, 10) || 1;[span_253](start_span)[span_253](end_span)
+  const couleur = couleurParcoursSelect.value;[span_243](start_span)[span_243](end_span)
+  const m = parseInt(durationMinutesInput.value, 10) || 0;[span_244](start_span)[span_244](end_span)
+  const s = parseInt(durationSecondsInput.value, 10) || 0;[span_245](start_span)[span_245](end_span)
+  const niveau = parseInt(niveauSelect.value, 10) || 1;[span_246](start_span)[span_246](end_span)
 
   if (!classId || !studentId || !parcours || !couleur) {
     alert("Sélectionnez votre classe, votre nom, votre parcours et la couleur.");
@@ -764,100 +803,100 @@ tagForm.addEventListener("submit", async function(e) {
     return;
   }
 
-  let correctes = 0;[span_254](start_span)[span_254](end_span)
-  let tentatives = 0;[span_255](start_span)[span_255](end_span)
-  const valides = [];[span_256](start_span)[span_256](end_span)
-  const erreurs = [];[span_257](start_span)[span_257](end_span)
-  resultsList.innerHTML = "";[span_258](start_span)[span_258](end_span)
+  let correctes = 0;[span_247](start_span)[span_247](end_span)
+  let tentatives = 0;[span_248](start_span)[span_248](end_span)
+  const valides = [];[span_249](start_span)[span_249](end_span)
+  const erreurs = [];[span_250](start_span)[span_250](end_span)
+  resultsList.innerHTML = "";[span_251](start_span)[span_251](end_span)
 
-  for (let i = 0; i < 5; i++) {[span_259](start_span)[span_259](end_span)
-    const num = document.getElementById("baliseNum" + i).value;[span_260](start_span)[span_260](end_span)
-    const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();[span_261](start_span)[span_261](end_span)
-    if (!num && !code) continue;[span_262](start_span)[span_262](end_span)
-    tentatives++;[span_263](start_span)[span_263](end_span)
+  for (let i = 0; i < 5; i++) {[span_252](start_span)[span_252](end_span)
+    const num = document.getElementById("baliseNum" + i).value;[span_253](start_span)[span_253](end_span)
+    const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();[span_254](start_span)[span_254](end_span)
+    if (!num && !code) continue;[span_255](start_span)[span_255](end_span)
+    tentatives++;[span_256](start_span)[span_256](end_span)
 
-    const numInt = parseInt(num, 10);[span_264](start_span)[span_264](end_span)
-    const li = document.createElement("li");[span_265](start_span)[span_265](end_span)
+    const numInt = parseInt(num, 10);[span_257](start_span)[span_257](end_span)
+    const li = document.createElement("li");[span_258](start_span)[span_258](end_span)
 
     if (num && code && DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleur] === code) {
-      correctes++;[span_266](start_span)[span_266](end_span)
-      valides.push("Balise " + num);[span_267](start_span)[span_267](end_span)
-      li.className = "result-correct";[span_268](start_span)[span_268](end_span)
-      li.textContent = "Balise " + num + " (" + couleur + ") : ✅ CORRECT";[span_269](start_span)[span_269](end_span)
+      correctes++;[span_259](start_span)[span_259](end_span)
+      valides.push("Balise " + num);[span_260](start_span)[span_260](end_span)
+      li.className = "result-correct";[span_261](start_span)[span_261](end_span)
+      li.textContent = "Balise " + num + " (" + couleur + ") : ✅ CORRECT";[span_262](start_span)[span_262](end_span)
     } else {
-      const detailErr = num ? "Balise " + num + " (Code : " + (code || "vide") + ")" : "Balise " + (i + 1) + " incomplète";[span_270](start_span)[span_270](end_span)
-      erreurs.push(detailErr);[span_271](start_span)[span_271](end_span)
-      li.className = "result-incorrect";[span_272](start_span)[span_272](end_span)
-      li.textContent = "Balise " + (num || (i + 1)) + " (" + couleur + ") : ❌ INCORRECT";[span_273](start_span)[span_273](end_span)
+      const detailErr = num ? "Balise " + num + " (Code : " + (code || "vide") + ")" : "Balise " + (i + 1) + " incomplète";[span_263](start_span)[span_263](end_span)
+      erreurs.push(detailErr);[span_264](start_span)[span_264](end_span)
+      li.className = "result-incorrect";[span_265](start_span)[span_265](end_span)
+      li.textContent = "Balise " + (num || (i + 1)) + " (" + couleur + ") : ❌ INCORRECT";[span_266](start_span)[span_266](end_span)
     }
-    resultsList.appendChild(li);[span_274](start_span)[span_274](end_span)
+    resultsList.appendChild(li);[span_267](start_span)[span_267](end_span)
   }
 
   if (tentatives === 0) {
-    alert("Veuillez saisir au moins une balise.");[span_275](start_span)[span_275](end_span)
-    return;[span_276](start_span)[span_276](end_span)
+    alert("Veuillez saisir au moins une balise.");[span_268](start_span)[span_268](end_span)
+    return;[span_269](start_span)[span_269](end_span)
   }
 
-  const points = correctes * niveau;[span_277](start_span)[span_277](end_span)
+  const points = correctes * niveau;[span_270](start_span)[span_270](end_span)
 
   // Affichage Pop-up
-  popupTime.textContent = formatTime(m, s);[span_278](start_span)[span_278](end_span)
-  popupTags.textContent = correctes + " / " + tentatives;[span_279](start_span)[span_279](end_span)
-  popupScore.textContent = "+" + points + " pt(s)";[span_280](start_span)[span_280](end_span)
+  popupTime.textContent = formatTime(m, s);[span_271](start_span)[span_271](end_span)
+  popupTags.textContent = correctes + " / " + tentatives;[span_272](start_span)[span_272](end_span)
+  popupScore.textContent = "+" + points + " pt(s)";[span_273](start_span)[span_273](end_span)
   popupValidList.innerHTML = valides.length > 0 ? valides.join(", ") : "Aucune";
   popupErrorList.innerHTML = erreurs.length > 0 ? erreurs.join("<br>") : "Aucune erreur !";
-  resultModal.classList.remove("hidden");[span_281](start_span)[span_281](end_span)
+  resultModal.classList.remove("hidden");[span_274](start_span)[span_274](end_span)
 
-  // Envoi Firestore si leçon active
+  // Envoi Firestore
   if (currentActiveLessonId) {
     try {
-      submitBtn.disabled = true;[span_282](start_span)[span_282](end_span)
+      submitBtn.disabled = true;[span_275](start_span)[span_275](end_span)
       await db.collection('lecons').doc(currentActiveLessonId).collection('resultats').add({
-        lessonId: currentActiveLessonId,[span_283](start_span)[span_283](end_span)
-        classe: classId,[span_284](start_span)[span_284](end_span)
-        classeLabel: classLabel,[span_285](start_span)[span_285](end_span)
-        eleveId: studentId,[span_286](start_span)[span_286](end_span)
-        eleveNomComplet: student ? student.nomComplet : (teamSelect.options[teamSelect.selectedIndex] ? teamSelect.options[teamSelect.selectedIndex].text : ''),[span_287](start_span)[span_287](end_span)
-        parcoursId: parcours,[span_288](start_span)[span_288](end_span)
-        couleurParcours: couleur,[span_289](start_span)[span_289](end_span)
-        niveau: niveau,[span_290](start_span)[span_290](end_span)
-        pointsGagnes: points,[span_291](start_span)[span_291](end_span)
-        scoreCorrectes: correctes,[span_292](start_span)[span_292](end_span)
-        scoreTentatives: tentatives,[span_293](start_span)[span_293](end_span)
-        tempsMinutes: m,[span_294](start_span)[span_294](end_span)
-        tempsSecondes: s,[span_295](start_span)[span_295](end_span)
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()[span_296](start_span)[span_296](end_span)
+        lessonId: currentActiveLessonId,[span_276](start_span)[span_276](end_span)
+        classe: classId,[span_277](start_span)[span_277](end_span)
+        classeLabel: classLabel,[span_278](start_span)[span_278](end_span)
+        eleveId: studentId,[span_279](start_span)[span_279](end_span)
+        eleveNomComplet: student ? student.nomComplet : (teamSelect.options[teamSelect.selectedIndex] ? teamSelect.options[teamSelect.selectedIndex].text : ''),[span_280](start_span)[span_280](end_span)
+        parcoursId: parcours,[span_281](start_span)[span_281](end_span)
+        couleurParcours: couleur,[span_282](start_span)[span_282](end_span)
+        niveau: niveau,[span_283](start_span)[span_283](end_span)
+        pointsGagnes: points,[span_284](start_span)[span_284](end_span)
+        scoreCorrectes: correctes,[span_285](start_span)[span_285](end_span)
+        scoreTentatives: tentatives,[span_286](start_span)[span_286](end_span)
+        tempsMinutes: m,[span_287](start_span)[span_287](end_span)
+        tempsSecondes: s,[span_288](start_span)[span_288](end_span)
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()[span_289](start_span)[span_289](end_span)
       });
     } catch(err) {
       console.error(err);
     } finally {
-      submitBtn.disabled = false;[span_297](start_span)[span_297](end_span)
+      submitBtn.disabled = false;[span_290](start_span)[span_290](end_span)
     }
   }
 });
 
 closeModalBtn.addEventListener("click", function() {
-  resultModal.classList.add("hidden");[span_298](start_span)[span_298](end_span)
-  tagForm.reset();[span_299](start_span)[span_299](end_span)
-  resultsList.innerHTML = "";[span_300](start_span)[span_300](end_span)
-  niveauSelect.value = "1";[span_301](start_span)[span_301](end_span)
+  resultModal.classList.add("hidden");[span_291](start_span)[span_291](end_span)
+  tagForm.reset();[span_292](start_span)[span_292](end_span)
+  resultsList.innerHTML = "";[span_293](start_span)[span_293](end_span)
+  niveauSelect.value = "1";[span_294](start_span)[span_294](end_span)
 });
 
-// --- ECOUTE DE LA LECON ACTIVE ---
+// --- ÉCOUTE DE LA SÉANCE ACTIVE ---
 function listenToActiveLesson() {
   db.collection('config').doc('activeLesson').onSnapshot(function(doc) {
-    if (doc.exists && doc.data().lessonId) {[span_302](start_span)[span_302](end_span)
-      currentActiveLessonId = doc.data().lessonId;[span_303](start_span)[span_303](end_span)
+    if (doc.exists && doc.data().lessonId) {[span_295](start_span)[span_295](end_span)
+      currentActiveLessonId = doc.data().lessonId;[span_296](start_span)[span_296](end_span)
       activeLessonBanner.textContent = 'Séance active : ' + (doc.data().lessonName || currentActiveLessonId);
-      activeLessonBanner.style.backgroundColor = '#344e41';[span_304](start_span)[span_304](end_span)
+      activeLessonBanner.style.backgroundColor = '#344e41';[span_297](start_span)[span_297](end_span)
       if (teacherAccessGranted && !currentTeacherLesson) openLesson(currentActiveLessonId, doc.data().lessonName);
     } else {
-      currentActiveLessonId = null;[span_305](start_span)[span_305](end_span)
-      activeLessonBanner.textContent = 'Séance en attente de démarrage prof';
-      activeLessonBanner.style.backgroundColor = '#b91c1c';
+      currentActiveLessonId = null;[span_298](start_span)[span_298](end_span)
+      activeLessonBanner.textContent = 'Séance active — Validation Shakers';
+      activeLessonBanner.style.backgroundColor = '#344e41';
     }
   }, function() {
-    activeLessonBanner.textContent = 'Séance active (Mode direct)';
+    activeLessonBanner.textContent = 'Séance active — Validation Shakers';
     activeLessonBanner.style.backgroundColor = '#344e41';
   });
 }
@@ -869,17 +908,17 @@ exportCsvBtn.addEventListener('click', function() {
   aggregatedSummary.forEach(st => {
     lines.push([st.classe, st.eleve, st.pointsTotal, st.balisesTrouveesCount, st.erreursCount, formatTotalSeconds(st.totalSecondes), st.passages].map(v => `"${v}"`).join(';'));
   });
-  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8;' });[span_306](start_span)[span_306](end_span)
-  const a = document.createElement('a');[span_307](start_span)[span_307](end_span)
-  a.href = URL.createObjectURL(blob);[span_308](start_span)[span_308](end_span)
+  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8;' });[span_299](start_span)[span_299](end_span)
+  const a = document.createElement('a');[span_300](start_span)[span_300](end_span)
+  a.href = URL.createObjectURL(blob);[span_301](start_span)[span_301](end_span)
   a.download = `bilan_seance.csv`;
-  a.click();[span_309](start_span)[span_309](end_span)
+  a.click();[span_302](start_span)[span_302](end_span)
 });
 
 exportPdfBtn.addEventListener('click', function() {
   if (aggregatedSummary.length === 0) { alert('Aucun résultat.'); return; }
-  const { jsPDF } = window.jspdf;[span_310](start_span)[span_310](end_span)
-  const doc = new jsPDF();[span_311](start_span)[span_311](end_span)
+  const { jsPDF } = window.jspdf;[span_303](start_span)[span_303](end_span)
+  const doc = new jsPDF();[span_304](start_span)[span_304](end_span)
   doc.setFontSize(15);
   doc.text("Bilan Séance Course d'Orientation", 14, 18);
   const data = aggregatedSummary.map(st => [st.classe, st.eleve, `${st.pointsTotal} pts`, st.balisesTrouveesCount, st.erreursCount, formatTotalSeconds(st.totalSecondes), st.passages]);
@@ -887,16 +926,16 @@ exportPdfBtn.addEventListener('click', function() {
     startY: 25,
     head: [['Classe', 'Élève', 'Points', 'Justes', 'Erreurs', 'Temps', 'Passages']],
     body: data,
-    theme: 'striped',[span_312](start_span)[span_312](end_span)
-    headStyles: { fillColor: [88, 129, 87] }[span_313](start_span)[span_313](end_span)
+    theme: 'striped',[span_305](start_span)[span_305](end_span)
+    headStyles: { fillColor: [88, 129, 87] }[span_306](start_span)[span_306](end_span)
   });
   doc.save(`bilan_seance.pdf`);
 });
 
-// INITIALISATION
-showView('student');[span_314](start_span)[span_314](end_span)
-loadStudentClasses();[span_315](start_span)[span_315](end_span)
-listenToActiveLesson();[span_316](start_span)[span_316](end_span)
+// INITIALISATION NON BLOQUANTE
+showView('student');[span_307](start_span)[span_307](end_span)
+loadStudentClasses();
+listenToActiveLesson();[span_308](start_span)[span_308](end_span)
 </script>
 </body>
 </html>
