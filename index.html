@@ -85,8 +85,8 @@
   <h1>🌲 Course d'Orientation Connectée 🧭</h1>
 
   <div class="topbar">
-    <button id="studentViewBtn" class="view-btn active" type="button">📱 Vue Élève</button>
-    <button id="teacherViewBtn" class="view-btn" type="button">🖥️ Vue Professeur</button>
+    <button id="studentViewBtn" class="view-btn active" type="button" onclick="basculerVue('eleve')">📱 Vue Élève</button>
+    <button id="teacherViewBtn" class="view-btn" type="button" onclick="basculerVue('prof')">🖥️ Vue Professeur</button>
   </div>
 
   <p id="globalError" class="message error"></p>
@@ -189,7 +189,7 @@
     <label for="teacherCodeInput">Code d'accès</label>
     <input type="password" id="teacherCodeInput" autocomplete="off" placeholder="Entrez le code">
     <p id="teacherCodeError" class="message error"></p>
-    <button type="button" id="teacherCodeSubmitBtn" class="success-btn" style="margin-top:10px;">Accéder au tableau de bord</button>
+    <button type="button" id="teacherCodeSubmitBtn" class="success-btn" style="margin-top:10px;" onclick="validerCodeProf()">Accéder au tableau de bord</button>
   </section>
 
   <!-- DASHBOARD PROFESSEUR -->
@@ -198,11 +198,9 @@
       <h2>Tableau de bord de la séance</h2>
       <div id="lessonStatus" class="pill active">Séance active</div>
       <div class="dashboard-controls" style="margin-top:12px;">
-        <button id="startLessonBtn" class="control-btn" type="button">▶️ Démarrer / Rouvrir une séance</button>
-        <button id="loadHistoryBtn" class="secondary-btn" type="button">🕘 Historique</button>
-        <button id="exportCsvBtn" class="secondary-btn" type="button">📊 Export CSV Bilan</button>
-        <button id="exportPdfBtn" class="secondary-btn" type="button">📄 Export PDF Bilan</button>
-        <button id="closeLessonBtn" class="danger-btn" type="button">⛔ Clôturer</button>
+        <button id="exportCsvBtn" class="secondary-btn" type="button">📊 Export CSV</button>
+        <button id="exportPdfBtn" class="secondary-btn" type="button">📄 Export PDF</button>
+        <button id="clearResultsBtn" class="danger-btn" type="button">🗑️ Effacer les passages</button>
       </div>
     </div>
 
@@ -237,27 +235,15 @@
           <input type="text" id="newClassNameInput" placeholder="Ex : 4A">
         </div>
         <div>
-          <label for="classCsvInput">Fichier CSV Pronote</label>
+          <label for="classCsvInput">Fichier CSV Pronote (ou TXT)</label>
           <input type="file" id="classCsvInput" accept=".csv,.txt">
         </div>
       </div>
       <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:0;">
-        <button id="createClassBtn" class="success-btn" type="button">➕ Ajouter / Mettre à jour</button>
-        <button id="refreshClassesBtn" class="secondary-btn" type="button">🔄 Actualiser</button>
+        <button id="createClassBtn" class="success-btn" type="button">➕ Ajouter / Mettre à jour la classe</button>
       </div>
       <p id="classManagerMessage" class="message"></p>
       <div id="classesListContainer" style="margin-top:10px;" class="empty-box">Chargement...</div>
-    </div>
-
-    <div id="historyPanel" class="panel hidden">
-      <h3>Historique des leçons</h3>
-      <div style="margin-bottom:10px;"><button id="closeHistoryBtn" class="secondary-btn" type="button">Fermer</button></div>
-      <div style="overflow:auto;">
-        <table>
-          <thead><tr><th>Nom</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
-          <tbody id="historyTableBody"></tbody>
-        </table>
-      </div>
     </div>
   </section>
 </div>
@@ -293,649 +279,457 @@
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
-// --- ÉCOUTEURS DE NAVIGATION IMMÉDIATS (AUCUN BLOCAGE RÉSEAU) ---
-const studentView = document.getElementById("studentView");
-const teacherDashboard = document.getElementById("teacherDashboard");
-const teacherLoginContainer = document.getElementById("teacherLoginContainer");
-const studentViewBtn = document.getElementById("studentViewBtn");
-const teacherViewBtn = document.getElementById("teacherViewBtn");
-const teacherCodeInput = document.getElementById("teacherCodeInput");
-const teacherCodeSubmitBtn = document.getElementById("teacherCodeSubmitBtn");
-const teacherCodeError = document.getElementById("teacherCodeError");
-const TEACHER_CODE = "16170";[span_6](start_span)[span_6](end_span)
+// --- NAVIGATION IMMEDIATE (GARANTIE FONCTIONNELLE SANS DEPENDANCE) ---
 let teacherAccessGranted = false;
+const TEACHER_CODE = "16170";[span_7](start_span)[span_7](end_span)
 
-function showView(viewName) {
+function basculerVue(vue) {
+  const studentView = document.getElementById("studentView");
+  const teacherDashboard = document.getElementById("teacherDashboard");
+  const teacherLoginContainer = document.getElementById("teacherLoginContainer");
+  const studentViewBtn = document.getElementById("studentViewBtn");
+  const teacherViewBtn = document.getElementById("teacherViewBtn");
+
   studentView.classList.add("hidden");
   teacherDashboard.classList.add("hidden");
   teacherLoginContainer.classList.add("hidden");
   studentViewBtn.classList.remove("active");
   teacherViewBtn.classList.remove("active");
 
-  if (viewName === "student") {
+  if (vue === "eleve") {
     studentView.classList.remove("hidden");
     studentViewBtn.classList.add("active");
-  } else if (viewName === "teacher") {
-    teacherDashboard.classList.remove("hidden");
-    teacherViewBtn.classList.add("active");
-    loadClassesOverview();
-  } else {
-    teacherLoginContainer.classList.remove("hidden");
-    teacherViewBtn.classList.add("active");
+  } else if (vue === "prof") {
+    if (teacherAccessGranted) {
+      teacherDashboard.classList.remove("hidden");
+      teacherViewBtn.classList.add("active");
+      renderClassesOverview();
+    } else {
+      teacherLoginContainer.classList.remove("hidden");
+      teacherViewBtn.classList.add("active");
+    }
   }
 }
 
-studentViewBtn.addEventListener("click", function() { showView("student"); });[span_7](start_span)[span_7](end_span)
-teacherViewBtn.addEventListener("click", function() {
-  showView(teacherAccessGranted ? "teacher" : "teacherLogin");
-});
-
-teacherCodeSubmitBtn.addEventListener("click", function() {
-  if (teacherCodeInput.value.trim() === TEACHER_CODE) {
+function validerCodeProf() {
+  const code = document.getElementById("teacherCodeInput").value.trim();
+  const err = document.getElementById("teacherCodeError");
+  if (code === TEACHER_CODE) {
     teacherAccessGranted = true;
-    teacherCodeError.textContent = "";
-    teacherCodeInput.value = "";[span_8](start_span)[span_8](end_span)
-    showView("teacher");
-    if (currentActiveLessonId) openLesson(currentActiveLessonId);[span_9](start_span)[span_9](end_span)
+    err.textContent = "";
+    document.getElementById("teacherCodeInput").value = "";
+    basculerVue("prof");
   } else {
-    teacherCodeError.textContent = "Code incorrect.";[span_10](start_span)[span_10](end_span)
+    err.textContent = "Code incorrect.";[span_8](start_span)[span_8](end_span)
   }
-});
-teacherCodeInput.addEventListener("keydown", function(e) {
-  if (e.key === "Enter") { e.preventDefault(); teacherCodeSubmitBtn.click(); }
+}
+
+document.getElementById("teacherCodeInput").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") { e.preventDefault(); validerCodeProf(); }
 });
 
-// --- PARCOURS VERROUILLÉS (1 à 40) ---
-const NOMBRE_PARCOURS = 40;[span_11](start_span)[span_11](end_span)
+// --- PARCOURS VERROUILLES (1 à 40) ---
 const parcoursSelect = document.getElementById("parcoursSelect");
 parcoursSelect.innerHTML = '<option value="">Choisir un parcours</option>';
-for (let i = 1; i <= NOMBRE_PARCOURS; i++) {
+for (let i = 1; i <= 40; i++) {
   const opt = document.createElement("option");
-  opt.value = "Parcours " + i;[span_12](start_span)[span_12](end_span)
-  opt.textContent = "Parcours " + i;[span_13](start_span)[span_13](end_span)
-  parcoursSelect.appendChild(opt);[span_14](start_span)[span_14](end_span)
+  opt.value = "Parcours " + i;[span_9](start_span)[span_9](end_span)
+  opt.textContent = "Parcours " + i;[span_10](start_span)[span_10](end_span)
+  parcoursSelect.appendChild(opt);[span_11](start_span)[span_11](end_span)
 }
 
-// --- GRILLE OFFICIELLE (Sans 3, 62, 84) ---
+// --- GRILLE OFFICIELLE DES CODES ---
 const DONNEES_SHEET = {
-  8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },[span_15](start_span)[span_15](end_span)
-  9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },[span_16](start_span)[span_16](end_span)
-  10: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },[span_17](start_span)[span_17](end_span)
-  11: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" },[span_18](start_span)[span_18](end_span)
-  12: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" },[span_19](start_span)[span_19](end_span)
-  13: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" },[span_20](start_span)[span_20](end_span)
-  14: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" },[span_21](start_span)[span_21](end_span)
-  15: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" },[span_22](start_span)[span_22](end_span)
-  16: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" },[span_23](start_span)[span_23](end_span)
-  17: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" },[span_24](start_span)[span_24](end_span)
-  18: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" },[span_25](start_span)[span_25](end_span)
-  19: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" },[span_26](start_span)[span_26](end_span)
-  20: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" },[span_27](start_span)[span_27](end_span)
-  21: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" },[span_28](start_span)[span_28](end_span)
-  22: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" },[span_29](start_span)[span_29](end_span)
-  23: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" },[span_30](start_span)[span_30](end_span)
-  24: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" },[span_31](start_span)[span_31](end_span)
-  25: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" },[span_32](start_span)[span_32](end_span)
-  26: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" },[span_33](start_span)[span_33](end_span)
-  27: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" },[span_34](start_span)[span_34](end_span)
-  28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },[span_35](start_span)[span_35](end_span)
-  29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" },[span_36](start_span)[span_36](end_span)
-  30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },[span_37](start_span)[span_37](end_span)
-  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" },[span_38](start_span)[span_38](end_span)
-  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" },[span_39](start_span)[span_39](end_span)
-  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" },[span_40](start_span)[span_40](end_span)
-  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" },[span_41](start_span)[span_41](end_span)
-  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" },[span_42](start_span)[span_42](end_span)
-  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" },[span_43](start_span)[span_43](end_span)
-  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },[span_44](start_span)[span_44](end_span)
-  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },[span_45](start_span)[span_45](end_span)
-  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },[span_46](start_span)[span_46](end_span)
-  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },[span_47](start_span)[span_47](end_span)
-  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },[span_48](start_span)[span_48](end_span)
-  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },[span_49](start_span)[span_49](end_span)
-  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },[span_50](start_span)[span_50](end_span)
-  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" },[span_51](start_span)[span_51](end_span)
-  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },[span_52](start_span)[span_52](end_span)
-  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },[span_53](start_span)[span_53](end_span)
-  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" },[span_54](start_span)[span_54](end_span)
-  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },[span_55](start_span)[span_55](end_span)
-  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },[span_56](start_span)[span_56](end_span)
-  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },[span_57](start_span)[span_57](end_span)
-  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },[span_58](start_span)[span_58](end_span)
-  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },[span_59](start_span)[span_59](end_span)
-  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },[span_60](start_span)[span_60](end_span)
-  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },[span_61](start_span)[span_61](end_span)
-  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },[span_62](start_span)[span_62](end_span)
-  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },[span_63](start_span)[span_63](end_span)
-  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },[span_64](start_span)[span_64](end_span)
-  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },[span_65](start_span)[span_65](end_span)
-  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },[span_66](start_span)[span_66](end_span)
-  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },[span_67](start_span)[span_67](end_span)
-  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" },[span_68](start_span)[span_68](end_span)
-  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },[span_69](start_span)[span_69](end_span)
-  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },[span_70](start_span)[span_70](end_span)
-  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },[span_71](start_span)[span_71](end_span)
-  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },[span_72](start_span)[span_72](end_span)
-  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }[span_73](start_span)[span_73](end_span)
+  8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },[span_12](start_span)[span_12](end_span)
+  9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },[span_13](start_span)[span_13](end_span)
+  10: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },[span_14](start_span)[span_14](end_span)
+  11: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" },[span_15](start_span)[span_15](end_span)
+  12: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" },[span_16](start_span)[span_16](end_span)
+  13: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" },[span_17](start_span)[span_17](end_span)
+  14: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" },[span_18](start_span)[span_18](end_span)
+  15: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" },[span_19](start_span)[span_19](end_span)
+  16: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" },[span_20](start_span)[span_20](end_span)
+  17: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" },[span_21](start_span)[span_21](end_span)
+  18: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" },[span_22](start_span)[span_22](end_span)
+  19: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" },[span_23](start_span)[span_23](end_span)
+  20: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" },[span_24](start_span)[span_24](end_span)
+  21: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" },[span_25](start_span)[span_25](end_span)
+  22: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" },[span_26](start_span)[span_26](end_span)
+  23: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" },[span_27](start_span)[span_27](end_span)
+  24: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" },[span_28](start_span)[span_28](end_span)
+  25: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" },[span_29](start_span)[span_29](end_span)
+  26: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" },[span_30](start_span)[span_30](end_span)
+  27: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" },[span_31](start_span)[span_31](end_span)
+  28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },[span_32](start_span)[span_32](end_span)
+  29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" },[span_33](start_span)[span_33](end_span)
+  30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },[span_34](start_span)[span_34](end_span)
+  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" },[span_35](start_span)[span_35](end_span)
+  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" },[span_36](start_span)[span_36](end_span)
+  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" },[span_37](start_span)[span_37](end_span)
+  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" },[span_38](start_span)[span_38](end_span)
+  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" },[span_39](start_span)[span_39](end_span)
+  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" },[span_40](start_span)[span_40](end_span)
+  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },[span_41](start_span)[span_41](end_span)
+  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },[span_42](start_span)[span_42](end_span)
+  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },[span_43](start_span)[span_43](end_span)
+  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },[span_44](start_span)[span_44](end_span)
+  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },[span_45](start_span)[span_45](end_span)
+  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },[span_46](start_span)[span_46](end_span)
+  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },[span_47](start_span)[span_47](end_span)
+  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" },[span_48](start_span)[span_48](end_span)
+  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },[span_49](start_span)[span_49](end_span)
+  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },[span_50](start_span)[span_50](end_span)
+  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" },[span_51](start_span)[span_51](end_span)
+  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },[span_52](start_span)[span_52](end_span)
+  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },[span_53](start_span)[span_53](end_span)
+  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },[span_54](start_span)[span_54](end_span)
+  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },[span_55](start_span)[span_55](end_span)
+  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },[span_56](start_span)[span_56](end_span)
+  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },[span_57](start_span)[span_57](end_span)
+  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },[span_58](start_span)[span_58](end_span)
+  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },[span_59](start_span)[span_59](end_span)
+  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },[span_60](start_span)[span_60](end_span)
+  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },[span_61](start_span)[span_61](end_span)
+  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },[span_62](start_span)[span_62](end_span)
+  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },[span_63](start_span)[span_63](end_span)
+  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },[span_64](start_span)[span_64](end_span)
+  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" },[span_65](start_span)[span_65](end_span)
+  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },[span_66](start_span)[span_66](end_span)
+  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },[span_67](start_span)[span_67](end_span)
+  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },[span_68](start_span)[span_68](end_span)
+  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },[span_69](start_span)[span_69](end_span)
+  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }[span_70](start_span)[span_70](end_span)
 };
 
-// --- INITIALISATION FIREBASE ---
-const firebaseConfig = {
-  apiKey: "AIzaSyD3Cu1X0_JSF1qePFRzcq-RY-MYTB32a-8",
-  authDomain: "co-rouillac.firebaseapp.com",
-  projectId: "co-rouillac",
-  storageBucket: "co-rouillac.firebasestorage.app",
-  messagingSenderId: "729910930573",
-  appId: "1:729910930573:web:f8c0e93c702416fcd446c4"
-};[span_74](start_span)[span_74](end_span)
+// --- GESTION DES CLASSES (PERSISTANTE SANS BLOCAGE) ---
+const STORAGE_CLASSES = "co_classes_data_v2";
+const STORAGE_RESULTS = "co_results_data_v2";
 
-try {
-  firebase.initializeApp(firebaseConfig);[span_75](start_span)[span_75](end_span)
-} catch(e) {}
-const db = firebase.firestore();[span_76](start_span)[span_76](end_span)
+function getClasses() {
+  const raw = localStorage.getItem(STORAGE_CLASSES);
+  if (raw) {
+    try { return JSON.parse(raw); } catch(e) {}
+  }
+  return {
+    "4A": ["Lucas A.", "Emma B.", "Thomas C.", "Léa D.", "Nathan E.", "Hugo F."],
+    "4B": ["Manon G.", "Jules H.", "Camille I.", "Maxime J.", "Chloé K.", "Antoine L."]
+  };
+}
 
-let unsubscribeFromResults = null;[span_77](start_span)[span_77](end_span)
-let currentActiveLessonId = null;[span_78](start_span)[span_78](end_span)
-let currentTeacherLesson = null;[span_79](start_span)[span_79](end_span)
-let currentStudentMap = {};[span_80](start_span)[span_80](end_span)
+function saveClasses(data) {
+  localStorage.setItem(STORAGE_CLASSES, JSON.stringify(data));
+  renderClasseSelects();
+  renderClassesOverview();
+}
 
-// Éléments
-const activeLessonBanner = document.getElementById("activeLessonBanner");[span_81](start_span)[span_81](end_span)
-const classeSelect = document.getElementById("classeSelect");[span_82](start_span)[span_82](end_span)
-const teamSelect = document.getElementById("teamSelect");[span_83](start_span)[span_83](end_span)
-const couleurParcoursSelect = document.getElementById("couleurParcoursSelect");[span_84](start_span)[span_84](end_span)
-const niveauSelect = document.getElementById("niveauSelect");[span_85](start_span)[span_85](end_span)
-const durationMinutesInput = document.getElementById("durationMinutes");[span_86](start_span)[span_86](end_span)
-const durationSecondsInput = document.getElementById("durationSeconds");[span_87](start_span)[span_87](end_span)
-const tagForm = document.getElementById("tagForm");[span_88](start_span)[span_88](end_span)
-const submitBtn = document.getElementById("submitBtn");[span_89](start_span)[span_89](end_span)
-const resultsList = document.getElementById("resultsList");[span_90](start_span)[span_90](end_span)
-const lessonStatus = document.getElementById("lessonStatus");[span_91](start_span)[span_91](end_span)
-const resultsTableBody = document.getElementById("resultsTableBody");[span_92](start_span)[span_92](end_span)
-const historyPanel = document.getElementById("historyPanel");[span_93](start_span)[span_93](end_span)
-const historyTableBody = document.getElementById("historyTableBody");[span_94](start_span)[span_94](end_span)
-const newClassNameInput = document.getElementById("newClassNameInput");[span_95](start_span)[span_95](end_span)
-const classCsvInput = document.getElementById("classCsvInput");[span_96](start_span)[span_96](end_span)
-const createClassBtn = document.getElementById("createClassBtn");[span_97](start_span)[span_97](end_span)
-const refreshClassesBtn = document.getElementById("refreshClassesBtn");[span_98](start_span)[span_98](end_span)
-const classesListContainer = document.getElementById("classesListContainer");[span_99](start_span)[span_99](end_span)
-const classManagerMessage = document.getElementById("classManagerMessage");[span_100](start_span)[span_100](end_span)
-const startLessonBtn = document.getElementById("startLessonBtn");[span_101](start_span)[span_101](end_span)
-const loadHistoryBtn = document.getElementById("loadHistoryBtn");[span_102](start_span)[span_102](end_span)
-const closeHistoryBtn = document.getElementById("closeHistoryBtn");[span_103](start_span)[span_103](end_span)
-const exportCsvBtn = document.getElementById("exportCsvBtn");[span_104](start_span)[span_104](end_span)
-const exportPdfBtn = document.getElementById("exportPdfBtn");[span_105](start_span)[span_105](end_span)
-const closeLessonBtn = document.getElementById("closeLessonBtn");[span_106](start_span)[span_106](end_span)
+function getResults() {
+  const raw = localStorage.getItem(STORAGE_RESULTS);
+  if (raw) {
+    try { return JSON.parse(raw); } catch(e) {}
+  }
+  return [];
+}
 
-// Pop-up
-const resultModal = document.getElementById("resultModal");[span_107](start_span)[span_107](end_span)
-const popupTime = document.getElementById("popupTime");[span_108](start_span)[span_108](end_span)
-const popupTags = document.getElementById("popupTags");[span_109](start_span)[span_109](end_span)
-const popupScore = document.getElementById("popupScore");[span_110](start_span)[span_110](end_span)
-const popupValidList = document.getElementById("popupValidList");[span_111](start_span)[span_111](end_span)
-const popupErrorList = document.getElementById("popupErrorList");[span_112](start_span)[span_112](end_span)
-const closeModalBtn = document.getElementById("closeModalBtn");[span_113](start_span)[span_113](end_span)
+function saveResults(data) {
+  localStorage.setItem(STORAGE_RESULTS, JSON.stringify(data));
+  renderTeacherDashboard();
+}
+
+const classeSelect = document.getElementById("classeSelect");
+const teamSelect = document.getElementById("teamSelect");
+
+function renderClasseSelects() {
+  const classes = getClasses();
+  const current = classeSelect.value;
+  classeSelect.innerHTML = '<option value="">Sélectionner la classe</option>';
+  Object.keys(classes).sort().forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    classeSelect.appendChild(opt);
+  });
+  if (current && classes[current]) {
+    classeSelect.value = current;
+    renderStudents(current);
+  } else {
+    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';
+  }
+}
+
+function renderStudents(className) {
+  const classes = getClasses();
+  const list = classes[className] || [];
+  teamSelect.innerHTML = '<option value="">Choisir un élève</option>';
+  list.sort().forEach(st => {
+    const opt = document.createElement("option");
+    opt.value = st;
+    opt.textContent = st;
+    teamSelect.appendChild(opt);
+  });
+}
+
+classeSelect.addEventListener("change", function() {
+  renderStudents(this.value);
+});
+
+// --- IMPORT PRONOTE ---
+const newClassNameInput = document.getElementById("newClassNameInput");
+const classCsvInput = document.getElementById("classCsvInput");
+const createClassBtn = document.getElementById("createClassBtn");
+const classManagerMessage = document.getElementById("classManagerMessage");
+const classesListContainer = document.getElementById("classesListContainer");
+
+createClassBtn.addEventListener("click", function() {
+  const name = newClassNameInput.value.trim().toUpperCase();
+  const file = classCsvInput.files[0];
+  if (!name || !file) {
+    classManagerMessage.textContent = "Indiquez un nom et choisissez un fichier.";
+    classManagerMessage.className = "message error";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const students = [];
+    for (let i = 1; i < lines.length; i++) {
+      const p = lines[i].split(/[;,]/).map(x => x.replace(/^"|"$/g, '').trim());
+      if (p.length >= 2 && p[0] && p[1]) {
+        students.push((p[0].toUpperCase() + " " + p[1]).trim());
+      } else if (p[0]) {
+        students.push(p[0].trim());
+      }
+    }
+    if (students.length === 0) {
+      classManagerMessage.textContent = "Aucun élève trouvé.";
+      classManagerMessage.className = "message error";
+      return;
+    }
+    const cur = getClasses();
+    cur[name] = [...new Set(students)];
+    saveClasses(cur);
+    newClassNameInput.value = "";
+    classCsvInput.value = "";
+    classManagerMessage.textContent = `Classe ${name} ajoutée avec ${students.length} élèves.`;
+    classManagerMessage.className = "message success";
+  };
+  reader.readAsText(file, "utf-8");
+});
+
+function renderClassesOverview() {
+  const cur = getClasses();
+  const keys = Object.keys(cur).sort();
+  if (keys.length === 0) {
+    classesListContainer.innerHTML = "Aucune classe enregistrée.";
+    return;
+  }
+  let html = "<table><thead><tr><th>Classe</th><th>Effectif</th><th>Action</th></tr></thead><tbody>";
+  keys.forEach(c => {
+    html += `<tr>
+      <td style="font-weight:700;">${c}</td>
+      <td>${cur[c].length} élève(s)</td>
+      <td><button class="danger-btn" style="padding:4px 8px; font-size:0.8rem;" onclick="supprimerClasse('${c}')">Supprimer</button></td>
+    </tr>`;
+  });
+  html += "</tbody></table>";
+  classesListContainer.innerHTML = html;
+}
+
+window.supprimerClasse = function(c) {
+  if (!confirm(`Supprimer la classe ${c} ?`)) return;
+  const cur = getClasses();
+  delete cur[c];
+  saveClasses(cur);
+};
+
+// --- VALIDATION COURSE & POP-UP ---
+const tagForm = document.getElementById("tagForm");
+const resultModal = document.getElementById("resultModal");
+const popupTime = document.getElementById("popupTime");
+const popupTags = document.getElementById("popupTags");
+const popupScore = document.getElementById("popupScore");
+const popupValidList = document.getElementById("popupValidList");
+const popupErrorList = document.getElementById("popupErrorList");
+const closeModalBtn = document.getElementById("closeModalBtn");
+const resultsList = document.getElementById("resultsList");
+const couleurParcoursSelect = document.getElementById("couleurParcoursSelect");
+const niveauSelect = document.getElementById("niveauSelect");
+const durationMinutesInput = document.getElementById("durationMinutes");
+const durationSecondsInput = document.getElementById("durationSeconds");
 
 function formatTime(m, s) {
-  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");[span_114](start_span)[span_114](end_span)
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 }
 
-function formatTotalSeconds(totalSec) {
-  const m = Math.floor(totalSec / 60);[span_115](start_span)[span_115](end_span)
-  const s = totalSec % 60;[span_116](start_span)[span_116](end_span)
-  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");[span_117](start_span)[span_117](end_span)
-}
+tagForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const c = classeSelect.value;
+  const el = teamSelect.value;
+  const p = parcoursSelect.value;
+  const col = couleurParcoursSelect.value;
+  const m = parseInt(durationMinutesInput.value, 10) || 0;
+  const s = parseInt(durationSecondsInput.value, 10) || 0;
+  const niv = parseInt(niveauSelect.value, 10) || 1;
 
-// Timeout de secours pour ne pas bloquer si Firebase ne répond pas
-function promiseWithTimeout(promise, ms = 4000) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms))
-  ]);
-}
-
-// --- CHARGEMENT FIRESTORE SÉCURISÉ ---
-async function loadStudentClasses() {
-  try {
-    const snap = await promiseWithTimeout(db.collection("classes").get());
-    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(item => item.active !== false).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[span_118](start_span)[span_118](end_span)
-    
-    classeSelect.innerHTML = '<option value="">Choisir une classe</option>';[span_119](start_span)[span_119](end_span)
-    classes.forEach(item => {
-      const opt = document.createElement("option");[span_120](start_span)[span_120](end_span)
-      opt.value = item.id;[span_121](start_span)[span_121](end_span)
-      opt.textContent = item.className || item.id;[span_122](start_span)[span_122](end_span)
-      classeSelect.appendChild(opt);[span_123](start_span)[span_123](end_span)
-    });
-    // Mise en cache locale
-    localStorage.setItem("cached_classes_list", JSON.stringify(classes));
-  } catch (err) {
-    console.warn("Firestore injoignable, tentative depuis le cache local...");
-    const cached = localStorage.getItem("cached_classes_list");
-    if (cached) {
-      const classes = JSON.parse(cached);
-      classeSelect.innerHTML = '<option value="">Choisir une classe (Cache)</option>';
-      classes.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.id;
-        opt.textContent = item.className || item.id;
-        classeSelect.appendChild(opt);
-      });
-    } else {
-      classeSelect.innerHTML = '<option value="">Aucune classe chargée (Vérifier réseau)</option>';
-    }
-  }
-}
-
-async function loadStudentsForSelectedClass() {
-  const classId = classeSelect.value;[span_124](start_span)[span_124](end_span)
-  currentStudentMap = {};[span_125](start_span)[span_125](end_span)
-  if (!classId) {
-    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';[span_126](start_span)[span_126](end_span)
-    return;[span_127](start_span)[span_127](end_span)
-  }
-  teamSelect.innerHTML = '<option value="">Chargement des élèves...</option>';[span_128](start_span)[span_128](end_span)
-  try {
-    const snap = await promiseWithTimeout(db.collection("classes").doc(classId).collection("eleves").get());
-    const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));[span_129](start_span)[span_129](end_span)
-    teamSelect.innerHTML = '<option value="">Choisir un élève</option>';[span_130](start_span)[span_130](end_span)
-    students.forEach(st => {
-      currentStudentMap[st.id] = st;[span_131](start_span)[span_131](end_span)
-      const opt = document.createElement("option");[span_132](start_span)[span_132](end_span)
-      opt.value = st.id;[span_133](start_span)[span_133](end_span)
-      opt.textContent = st.nomComplet || ((st.nom || "") + " " + (st.prenom || "")).trim();[span_134](start_span)[span_134](end_span)
-      teamSelect.appendChild(opt);[span_135](start_span)[span_135](end_span)
-    });
-    localStorage.setItem("cached_students_" + classId, JSON.stringify(students));
-  } catch (e) {
-    const cached = localStorage.getItem("cached_students_" + classId);
-    if (cached) {
-      const students = JSON.parse(cached);
-      teamSelect.innerHTML = '<option value="">Choisir un élève (Cache)</option>';
-      students.forEach(st => {
-        currentStudentMap[st.id] = st;
-        const opt = document.createElement("option");
-        opt.value = st.id;
-        opt.textContent = st.nomComplet || st.nom;
-        teamSelect.appendChild(opt);
-      });
-    }
-  }
-}
-
-classeSelect.addEventListener("change", loadStudentsForSelectedClass);[span_136](start_span)[span_136](end_span)
-
-async function loadClassesOverview() {
-  try {
-    const snap = await promiseWithTimeout(db.collection("classes").get());
-    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[span_137](start_span)[span_137](end_span)
-    if (docs.length === 0) {
-      classesListContainer.innerHTML = 'Aucune classe enregistrée.';[span_138](start_span)[span_138](end_span)
-      return;[span_139](start_span)[span_139](end_span)
-    }
-    let html = '<table><thead><tr><th>Classe</th><th>Élèves</th><th>Action</th></tr></thead><tbody>';[span_140](start_span)[span_140](end_span)
-    docs.forEach(item => {
-      html += `<tr>
-        <td style="font-weight:700;">${item.className || item.id}</td>
-        <td>${item.studentCount || 0} élève(s)</td>
-        <td><button class="danger-btn delete-class-btn" data-id="${item.id}" data-name="${item.className || item.id}" style="padding:4px 8px; font-size:0.8rem;">Supprimer</button></td>
-      </tr>`;[span_141](start_span)[span_141](end_span)
-    });
-    html += '</tbody></table>';[span_142](start_span)[span_142](end_span)
-    classesListContainer.innerHTML = html;[span_143](start_span)[span_143](end_span)
-
-    document.querySelectorAll('.delete-class-btn').forEach(btn => {
-      btn.addEventListener('click', async function() {
-        if (!confirm(`Supprimer la classe "${this.dataset.name}" ?`)) return;[span_144](start_span)[span_144](end_span)
-        await db.collection("classes").doc(this.dataset.id).delete();[span_145](start_span)[span_145](end_span)
-        loadClassesOverview();[span_146](start_span)[span_146](end_span)
-        loadStudentClasses();[span_147](start_span)[span_147](end_span)
-      });
-    });
-  } catch (err) {
-    classesListContainer.innerHTML = 'Connexion à la base impossible.';
-  }
-}
-
-// --- IMPORT PRONOTE CSV ---
-createClassBtn.addEventListener('click', async function() {
-  const className = newClassNameInput.value.trim().toUpperCase();[span_148](start_span)[span_148](end_span)
-  const file = classCsvInput.files[0];[span_149](start_span)[span_149](end_span)
-  if (!className || !file) {
-    classManagerMessage.textContent = 'Indiquez un nom de classe et sélectionnez un fichier.';[span_150](start_span)[span_150](end_span)
-    classManagerMessage.className = 'message error';[span_151](start_span)[span_151](end_span)
-    return;[span_152](start_span)[span_152](end_span)
-  }
-
-  const reader = new FileReader();[span_153](start_span)[span_153](end_span)
-  reader.onload = async function(e) {
-    try {
-      const text = e.target.result;[span_154](start_span)[span_154](end_span)
-      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);[span_155](start_span)[span_155](end_span)
-      const students = [];[span_156](start_span)[span_156](end_span)
-      for (let i = 1; i < lines.length; i++) {
-        const parts = lines[i].split(/[;,]/).map(p => p.replace(/^"|"$/g, '').trim());[span_157](start_span)[span_157](end_span)
-        if (parts.length >= 2 && parts[0] && parts[1]) {
-          students.push({ nom: parts[0].toUpperCase(), prenom: parts[1], nomComplet: parts[0].toUpperCase() + " " + parts[1] });[span_158](start_span)[span_158](end_span)
-        } else if (parts[0]) {
-          students.push({ nom: parts[0], prenom: "", nomComplet: parts[0] });[span_159](start_span)[span_159](end_span)
-        }
-      }
-
-      const classId = className.replace(/[^a-zA-Z0-9_-]/g, '-');[span_160](start_span)[span_160](end_span)
-      const classRef = db.collection("classes").doc(classId);[span_161](start_span)[span_161](end_span)
-      await classRef.set({
-        classId: classId,
-        className: className,
-        active: true,
-        studentCount: students.length,[span_162](start_span)[span_162](end_span)
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()[span_163](start_span)[span_163](end_span)
-      }, { merge: true });[span_164](start_span)[span_164](end_span)
-
-      let batch = db.batch();[span_165](start_span)[span_165](end_span)
-      students.forEach(st => {
-        const ref = classRef.collection("eleves").doc();[span_166](start_span)[span_166](end_span)
-        batch.set(ref, { nomComplet: st.nomComplet, nom: st.nom, prenom: st.prenom, active: true });[span_167](start_span)[span_167](end_span)
-      });
-      await batch.commit();[span_168](start_span)[span_168](end_span)
-
-      classManagerMessage.textContent = `Classe ${className} enregistrée avec ${students.length} élève(s).`;
-      classManagerMessage.className = 'message success';[span_169](start_span)[span_169](end_span)
-      newClassNameInput.value = '';[span_170](start_span)[span_170](end_span)
-      classCsvInput.value = '';[span_171](start_span)[span_171](end_span)
-      loadClassesOverview();[span_172](start_span)[span_172](end_span)
-      loadStudentClasses();[span_173](start_span)[span_173](end_span)
-    } catch (err) {
-      classManagerMessage.textContent = 'Erreur lors de l\'enregistrement.';
-      classManagerMessage.className = 'message error';[span_174](start_span)[span_174](end_span)
-    }
-  };
-  reader.readAsText(file, "utf-8");[span_175](start_span)[span_175](end_span)
-});
-
-refreshClassesBtn.addEventListener('click', function() {
-  loadClassesOverview();[span_176](start_span)[span_176](end_span)
-  loadStudentClasses();[span_177](start_span)[span_177](end_span)
-});
-
-// --- SÉANCES PROFESSEUR ---
-startLessonBtn.addEventListener('click', async function() {
-  const lessonName = prompt('Nom de la séance :', 'Séance Shakers');[span_178](start_span)[span_178](end_span)
-  if (!lessonName) return;[span_179](start_span)[span_179](end_span)
-  const now = new Date();[span_180](start_span)[span_180](end_span)
-  const lessonId = 'lecon_' + now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + '_' + lessonName.replace(/\s+/g, '-');[span_181](start_span)[span_181](end_span)
-  
-  await db.collection('lecons').doc(lessonId).set({
-    lessonId: lessonId,
-    lessonName: lessonName,
-    status: 'active',[span_182](start_span)[span_182](end_span)
-    startedAt: firebase.firestore.FieldValue.serverTimestamp()[span_183](start_span)[span_183](end_span)
-  }, { merge: true });[span_184](start_span)[span_184](end_span)
-
-  await db.collection('config').doc('activeLesson').set({
-    lessonId: lessonId,
-    lessonName: lessonName,
-    startedAt: firebase.firestore.FieldValue.serverTimestamp()[span_185](start_span)[span_185](end_span)
-  });[span_186](start_span)[span_186](end_span)
-
-  openLesson(lessonId, lessonName);[span_187](start_span)[span_187](end_span)
-});
-
-closeLessonBtn.addEventListener('click', async function() {
-  if (!currentActiveLessonId) { alert('Aucune leçon active.'); return; }
-  if (!confirm('Clôturer la séance en cours ?')) return;[span_188](start_span)[span_188](end_span)
-  await db.collection('lecons').doc(currentActiveLessonId).set({ status: 'closed' }, { merge: true });[span_189](start_span)[span_189](end_span)
-  await db.collection('config').doc('activeLesson').delete();[span_190](start_span)[span_190](end_span)
-  currentActiveLessonId = null;[span_191](start_span)[span_191](end_span)
-  lessonStatus.textContent = 'Aucune leçon active';[span_192](start_span)[span_192](end_span)
-  lessonStatus.className = 'pill inactive';[span_193](start_span)[span_193](end_span)
-});
-
-let aggregatedSummary = [];[span_194](start_span)[span_194](end_span)
-
-function openLesson(lessonId, lessonName) {
-  currentTeacherLesson = { id: lessonId, name: lessonName || lessonId };[span_195](start_span)[span_195](end_span)
-  lessonStatus.textContent = 'Séance : ' + currentTeacherLesson.name;
-  lessonStatus.className = 'pill active';[span_196](start_span)[span_196](end_span)
-  if (unsubscribeFromResults) unsubscribeFromResults();[span_197](start_span)[span_197](end_span)
-
-  unsubscribeFromResults = db.collection('lecons').doc(lessonId).collection('resultats').onSnapshot(function(snapshot) {
-    const docs = snapshot.docs.map(doc => doc.data());[span_198](start_span)[span_198](end_span)
-    const studentsAgg = {};[span_199](start_span)[span_199](end_span)
-
-    docs.forEach(item => {
-      const key = (item.classeLabel || item.classe || '—') + '__' + (item.eleveNomComplet || item.eleveId || '—');[span_200](start_span)[span_200](end_span)
-      if (!studentsAgg[key]) {
-        studentsAgg[key] = {
-          classe: item.classeLabel || item.classe || '—',[span_201](start_span)[span_201](end_span)
-          eleve: item.eleveNomComplet || item.eleveId || '—',[span_202](start_span)[span_202](end_span)
-          pointsTotal: 0,[span_203](start_span)[span_203](end_span)
-          balisesTrouveesCount: 0,[span_204](start_span)[span_204](end_span)
-          erreursCount: 0,[span_205](start_span)[span_205](end_span)
-          totalSecondes: 0,[span_206](start_span)[span_206](end_span)
-          passages: 0,[span_207](start_span)[span_207](end_span)
-          dernierTimestamp: 0[span_208](start_span)[span_208](end_span)
-        };
-      }
-      const bonnes = item.scoreCorrectes || 0;[span_209](start_span)[span_209](end_span)
-      const tent = item.scoreTentatives || 0;[span_210](start_span)[span_210](end_span)
-      studentsAgg[key].pointsTotal += (item.pointsGagnes || (bonnes * (item.niveau || 1)));[span_211](start_span)[span_211](end_span)
-      studentsAgg[key].balisesTrouveesCount += bonnes;[span_212](start_span)[span_212](end_span)
-      studentsAgg[key].erreursCount += Math.max(0, tent - bonnes);[span_213](start_span)[span_213](end_span)
-      studentsAgg[key].totalSecondes += ((item.tempsMinutes || 0) * 60 + (item.tempsSecondes || 0));[span_214](start_span)[span_214](end_span)
-      studentsAgg[key].passages += 1;[span_215](start_span)[span_215](end_span)
-      const t = item.timestamp && item.timestamp.toDate ? item.timestamp.toDate().getTime() : 0;[span_216](start_span)[span_216](end_span)
-      if (t > studentsAgg[key].dernierTimestamp) studentsAgg[key].dernierTimestamp = t;[span_217](start_span)[span_217](end_span)
-    });
-
-    aggregatedSummary = Object.values(studentsAgg).sort((a, b) => b.pointsTotal - a.pointsTotal);[span_218](start_span)[span_218](end_span)
-    resultsTableBody.innerHTML = '';[span_219](start_span)[span_219](end_span)
-    if (aggregatedSummary.length === 0) {
-      resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de validations...</td></tr>';
-      return;[span_220](start_span)[span_220](end_span)
-    }
-
-    aggregatedSummary.forEach(st => {
-      const tr = document.createElement('tr');[span_221](start_span)[span_221](end_span)
-      const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';[span_222](start_span)[span_222](end_span)
-      tr.innerHTML = `
-        <td style="font-weight:700;">${st.classe}</td>
-        <td style="text-align:left; font-weight:700;">${st.eleve}</td>
-        <td style="font-weight:900; color:#1b4332; background:#d8f3dc;">${st.pointsTotal} pts</td>
-        <td style="font-weight:700; color:#166534;">${st.balisesTrouveesCount}</td>
-        <td style="font-weight:700; color:#b91c1c;">${st.erreursCount}</td>
-        <td style="font-weight:700;">${formatTotalSeconds(st.totalSecondes)}</td>
-        <td>${st.passages}</td>
-        <td style="color:var(--muted);">${dernierHoraire}</td>
-      `;[span_223](start_span)[span_223](end_span)
-      resultsTableBody.appendChild(tr);[span_224](start_span)[span_224](end_span)
-    });
-  });
-}
-
-// --- HISTORIQUE ---
-loadHistoryBtn.addEventListener('click', async function() {
-  historyPanel.classList.remove('hidden');[span_225](start_span)[span_225](end_span)
-  historyTableBody.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';[span_226](start_span)[span_226](end_span)
-  const snap = await db.collection('lecons').get();[span_227](start_span)[span_227](end_span)
-  const lessons = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));[span_228](start_span)[span_228](end_span)
-  historyTableBody.innerHTML = '';[span_229](start_span)[span_229](end_span)
-  lessons.forEach(item => {
-    const tr = document.createElement('tr');[span_230](start_span)[span_230](end_span)
-    tr.innerHTML = `<td>${item.lessonName || item.id}</td><td>${item.lessonDate || '—'}</td><td>${item.status || 'active'}</td><td><button class="success-btn history-btn" data-id="${item.id}" data-name="${item.lessonName || item.id}" style="padding:4px 8px; font-size:0.8rem;">Rouvrir</button></td>`;[span_231](start_span)[span_231](end_span)
-    historyTableBody.appendChild(tr);[span_232](start_span)[span_232](end_span)
-  });
-  document.querySelectorAll('.history-btn').forEach(btn => {
-    btn.addEventListener('click', async function() {
-      await db.collection('config').doc('activeLesson').set({ lessonId: this.dataset.id, lessonName: this.dataset.name });[span_233](start_span)[span_233](end_span)
-      await db.collection('lecons').doc(this.dataset.id).set({ status: 'active' }, { merge: true });[span_234](start_span)[span_234](end_span)
-      openLesson(this.dataset.id, this.dataset.name);[span_235](start_span)[span_235](end_span)
-      historyPanel.classList.add('hidden');[span_236](start_span)[span_236](end_span)
-    });
-  });
-});
-closeHistoryBtn.addEventListener('click', function() { historyPanel.classList.add('hidden'); });[span_237](start_span)[span_237](end_span)
-
-// --- VALIDATION ÉLÈVE & POP-UP ---
-tagForm.addEventListener("submit", async function(e) {
-  e.preventDefault();[span_238](start_span)[span_238](end_span)
-  const classId = classeSelect.value;[span_239](start_span)[span_239](end_span)
-  const classLabel = classeSelect.options[classeSelect.selectedIndex] ? classeSelect.options[classeSelect.selectedIndex].text : '';[span_240](start_span)[span_240](end_span)
-  const studentId = teamSelect.value;[span_241](start_span)[span_241](end_span)
-  const student = currentStudentMap[studentId];[span_242](start_span)[span_242](end_span)
-  const parcours = parcoursSelect.value;
-  const couleur = couleurParcoursSelect.value;[span_243](start_span)[span_243](end_span)
-  const m = parseInt(durationMinutesInput.value, 10) || 0;[span_244](start_span)[span_244](end_span)
-  const s = parseInt(durationSecondsInput.value, 10) || 0;[span_245](start_span)[span_245](end_span)
-  const niveau = parseInt(niveauSelect.value, 10) || 1;[span_246](start_span)[span_246](end_span)
-
-  if (!classId || !studentId || !parcours || !couleur) {
-    alert("Sélectionnez votre classe, votre nom, votre parcours et la couleur.");
+  if (!c || !el || !p || !col) {
+    alert("Veuillez remplir l'identification complète.");
     return;
   }
   if (m === 0 && s === 0) {
-    alert("Entrez un temps de course valide.");
+    alert("Le temps ne peut pas être nul.");
     return;
   }
 
-  let correctes = 0;[span_247](start_span)[span_247](end_span)
-  let tentatives = 0;[span_248](start_span)[span_248](end_span)
-  const valides = [];[span_249](start_span)[span_249](end_span)
-  const erreurs = [];[span_250](start_span)[span_250](end_span)
-  resultsList.innerHTML = "";[span_251](start_span)[span_251](end_span)
+  let justes = 0;
+  let tot = 0;
+  const okList = [];
+  const errList = [];
+  resultsList.innerHTML = "";
 
-  for (let i = 0; i < 5; i++) {[span_252](start_span)[span_252](end_span)
-    const num = document.getElementById("baliseNum" + i).value;[span_253](start_span)[span_253](end_span)
-    const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();[span_254](start_span)[span_254](end_span)
-    if (!num && !code) continue;[span_255](start_span)[span_255](end_span)
-    tentatives++;[span_256](start_span)[span_256](end_span)
+  for (let i = 0; i < 5; i++) {
+    const num = document.getElementById("baliseNum" + i).value;
+    const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();
+    if (!num && !code) continue;
+    tot++;
 
-    const numInt = parseInt(num, 10);[span_257](start_span)[span_257](end_span)
-    const li = document.createElement("li");[span_258](start_span)[span_258](end_span)
-
-    if (num && code && DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleur] === code) {
-      correctes++;[span_259](start_span)[span_259](end_span)
-      valides.push("Balise " + num);[span_260](start_span)[span_260](end_span)
-      li.className = "result-correct";[span_261](start_span)[span_261](end_span)
-      li.textContent = "Balise " + num + " (" + couleur + ") : ✅ CORRECT";[span_262](start_span)[span_262](end_span)
+    const numInt = parseInt(num, 10);
+    const li = document.createElement("li");
+    if (num && code && DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][col] === code) {
+      justes++;
+      okList.push("Balise " + num);
+      li.className = "result-correct";
+      li.textContent = "Balise " + num + " (" + col + ") : ✅ CORRECT";
     } else {
-      const detailErr = num ? "Balise " + num + " (Code : " + (code || "vide") + ")" : "Balise " + (i + 1) + " incomplète";[span_263](start_span)[span_263](end_span)
-      erreurs.push(detailErr);[span_264](start_span)[span_264](end_span)
-      li.className = "result-incorrect";[span_265](start_span)[span_265](end_span)
-      li.textContent = "Balise " + (num || (i + 1)) + " (" + couleur + ") : ❌ INCORRECT";[span_266](start_span)[span_266](end_span)
+      const txt = num ? "Balise " + num + " (saisi: " + (code || "vide") + ")" : "Balise " + (i+1) + " incomplète";
+      errList.push(txt);
+      li.className = "result-incorrect";
+      li.textContent = "Balise " + (num || (i+1)) + " (" + col + ") : ❌ INCORRECT";
     }
-    resultsList.appendChild(li);[span_267](start_span)[span_267](end_span)
+    resultsList.appendChild(li);
   }
 
-  if (tentatives === 0) {
-    alert("Veuillez saisir au moins une balise.");[span_268](start_span)[span_268](end_span)
-    return;[span_269](start_span)[span_269](end_span)
+  if (tot === 0) {
+    alert("Saisissez au moins une balise.");
+    return;
   }
 
-  const points = correctes * niveau;[span_270](start_span)[span_270](end_span)
+  const pts = justes * niv;
 
-  // Affichage Pop-up
-  popupTime.textContent = formatTime(m, s);[span_271](start_span)[span_271](end_span)
-  popupTags.textContent = correctes + " / " + tentatives;[span_272](start_span)[span_272](end_span)
-  popupScore.textContent = "+" + points + " pt(s)";[span_273](start_span)[span_273](end_span)
-  popupValidList.innerHTML = valides.length > 0 ? valides.join(", ") : "Aucune";
-  popupErrorList.innerHTML = erreurs.length > 0 ? erreurs.join("<br>") : "Aucune erreur !";
-  resultModal.classList.remove("hidden");[span_274](start_span)[span_274](end_span)
+  popupTime.textContent = formatTime(m, s);
+  popupTags.textContent = justes + " / " + tot;
+  popupScore.textContent = "+" + pts + " pt(s)";
+  popupValidList.innerHTML = okList.length > 0 ? okList.join(", ") : "Aucune";
+  popupErrorList.innerHTML = errList.length > 0 ? errList.join("<br>") : "Aucune erreur !";
+  resultModal.classList.remove("hidden");
 
-  // Envoi Firestore
-  if (currentActiveLessonId) {
-    try {
-      submitBtn.disabled = true;[span_275](start_span)[span_275](end_span)
-      await db.collection('lecons').doc(currentActiveLessonId).collection('resultats').add({
-        lessonId: currentActiveLessonId,[span_276](start_span)[span_276](end_span)
-        classe: classId,[span_277](start_span)[span_277](end_span)
-        classeLabel: classLabel,[span_278](start_span)[span_278](end_span)
-        eleveId: studentId,[span_279](start_span)[span_279](end_span)
-        eleveNomComplet: student ? student.nomComplet : (teamSelect.options[teamSelect.selectedIndex] ? teamSelect.options[teamSelect.selectedIndex].text : ''),[span_280](start_span)[span_280](end_span)
-        parcoursId: parcours,[span_281](start_span)[span_281](end_span)
-        couleurParcours: couleur,[span_282](start_span)[span_282](end_span)
-        niveau: niveau,[span_283](start_span)[span_283](end_span)
-        pointsGagnes: points,[span_284](start_span)[span_284](end_span)
-        scoreCorrectes: correctes,[span_285](start_span)[span_285](end_span)
-        scoreTentatives: tentatives,[span_286](start_span)[span_286](end_span)
-        tempsMinutes: m,[span_287](start_span)[span_287](end_span)
-        tempsSecondes: s,[span_288](start_span)[span_288](end_span)
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()[span_289](start_span)[span_289](end_span)
-      });
-    } catch(err) {
-      console.error(err);
-    } finally {
-      submitBtn.disabled = false;[span_290](start_span)[span_290](end_span)
-    }
-  }
+  const res = getResults();
+  res.push({
+    classe: c,
+    eleve: el,
+    points: pts,
+    justes: justes,
+    erreurs: (tot - justes),
+    sec: (m * 60 + s),
+    tempsTxt: formatTime(m, s),
+    date: new Date().toLocaleTimeString("fr-FR")
+  });
+  saveResults(res);
 });
 
 closeModalBtn.addEventListener("click", function() {
-  resultModal.classList.add("hidden");[span_291](start_span)[span_291](end_span)
-  tagForm.reset();[span_292](start_span)[span_292](end_span)
-  resultsList.innerHTML = "";[span_293](start_span)[span_293](end_span)
-  niveauSelect.value = "1";[span_294](start_span)[span_294](end_span)
+  resultModal.classList.add("hidden");
+  tagForm.reset();
+  resultsList.innerHTML = "";
+  niveauSelect.value = "1";
 });
 
-// --- ÉCOUTE DE LA SÉANCE ACTIVE ---
-function listenToActiveLesson() {
-  db.collection('config').doc('activeLesson').onSnapshot(function(doc) {
-    if (doc.exists && doc.data().lessonId) {[span_295](start_span)[span_295](end_span)
-      currentActiveLessonId = doc.data().lessonId;[span_296](start_span)[span_296](end_span)
-      activeLessonBanner.textContent = 'Séance active : ' + (doc.data().lessonName || currentActiveLessonId);
-      activeLessonBanner.style.backgroundColor = '#344e41';[span_297](start_span)[span_297](end_span)
-      if (teacherAccessGranted && !currentTeacherLesson) openLesson(currentActiveLessonId, doc.data().lessonName);
-    } else {
-      currentActiveLessonId = null;[span_298](start_span)[span_298](end_span)
-      activeLessonBanner.textContent = 'Séance active — Validation Shakers';
-      activeLessonBanner.style.backgroundColor = '#344e41';
+// --- DASHBOARD TABLEAU & EXPORTS ---
+const resultsTableBody = document.getElementById("resultsTableBody");
+const exportCsvBtn = document.getElementById("exportCsvBtn");
+const exportPdfBtn = document.getElementById("exportPdfBtn");
+const clearResultsBtn = document.getElementById("clearResultsBtn");
+
+function renderTeacherDashboard() {
+  const data = getResults();
+  if (data.length === 0) {
+    resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de validations élèves...</td></tr>';
+    return;
+  }
+  const agg = {};
+  data.forEach(r => {
+    const k = r.classe + "__" + r.eleve;
+    if (!agg[k]) {
+      agg[k] = { classe: r.classe, eleve: r.eleve, pts: 0, justes: 0, err: 0, sec: 0, pass: 0, date: r.date };
     }
-  }, function() {
-    activeLessonBanner.textContent = 'Séance active — Validation Shakers';
-    activeLessonBanner.style.backgroundColor = '#344e41';
+    agg[k].pts += r.points;
+    agg[k].justes += r.justes;
+    agg[k].err += r.erreurs;
+    agg[k].sec += r.sec;
+    agg[k].pass += 1;
+    agg[k].date = r.date;
   });
+
+  const list = Object.values(agg).sort((a, b) => b.pts - a.pts);
+  let html = "";
+  list.forEach(st => {
+    const m = Math.floor(st.sec / 60);
+    const s = st.sec % 60;
+    html += `<tr>
+      <td style="font-weight:700;">${st.classe}</td>
+      <td style="text-align:left; font-weight:700;">${st.eleve}</td>
+      <td style="font-weight:900; color:#1b4332; background:#d8f3dc;">${st.pts} pts</td>
+      <td style="font-weight:700; color:#166534;">${st.justes}</td>
+      <td style="font-weight:700; color:#b91c1c;">${st.err}</td>
+      <td style="font-weight:700;">${formatTime(m, s)}</td>
+      <td>${st.pass}</td>
+      <td style="color:var(--muted);">${st.date}</td>
+    </tr>`;
+  });
+  resultsTableBody.innerHTML = html;
 }
 
-// --- EXPORT PDF / CSV ---
-exportCsvBtn.addEventListener('click', function() {
-  if (aggregatedSummary.length === 0) { alert('Aucun résultat.'); return; }
-  const lines = ['Classe;Élève;Points;Balises justes;Erreurs;Temps;Passages'];
-  aggregatedSummary.forEach(st => {
-    lines.push([st.classe, st.eleve, st.pointsTotal, st.balisesTrouveesCount, st.erreursCount, formatTotalSeconds(st.totalSecondes), st.passages].map(v => `"${v}"`).join(';'));
-  });
-  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8;' });[span_299](start_span)[span_299](end_span)
-  const a = document.createElement('a');[span_300](start_span)[span_300](end_span)
-  a.href = URL.createObjectURL(blob);[span_301](start_span)[span_301](end_span)
-  a.download = `bilan_seance.csv`;
-  a.click();[span_302](start_span)[span_302](end_span)
+clearResultsBtn.addEventListener("click", function() {
+  if (confirm("Effacer l'historique des passages ?")) {
+    saveResults([]);
+  }
 });
 
-exportPdfBtn.addEventListener('click', function() {
-  if (aggregatedSummary.length === 0) { alert('Aucun résultat.'); return; }
-  const { jsPDF } = window.jspdf;[span_303](start_span)[span_303](end_span)
-  const doc = new jsPDF();[span_304](start_span)[span_304](end_span)
+exportCsvBtn.addEventListener("click", function() {
+  const data = getResults();
+  if (data.length === 0) { alert("Aucune donnée."); return; }
+  const lines = ['Classe;Élève;Points;Justes;Erreurs;Temps;Heure'];
+  data.forEach(r => lines.push([r.classe, r.eleve, r.points, r.justes, r.erreurs, r.tempsTxt, r.date].map(x => `"${x}"`).join(';')));
+  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `bilan_CO.csv`;
+  a.click();
+});
+
+exportPdfBtn.addEventListener("click", function() {
+  const data = getResults();
+  if (data.length === 0) { alert("Aucune donnée."); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
   doc.setFontSize(15);
   doc.text("Bilan Séance Course d'Orientation", 14, 18);
-  const data = aggregatedSummary.map(st => [st.classe, st.eleve, `${st.pointsTotal} pts`, st.balisesTrouveesCount, st.erreursCount, formatTotalSeconds(st.totalSecondes), st.passages]);
+  const rows = data.map(r => [r.classe, r.eleve, `${r.points} pts`, r.justes, r.erreurs, r.tempsTxt, r.date]);
   doc.autoTable({
     startY: 25,
-    head: [['Classe', 'Élève', 'Points', 'Justes', 'Erreurs', 'Temps', 'Passages']],
-    body: data,
-    theme: 'striped',[span_305](start_span)[span_305](end_span)
-    headStyles: { fillColor: [88, 129, 87] }[span_306](start_span)[span_306](end_span)
+    head: [['Classe', 'Élève', 'Points', 'Justes', 'Erreurs', 'Temps', 'Heure']],
+    body: rows,
+    theme: 'striped',
+    headStyles: { fillColor: [88, 129, 87] }
   });
-  doc.save(`bilan_seance.pdf`);
+  doc.save(`bilan_CO.pdf`);
 });
 
-// INITIALISATION NON BLOQUANTE
-showView('student');[span_307](start_span)[span_307](end_span)
-loadStudentClasses();
-listenToActiveLesson();[span_308](start_span)[span_308](end_span)
+// INITIALISATION
+renderClasseSelects();
+renderTeacherDashboard();
 </script>
 </body>
 </html>
