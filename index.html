@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - Secours Mobile</title>
+  <title>Course d'Orientation - Collège Claudie Haigneré</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -13,7 +13,7 @@
     body { margin:0; font-family:Segoe UI,Tahoma,Verdana,sans-serif; background:var(--bg); color:#1f2937; }
     .container { max-width:1250px; margin:12px auto; padding:16px; background:rgba(255,255,255,.98); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.22); border:2px solid var(--primary); }
     h1,h2,h3 { color:var(--dark); margin-top:0; }
-    h1 { text-align:center; font-size:1.4rem; margin-bottom:14px; }
+    h1 { text-align:center; font-size:1.45rem; margin-bottom:14px; }
     .topbar { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
     .view-btn,.control-btn,.success-btn,.danger-btn,.secondary-btn,.primary-submit { border:none; border-radius:10px; padding:12px 16px; font-weight:700; cursor:pointer; }
     .view-btn { background:#dce6d8; color:var(--dark); }
@@ -24,10 +24,10 @@
     .danger-btn { background:var(--danger); color:#fff; }
     button:disabled { opacity:.55; cursor:not-allowed; }
     .hidden { display:none !important; }
-    .banner { text-align:center; padding:10px 14px; margin-bottom:14px; border-radius:12px; color:#fff; background:#344e41; font-weight:700; font-size:0.95rem; }
+    .banner { text-align:center; padding:10px 14px; margin-bottom:14px; border-radius:12px; color:#fff; background:var(--dark); font-weight:700; font-size:0.95rem; }
     .panel, .form-section { background:var(--soft); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:14px; }
-    .grid-5 { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
-    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; }
+    .grid-5 { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
     label { display:block; margin-bottom:6px; font-weight:700; font-size:0.9rem; color:var(--dark); }
     input, select { width:100%; padding:10px; border:1px solid #b8c3b3; border-radius:10px; background:#fff; font-size:1rem; }
     .time-input-group { display:flex; gap:8px; align-items:center; max-width:280px; }
@@ -43,8 +43,6 @@
     #resultsList li { padding:8px 10px; border-radius:8px; margin-bottom:6px; font-weight:700; font-size:0.9rem; }
     .result-correct { background:#d8f3dc; color:#1b4332; }
     .result-incorrect { background:#ffccd5; color:#7f1d1d; }
-    .result-missing { background:#fff3cd; color:#7a5c00; }
-    #scoreArea { margin-top:12px; padding:12px; border-radius:12px; background:#e9f2e6; font-weight:800; text-align:center; color:var(--dark); }
     .dashboard-controls { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:12px; }
     table { width:100%; border-collapse:collapse; background:#fff; font-size:0.85rem; }
     th, td { border:1px solid #e5e7eb; padding:8px; text-align:center; vertical-align:middle; }
@@ -71,37 +69,15 @@
     .popup-stat-label { font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; }
     .popup-stat-val { font-size: 1.6rem; font-weight: 900; color: var(--dark); margin-top: 2px; }
 
-    /* DETAIL BALISES DANS LE POP-UP */
     .popup-details-container {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 12px;
-      text-align: left;
+      display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; text-align: left;
     }
     .popup-box {
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-size: 0.88rem;
-      font-weight: 700;
+      border-radius: 8px; padding: 8px 10px; font-size: 0.88rem; font-weight: 700;
     }
-    .popup-box-valid {
-      background: #d8f3dc;
-      color: #166534;
-      border: 1px solid #b7e4c7;
-    }
-    .popup-box-error {
-      background: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fca5a5;
-    }
-    .popup-box-title {
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      font-weight: 900;
-      margin-bottom: 4px;
-      display: block;
-    }
+    .popup-box-valid { background: #d8f3dc; color: #166534; border: 1px solid #b7e4c7; }
+    .popup-box-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .popup-box-title { font-size: 0.78rem; text-transform: uppercase; font-weight: 900; margin-bottom: 4px; display: block; }
   </style>
 </head>
 <body>
@@ -117,7 +93,7 @@
 
   <!-- VUE ELEVE -->
   <section id="studentView">
-    <div id="activeLessonBanner" class="banner">Séance active (Mode local / en ligne)</div>
+    <div id="activeLessonBanner" class="banner">Séance active — Validation Shakers</div>
 
     <form id="tagForm">
       <div class="form-section">
@@ -126,16 +102,13 @@
           <div>
             <label for="classeSelect">Classe</label>
             <select id="classeSelect" required>
-              <option value="Groupe-A">Groupe Entraînement</option>
+              <option value="">Sélectionner la classe</option>
             </select>
           </div>
           <div>
             <label for="teamSelect">Élève</label>
             <select id="teamSelect" required>
-              <option value="Élève 1">Élève 1</option>
-              <option value="Élève 2">Élève 2</option>
-              <option value="Élève 3">Élève 3</option>
-              <option value="Élève 4">Élève 4</option>
+              <option value="">Choisir d'abord une classe</option>
             </select>
           </div>
           <div>
@@ -145,7 +118,7 @@
           <div>
             <label for="couleurParcoursSelect">Couleur du parcours</label>
             <select id="couleurParcoursSelect" required>
-              <option value="">Choisir</option>
+              <option value="">Choisir la couleur</option>
               <option value="BLEU">BLEU</option>
               <option value="NOIR">NOIR</option>
               <option value="ORANGE">ORANGE</option>
@@ -178,84 +151,105 @@
       </div>
 
       <div class="form-section">
-        <h2>Saisie des balises du parcours</h2>
+        <h2>Saisie des balises du parcours (5 max)</h2>
         <div id="tagEntriesContainer">
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum0">Balise 1 - N°</label><input type="number" id="baliseNum0" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode0">Code</label><input type="text" id="baliseCode0" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode0">Code écrit</label><input type="text" id="baliseCode0" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum1">Balise 2 - N°</label><input type="number" id="baliseNum1" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode1">Code</label><input type="text" id="baliseCode1" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode1">Code écrit</label><input type="text" id="baliseCode1" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum2">Balise 3 - N°</label><input type="number" id="baliseNum2" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode2">Code</label><input type="text" id="baliseCode2" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode2">Code écrit</label><input type="text" id="baliseCode2" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum3">Balise 4 - N°</label><input type="number" id="baliseNum3" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode3">Code</label><input type="text" id="baliseCode3" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode3">Code écrit</label><input type="text" id="baliseCode3" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
             <div><label for="baliseNum4">Balise 5 - N°</label><input type="number" id="baliseNum4" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode4">Code</label><input type="text" id="baliseCode4" placeholder="Ex : 5B"></div>
+            <div><label for="baliseCode4">Code écrit</label><input type="text" id="baliseCode4" placeholder="Ex : 5B"></div>
           </div></div>
         </div>
       </div>
 
-      <button type="submit" id="submitBtn" class="primary-submit">🚀 Vérifier et envoyer le résultat</button>
+      <button type="submit" id="submitBtn" class="primary-submit">🚀 Valider le parcours</button>
     </form>
 
     <div id="resultsContainer"><ul id="resultsList"></ul></div>
-    <div id="scoreArea" class="hidden"></div>
   </section>
 
   <!-- ACCES PROFESSEUR -->
   <section id="teacherLoginContainer" class="hidden form-section">
     <h2>Accès professeur</h2>
-    <p>Entrez le code d'accès professeur.</p>
-    <label for="teacherCodeInput">Code (16170)</label>
-    <input type="password" id="teacherCodeInput" autocomplete="off" placeholder="Code">
+    <p>Saisissez le code d'accès professeur.</p>
+    <label for="teacherCodeInput">Code d'accès</label>
+    <input type="password" id="teacherCodeInput" autocomplete="off" placeholder="Entrez le code">
     <p id="teacherCodeError" class="message error"></p>
-    <button type="button" id="teacherCodeSubmitBtn" class="success-btn" style="margin-top:10px;">Valider le code</button>
+    <button type="button" id="teacherCodeSubmitBtn" class="success-btn" style="margin-top:10px;">Accéder au tableau de bord</button>
   </section>
 
   <!-- DASHBOARD PROFESSEUR -->
   <section id="teacherDashboard" class="hidden">
     <div class="panel">
-      <h2>Tableau de bord professeur</h2>
-      <div id="lessonStatus" class="pill active">Séance : Active</div>
+      <h2>Tableau de bord de la séance</h2>
+      <div id="lessonStatus" class="pill active">Séance active</div>
       <div class="dashboard-controls" style="margin-top:12px;">
-        <button id="startLessonBtn" class="control-btn" type="button">▶️ Démarrer une leçon</button>
-        <button id="loadHistoryBtn" class="secondary-btn" type="button">🕘 Historique</button>
-        <button id="exportCsvBtn" class="secondary-btn" type="button">📊 Export CSV</button>
-        <button id="closeLessonBtn" class="danger-btn" type="button">⛔ Clôturer</button>
+        <button id="exportCsvBtn" class="secondary-btn" type="button">📊 Export CSV Bilan</button>
+        <button id="exportPdfBtn" class="secondary-btn" type="button">📄 Export PDF Bilan</button>
+        <button id="clearResultsBtn" class="danger-btn" type="button">🗑️ Réinitialiser résultats</button>
       </div>
     </div>
 
     <div class="panel">
-      <h3>📈 Résultats des élèves</h3>
+      <h3>📈 Bilan individuel des passages</h3>
       <div style="overflow-x:auto;">
         <table>
           <thead>
             <tr>
+              <th>Classe</th>
               <th>Élève</th>
               <th>Points</th>
-              <th>Balises</th>
-              <th>Temps</th>
+              <th>Balises justes</th>
+              <th>Erreurs</th>
+              <th>Temps total</th>
+              <th>Passages</th>
               <th>Dernier passage</th>
             </tr>
           </thead>
           <tbody id="resultsTableBody">
-            <tr><td colspan="5" style="color:var(--muted);">En attente de validations...</td></tr>
+            <tr><td colspan="8" style="color:var(--muted);">En attente de validations élèves...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
+
+    <!-- GESTION DES CLASSES PRONOTE -->
+    <div class="panel">
+      <h3>Gestion des classes et élèves</h3>
+      <div class="grid-2">
+        <div>
+          <label for="newClassNameInput">Nom de la classe</label>
+          <input type="text" id="newClassNameInput" placeholder="Ex : 4A">
+        </div>
+        <div>
+          <label for="classCsvInput">Fichier CSV Pronote (ou TXT)</label>
+          <input type="file" id="classCsvInput" accept=".csv,.txt">
+        </div>
+      </div>
+      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:0;">
+        <button id="createClassBtn" class="success-btn" type="button">➕ Ajouter / Mettre à jour la classe</button>
+      </div>
+      <p id="classManagerMessage" class="message"></p>
+      <div id="classesListContainer" style="margin-top:10px;" class="empty-box">Chargement des classes...</div>
+    </div>
   </section>
 </div>
 
-<!-- MODALE POP-UP ELEVE AVEC DETAIL DES BALISES -->
+<!-- MODALE POP-UP ELEVE -->
 <div id="resultModal" class="modal-overlay hidden">
   <div class="modal-card">
     <h2>🏁 Résumé de la course</h2>
@@ -268,10 +262,9 @@
     <div class="popup-stat">
       <div class="popup-stat-label">🎯 Total validé</div>
       <div class="popup-stat-val" id="popupTags" style="color:#166534;">0 / 0</div>
-      <div style="font-weight:900; font-size:1.1rem; color:#2d6a4f; margin-top:4px;" id="popupScore">+0 pt(s)</div>
+      <div style="font-weight:900; font-size:1.15rem; color:#2d6a4f; margin-top:4px;" id="popupScore">+0 pt(s)</div>
     </div>
 
-    <!-- DÉTAIL PAR BALISE -->
     <div class="popup-details-container">
       <div id="popupValidBox" class="popup-box popup-box-valid">
         <span class="popup-box-title">✅ Balises justes</span>
@@ -283,12 +276,14 @@
       </div>
     </div>
 
-    <button type="button" id="closeModalBtn" class="primary-submit" style="margin-top:4px;">Fermer / Suivant ➡️</button>
+    <button type="button" id="closeModalBtn" class="primary-submit" style="margin-top:6px;">Fermer / Suivant ➡️</button>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
-// --- NAVIGATION IMMEDIATE SANS DEPENDANCE ---
+// --- NAVIGATION INTERFACE ---
 const studentView = document.getElementById("studentView");
 const teacherDashboard = document.getElementById("teacherDashboard");
 const teacherLoginContainer = document.getElementById("teacherLoginContainer");
@@ -297,6 +292,7 @@ const teacherViewBtn = document.getElementById("teacherViewBtn");
 const teacherCodeInput = document.getElementById("teacherCodeInput");
 const teacherCodeSubmitBtn = document.getElementById("teacherCodeSubmitBtn");
 const teacherCodeError = document.getElementById("teacherCodeError");
+const TEACHER_CODE = "16170";[span_7](start_span)[span_7](end_span)
 let teacherAccessGranted = false;
 
 function showView(viewName) {
@@ -312,101 +308,261 @@ function showView(viewName) {
   } else if (viewName === "teacher") {
     teacherDashboard.classList.remove("hidden");
     teacherViewBtn.classList.add("active");
+    renderClassesOverview();
   } else {
     teacherLoginContainer.classList.remove("hidden");
     teacherViewBtn.classList.add("active");
   }
 }
 
-studentViewBtn.addEventListener("click", function() { showView("student"); });
+studentViewBtn.addEventListener("click", function() { showView("student"); });[span_8](start_span)[span_8](end_span)
 teacherViewBtn.addEventListener("click", function() {
   showView(teacherAccessGranted ? "teacher" : "teacherLogin");
 });
 
 teacherCodeSubmitBtn.addEventListener("click", function() {
-  if (teacherCodeInput.value.trim() === "16170") {
+  if (teacherCodeInput.value.trim() === TEACHER_CODE) {
     teacherAccessGranted = true;
     teacherCodeError.textContent = "";
-    teacherCodeInput.value = "";
+    teacherCodeInput.value = "";[span_9](start_span)[span_9](end_span)
     showView("teacher");
   } else {
-    teacherCodeError.textContent = "Code incorrect (16170).";
+    teacherCodeError.textContent = "Code incorrect.";[span_10](start_span)[span_10](end_span)
   }
 });
+teacherCodeInput.addEventListener("keydown", function(e) {
+  if (e.key === "Enter") { e.preventDefault(); teacherCodeSubmitBtn.click(); }
+});
 
-// --- PARCOURS & CODES LOCAUX ---
-const NOMBRE_PARCOURS = 40;
+// --- PARCOURS VERROUILLES (1 à 40) ---
+const NOMBRE_PARCOURS = 40;[span_11](start_span)[span_11](end_span)
 const parcoursSelect = document.getElementById("parcoursSelect");
+parcoursSelect.innerHTML = '<option value="">Choisir un parcours</option>';
 for (let i = 1; i <= NOMBRE_PARCOURS; i++) {
   const opt = document.createElement("option");
-  opt.value = "Parcours " + i;
-  opt.textContent = "Parcours " + i;
-  parcoursSelect.appendChild(opt);
+  opt.value = "Parcours " + i;[span_12](start_span)[span_12](end_span)
+  opt.textContent = "Parcours " + i;[span_13](start_span)[span_13](end_span)
+  parcoursSelect.appendChild(opt);[span_14](start_span)[span_14](end_span)
 }
 
+// --- GRILLE OFFICIELLE DES BALISES (Sans 3, 62, 84) ---
 const DONNEES_SHEET = {
-  8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
-  9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
-  10: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
-  11: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" },
-  12: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" },
-  13: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" },
-  14: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" },
-  15: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" },
-  16: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" },
-  17: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" },
-  18: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" },
-  19: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" },
-  20: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" },
-  21: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" },
-  22: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" },
-  23: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" },
-  24: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" },
-  25: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" },
-  26: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" },
-  27: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" },
-  28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },
-  29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" },
-  30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },
-  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" },
-  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" },
-  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" },
-  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" },
-  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" },
-  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" },
-  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },
-  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },
-  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },
-  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },
-  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },
-  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },
-  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },
-  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" },
-  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },
-  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },
-  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" },
-  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },
-  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },
-  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },
-  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
-  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
-  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
-  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
-  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
-  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },
-  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
-  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },
-  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
-  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
-  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" },
-  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
-  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
-  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },
-  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
-  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }
+  8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" }[span_15](start_span)[span_15](end_span),
+  9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" }[span_16](start_span)[span_16](end_span),
+  10: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" }[span_17](start_span)[span_17](end_span),
+  11: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" }[span_18](start_span)[span_18](end_span),
+  12: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" }[span_19](start_span)[span_19](end_span),
+  13: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" }[span_20](start_span)[span_20](end_span),
+  14: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" }[span_21](start_span)[span_21](end_span),
+  15: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" }[span_22](start_span)[span_22](end_span),
+  16: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" }[span_23](start_span)[span_23](end_span),
+  17: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" }[span_24](start_span)[span_24](end_span),
+  18: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" }[span_25](start_span)[span_25](end_span),
+  19: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" }[span_26](start_span)[span_26](end_span),
+  20: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" }[span_27](start_span)[span_27](end_span),
+  21: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" }[span_28](start_span)[span_28](end_span),
+  22: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" }[span_29](start_span)[span_29](end_span),
+  23: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" }[span_30](start_span)[span_30](end_span),
+  24: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" }[span_31](start_span)[span_31](end_span),
+  25: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" }[span_32](start_span)[span_32](end_span),
+  26: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" }[span_33](start_span)[span_33](end_span),
+  27: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" }[span_34](start_span)[span_34](end_span),
+  28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" }[span_35](start_span)[span_35](end_span),
+  29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" }[span_36](start_span)[span_36](end_span),
+  30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" }[span_37](start_span)[span_37](end_span),
+  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" }[span_38](start_span)[span_38](end_span),
+  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" }[span_39](start_span)[span_39](end_span),
+  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" }[span_40](start_span)[span_40](end_span),
+  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" }[span_41](start_span)[span_41](end_span),
+  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" }[span_42](start_span)[span_42](end_span),
+  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" }[span_43](start_span)[span_43](end_span),
+  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" }[span_44](start_span)[span_44](end_span),
+  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" }[span_45](start_span)[span_45](end_span),
+  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" }[span_46](start_span)[span_46](end_span),
+  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" }[span_47](start_span)[span_47](end_span),
+  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" }[span_48](start_span)[span_48](end_span),
+  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" }[span_49](start_span)[span_49](end_span),
+  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" }[span_50](start_span)[span_50](end_span),
+  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" }[span_51](start_span)[span_51](end_span),
+  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" }[span_52](start_span)[span_52](end_span),
+  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" }[span_53](start_span)[span_53](end_span),
+  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" }[span_54](start_span)[span_54](end_span),
+  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" }[span_55](start_span)[span_55](end_span),
+  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" }[span_56](start_span)[span_56](end_span),
+  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" }[span_57](start_span)[span_57](end_span),
+  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" }[span_58](start_span)[span_58](end_span),
+  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" }[span_59](start_span)[span_59](end_span),
+  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" }[span_60](start_span)[span_60](end_span),
+  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" }[span_61](start_span)[span_61](end_span),
+  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" }[span_62](start_span)[span_62](end_span),
+  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" }[span_63](start_span)[span_63](end_span),
+  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" }[span_64](start_span)[span_64](end_span),
+  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" }[span_65](start_span)[span_65](end_span),
+  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" }[span_66](start_span)[span_66](end_span),
+  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" }[span_67](start_span)[span_67](end_span),
+  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" }[span_68](start_span)[span_68](end_span),
+  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" }[span_69](start_span)[span_69](end_span),
+  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" }[span_70](start_span)[span_70](end_span),
+  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" }[span_71](start_span)[span_71](end_span),
+  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" }[span_72](start_span)[span_72](end_span),
+  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }[span_73](start_span)[span_73](end_span)
 };
 
-// --- VALIDATION & GESTION POP-UP ---
+// --- GESTION DES CLASSES (Stockage local fiable) ---
+const STORAGE_CLASSES_KEY = "co_classes_data";
+const STORAGE_RESULTS_KEY = "co_results_data";
+
+function getStoredClasses() {
+  const data = localStorage.getItem(STORAGE_CLASSES_KEY);
+  if (data) {
+    try { return JSON.parse(data); } catch(e) {}
+  }
+  return {
+    "4A": ["Lucas A.", "Emma B.", "Thomas C.", "Léa D.", "Nathan E.", "Hugo F."],
+    "4B": ["Manon G.", "Jules H.", "Camille I.", "Maxime J.", "Chloé K.", "Antoine L."]
+  };
+}
+
+function saveStoredClasses(obj) {
+  localStorage.setItem(STORAGE_CLASSES_KEY, JSON.stringify(obj));
+  populateClassSelectors();
+  renderClassesOverview();
+}
+
+function getStoredResults() {
+  const data = localStorage.getItem(STORAGE_RESULTS_KEY);
+  if (data) {
+    try { return JSON.parse(data); } catch(e) {}
+  }
+  return [];
+}
+
+function saveStoredResults(arr) {
+  localStorage.setItem(STORAGE_RESULTS_KEY, JSON.stringify(arr));
+  renderTeacherDashboard();
+}
+
+// --- POPULATE CLASSES & ELEVES ---
+const classeSelect = document.getElementById("classeSelect");
+const teamSelect = document.getElementById("teamSelect");
+
+function populateClassSelectors() {
+  const classes = getStoredClasses();
+  const currentClass = classeSelect.value;
+  classeSelect.innerHTML = '<option value="">Sélectionner la classe</option>';
+  Object.keys(classes).sort().forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    classeSelect.appendChild(opt);
+  });
+  if (currentClass && classes[currentClass]) {
+    classeSelect.value = currentClass;
+    populateStudentsForClass(currentClass);
+  } else {
+    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';
+  }
+}
+
+function populateStudentsForClass(className) {
+  const classes = getStoredClasses();
+  const students = classes[className] || [];
+  teamSelect.innerHTML = '<option value="">Choisir un élève</option>';
+  students.sort().forEach(st => {
+    const opt = document.createElement("option");
+    opt.value = st;
+    opt.textContent = st;
+    teamSelect.appendChild(opt);
+  });
+}
+
+classeSelect.addEventListener("change", function() {
+  populateStudentsForClass(this.value);
+});
+
+// --- IMPORT PRONOTE CSV ---
+const newClassNameInput = document.getElementById("newClassNameInput");
+const classCsvInput = document.getElementById("classCsvInput");
+const createClassBtn = document.getElementById("createClassBtn");
+const classManagerMessage = document.getElementById("classManagerMessage");
+const classesListContainer = document.getElementById("classesListContainer");
+
+createClassBtn.addEventListener("click", function() {
+  const className = newClassNameInput.value.trim().toUpperCase();
+  const file = classCsvInput.files[0];
+  if (!className) {
+    classManagerMessage.textContent = "Saisissez un nom de classe.";
+    classManagerMessage.className = "message error";
+    return;
+  }
+  if (!file) {
+    classManagerMessage.textContent = "Sélectionnez un fichier CSV ou TXT.";
+    classManagerMessage.className = "message error";
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const students = [];
+
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(/[;,]/).map(p => p.replace(/^"|"$/g, '').trim());
+      if (parts.length >= 2) {
+        const nom = parts[0];
+        const prenom = parts[1];
+        if (nom && prenom) students.push((nom.toUpperCase() + " " + prenom).trim());
+      } else if (parts[0]) {
+        students.push(parts[0]);
+      }
+    }
+
+    if (students.length === 0) {
+      classManagerMessage.textContent = "Aucun élève trouvé dans le fichier.";
+      classManagerMessage.className = "message error";
+      return;
+    }
+
+    const classes = getStoredClasses();
+    classes[className] = [...new Set(students)];
+    saveStoredClasses(classes);
+
+    newClassNameInput.value = "";
+    classCsvInput.value = "";
+    classManagerMessage.textContent = "Classe " + className + " enregistrée avec " + students.length + " élève(s).";
+    classManagerMessage.className = "message success";
+  };
+  reader.readAsText(file, "utf-8");
+});
+
+function renderClassesOverview() {
+  const classes = getStoredClasses();
+  const keys = Object.keys(classes).sort();
+  if (keys.length === 0) {
+    classesListContainer.innerHTML = "Aucune classe enregistrée.";
+    return;
+  }
+  let html = "<table><thead><tr><th>Classe</th><th>Effectif</th><th>Action</th></tr></thead><tbody>";
+  keys.forEach(c => {
+    html += `<tr>
+      <td style="font-weight:700;">${c}</td>
+      <td>${classes[c].length} élève(s)</td>
+      <td><button class="danger-btn" style="padding:6px 12px; font-size:0.8rem;" onclick="deleteClass('${c}')">Supprimer</button></td>
+    </tr>`;
+  });
+  html += "</tbody></table>";
+  classesListContainer.innerHTML = html;
+}
+
+window.deleteClass = function(c) {
+  if (!confirm(`Supprimer la classe ${c} ?`)) return;
+  const classes = getStoredClasses();
+  delete classes[c];
+  saveStoredClasses(classes);
+};
+
+// --- VALIDATION DU PARCOURS & POP-UP ---
 const tagForm = document.getElementById("tagForm");
 const resultModal = document.getElementById("resultModal");
 const popupTime = document.getElementById("popupTime");
@@ -418,8 +574,6 @@ const popupValidBox = document.getElementById("popupValidBox");
 const popupErrorBox = document.getElementById("popupErrorBox");
 const closeModalBtn = document.getElementById("closeModalBtn");
 const resultsList = document.getElementById("resultsList");
-const resultsTableBody = document.getElementById("resultsTableBody");
-const teamSelect = document.getElementById("teamSelect");
 const couleurParcoursSelect = document.getElementById("couleurParcoursSelect");
 const niveauSelect = document.getElementById("niveauSelect");
 const durationMinutesInput = document.getElementById("durationMinutes");
@@ -431,11 +585,22 @@ function formatTime(m, s) {
 
 tagForm.addEventListener("submit", function(e) {
   e.preventDefault();
+  const classe = classeSelect.value;
+  const eleve = teamSelect.value;
+  const parcours = parcoursSelect.value;
   const couleur = couleurParcoursSelect.value;
   const m = parseInt(durationMinutesInput.value, 10) || 0;
   const s = parseInt(durationSecondsInput.value, 10) || 0;
   const niveau = parseInt(niveauSelect.value, 10) || 1;
-  const eleve = teamSelect.value;
+
+  if (!classe || !eleve || !parcours || !couleur) {
+    alert("Veuillez sélectionner votre classe, votre nom, votre parcours et sa couleur.");
+    return;
+  }
+  if (m === 0 && s === 0) {
+    alert("Veuillez entrer un temps de course valide.");
+    return;
+  }
 
   let correctes = 0;
   let tentatives = 0;
@@ -473,7 +638,7 @@ tagForm.addEventListener("submit", function(e) {
 
   const points = correctes * niveau;
 
-  // Remplissage du résumé et des listes détaillées dans le pop-up
+  // Affichage dans la modale
   popupTime.textContent = formatTime(m, s);
   popupTags.textContent = correctes + " / " + tentatives;
   popupScore.textContent = "+" + points + " pt(s)";
@@ -494,15 +659,23 @@ tagForm.addEventListener("submit", function(e) {
 
   resultModal.classList.remove("hidden");
 
-  // Enregistrement dans le tableau professeur
-  const now = new Date().toLocaleTimeString("fr-FR");
-  const tr = document.createElement("tr");
-  tr.innerHTML = "<td><b>" + eleve + "</b></td><td style='color:#1b4332; font-weight:bold;'>+" + points + " pts</td><td>" + correctes + "/" + tentatives + "</td><td>" + formatTime(m, s) + "</td><td>" + now + "</td>";
-  
-  if (resultsTableBody.children[0] && resultsTableBody.children[0].innerText.includes("En attente")) {
-    resultsTableBody.innerHTML = "";
-  }
-  resultsTableBody.prepend(tr);
+  // Enregistrement des résultats
+  const allResults = getStoredResults();
+  allResults.push({
+    classe: classe,
+    eleve: eleve,
+    parcours: parcours,
+    couleur: couleur,
+    niveau: niveau,
+    correctes: correctes,
+    tentatives: tentatives,
+    erreurs: (tentatives - correctes),
+    points: points,
+    tempsMinutes: m,
+    tempsSecondes: s,
+    timestamp: new Date().toLocaleTimeString("fr-FR")
+  });
+  saveStoredResults(allResults);
 });
 
 closeModalBtn.addEventListener("click", function() {
@@ -511,6 +684,114 @@ closeModalBtn.addEventListener("click", function() {
   resultsList.innerHTML = "";
   niveauSelect.value = "1";
 });
+
+// --- DASHBOARD PROFESSEUR & BILAN INDIVIDUEL ---
+const resultsTableBody = document.getElementById("resultsTableBody");
+const exportCsvBtn = document.getElementById("exportCsvBtn");
+const exportPdfBtn = document.getElementById("exportPdfBtn");
+const clearResultsBtn = document.getElementById("clearResultsBtn");
+
+function renderTeacherDashboard() {
+  const allResults = getStoredResults();
+  if (allResults.length === 0) {
+    resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de validations élèves...</td></tr>';
+    return;
+  }
+
+  // Aggrégation par élève
+  const agg = {};
+  allResults.forEach(r => {
+    const key = r.classe + " - " + r.eleve;
+    if (!agg[key]) {
+      agg[key] = {
+        classe: r.classe,
+        eleve: r.eleve,
+        points: 0,
+        correctes: 0,
+        erreurs: 0,
+        totalSec: 0,
+        passages: 0,
+        dernier: r.timestamp
+      };
+    }
+    agg[key].points += r.points;
+    agg[key].correctes += r.correctes;
+    agg[key].erreurs += r.erreurs;
+    agg[key].totalSec += (r.tempsMinutes * 60 + r.tempsSecondes);
+    agg[key].passages += 1;
+    agg[key].dernier = r.timestamp;
+  });
+
+  const list = Object.values(agg).sort((a, b) => b.points - a.points);
+  let html = "";
+  list.forEach(st => {
+    const m = Math.floor(st.totalSec / 60);
+    const s = st.totalSec % 60;
+    html += `<tr>
+      <td style="font-weight:700;">${st.classe}</td>
+      <td style="text-align:left; font-weight:700;">${st.eleve}</td>
+      <td style="font-weight:900; color:#1b4332; background:#d8f3dc;">${st.points} pts</td>
+      <td style="font-weight:700; color:#166534;">${st.correctes}</td>
+      <td style="font-weight:700; color:#b91c1c;">${st.erreurs}</td>
+      <td style="font-weight:700;">${formatTime(m, s)}</td>
+      <td>${st.passages}</td>
+      <td style="color:var(--muted);">${st.dernier}</td>
+    </tr>`;
+  });
+  resultsTableBody.innerHTML = html;
+}
+
+clearResultsBtn.addEventListener("click", function() {
+  if (confirm("Réinitialiser tous les résultats de la séance ?")) {
+    saveStoredResults([]);
+  }
+});
+
+// --- EXPORTS CSV ET PDF ---
+exportCsvBtn.addEventListener("click", function() {
+  const allResults = getStoredResults();
+  if (allResults.length === 0) { alert("Aucun résultat à exporter."); return; }
+  const lines = ['Classe;Élève;Parcours;Couleur;Points;Balises justes;Erreurs;Temps;Heure'];
+  allResults.forEach(r => {
+    lines.push([r.classe, r.eleve, r.parcours, r.couleur, r.points, r.correctes, r.erreurs, formatTime(r.tempsMinutes, r.tempsSecondes), r.timestamp].map(v => `"${v}"`).join(';'));
+  });
+  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `bilan_CO_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+});
+
+exportPdfBtn.addEventListener("click", function() {
+  const allResults = getStoredResults();
+  if (allResults.length === 0) { alert("Aucun résultat à exporter."); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFontSize(15);
+  doc.text("Bilan de la séance de Course d'Orientation", 14, 18);
+  doc.setFontSize(10);
+  doc.setTextColor(100);
+  doc.text(`Date : ${new Date().toLocaleDateString('fr-FR')}`, 14, 25);
+
+  const tableData = allResults.map(r => [
+    r.classe, r.eleve, r.parcours, r.couleur, `${r.points} pts`, `${r.correctes}/${r.tentatives}`, formatTime(r.tempsMinutes, r.tempsSecondes), r.timestamp
+  ]);
+
+  doc.autoTable({
+    startY: 30,
+    head: [['Classe', 'Élève', 'Parcours', 'Couleur', 'Points', 'Justes', 'Temps', 'Heure']],
+    body: tableData,
+    theme: 'striped',
+    headStyles: { fillColor: [88, 129, 87] },
+    styles: { fontSize: 8, halign: 'center' },
+    columnStyles: { 0: { halign: 'left' }, 1: { halign: 'left', fontStyle: 'bold' } }
+  });
+  doc.save(`bilan_CO_${new Date().toISOString().slice(0,10)}.pdf`);
+});
+
+// Initialisation
+populateClassSelectors();
+renderTeacherDashboard();
 </script>
 </body>
 </html>
