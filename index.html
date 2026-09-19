@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - v8 (Couleur Unique par Parcours)</title>
+  <title>CO Connectée - v8 (Pop-up Validation)</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -54,6 +54,57 @@
     .pill.active { background:#d8f3dc; color:#166534; }
     .pill.inactive { background:#fee2e2; color:#991b1b; }
     .empty-box { padding:14px; border:1px dashed #b9c5b6; border-radius:12px; background:rgba(255,255,255,.55); color:var(--muted); }
+
+    /* POP-UP MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      border: 4px solid var(--primary);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+      animation: popIn 0.25s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-card h2 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      color: var(--dark);
+    }
+    .popup-stat {
+      background: var(--soft);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .popup-stat-label {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .popup-stat-val {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--dark);
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
@@ -269,73 +320,91 @@
   </section>
 </div>
 
+<!-- POP-UP BILAN ELEVE -->
+<div id="resultModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <h2>🏁 Parcours validé !</h2>
+    <div class="popup-stat">
+      <div class="popup-stat-label">⏱️ Temps de course</div>
+      <div class="popup-stat-val" id="popupTime">00:00</div>
+    </div>
+    <div class="popup-stat">
+      <div class="popup-stat-label">🎯 Balises justes</div>
+      <div class="popup-stat-val" id="popupTags" style="color:#166534;">0 / 0</div>
+    </div>
+    <div class="popup-stat">
+      <div class="popup-stat-label">⭐ Points obtenus</div>
+      <div class="popup-stat-val" id="popupScore" style="color:#2d6a4f;">+0 pts</div>
+    </div>
+    <button type="button" id="closeModalBtn" class="primary-submit" style="margin-top:10px;">Fermer / Suivant ➡️</button>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
-// Balises renumérotées (-11 à partir de 51) sans la balise 3 ni la 84
 const DONNEES_SHEET_DEFAUT = {
-  8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
-  9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
-  10: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
-  11: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" },
-  12: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" },
-  13: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" },
-  14: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" },
-  15: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" },
-  16: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" },
-  17: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" },
-  18: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" },
-  19: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" },
-  20: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" },
-  21: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" },
-  22: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" },
-  23: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" },
-  24: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" },
-  25: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" },
-  26: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" },
-  27: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" },
-  28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },
-  29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" },
-  30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },
-  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" },
-  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" },
-  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" },
-  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" },
-  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" },
-  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" },
-  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },
-  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },
-  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },
-  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },
-  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },
-  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },
-  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },
-  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" },
-  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },
-  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },
-  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" },
-  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },
-  62: { BLEU: "7U", NOIR: "4M", ORANGE: "8R", VERT: "3P", ROSE: "6E", GRIS: "1B", ROUGE: "5A", MARRON: "2Z" },
-  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },
-  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },
-  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
-  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
-  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
-  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
-  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
-  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },
-  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
-  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },
-  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
-  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
-  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" },
-  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
-  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
-  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },
-  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
-  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }
+  8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" }[span_0](start_span)[span_0](end_span),
+  9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" }[span_1](start_span)[span_1](end_span),
+  10: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" }[span_2](start_span)[span_2](end_span),
+  11: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" }[span_3](start_span)[span_3](end_span),
+  12: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" }[span_4](start_span)[span_4](end_span),
+  13: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" }[span_5](start_span)[span_5](end_span),
+  14: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" }[span_6](start_span)[span_6](end_span),
+  15: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" }[span_7](start_span)[span_7](end_span),
+  16: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" }[span_8](start_span)[span_8](end_span),
+  17: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" }[span_9](start_span)[span_9](end_span),
+  18: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" }[span_10](start_span)[span_10](end_span),
+  19: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" }[span_11](start_span)[span_11](end_span),
+  20: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" }[span_12](start_span)[span_12](end_span),
+  21: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" }[span_13](start_span)[span_13](end_span),
+  22: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" }[span_14](start_span)[span_14](end_span),
+  23: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" }[span_15](start_span)[span_15](end_span),
+  24: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" }[span_16](start_span)[span_16](end_span),
+  25: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" }[span_17](start_span)[span_17](end_span),
+  26: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" }[span_18](start_span)[span_18](end_span),
+  27: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" }[span_19](start_span)[span_19](end_span),
+  28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" }[span_20](start_span)[span_20](end_span),
+  29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" }[span_21](start_span)[span_21](end_span),
+  30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" }[span_22](start_span)[span_22](end_span),
+  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" }[span_23](start_span)[span_23](end_span),
+  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" }[span_24](start_span)[span_24](end_span),
+  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" }[span_25](start_span)[span_25](end_span),
+  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" }[span_26](start_span)[span_26](end_span),
+  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" }[span_27](start_span)[span_27](end_span),
+  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" }[span_28](start_span)[span_28](end_span),
+  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" }[span_29](start_span)[span_29](end_span),
+  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" }[span_30](start_span)[span_30](end_span),
+  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" }[span_31](start_span)[span_31](end_span),
+  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" }[span_32](start_span)[span_32](end_span),
+  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" }[span_33](start_span)[span_33](end_span),
+  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" }[span_34](start_span)[span_34](end_span),
+  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" }[span_35](start_span)[span_35](end_span),
+  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" }[span_36](start_span)[span_36](end_span),
+  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" }[span_37](start_span)[span_37](end_span),
+  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" }[span_38](start_span)[span_38](end_span),
+  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" }[span_39](start_span)[span_39](end_span),
+  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" }[span_40](start_span)[span_40](end_span),
+  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" }[span_41](start_span)[span_41](end_span),
+  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" }[span_42](start_span)[span_42](end_span),
+  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" }[span_43](start_span)[span_43](end_span),
+  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" }[span_44](start_span)[span_44](end_span),
+  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" }[span_45](start_span)[span_45](end_span),
+  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" }[span_46](start_span)[span_46](end_span),
+  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" }[span_47](start_span)[span_47](end_span),
+  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" }[span_48](start_span)[span_48](end_span),
+  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" }[span_49](start_span)[span_49](end_span),
+  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" }[span_50](start_span)[span_50](end_span),
+  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" }[span_51](start_span)[span_51](end_span),
+  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" }[span_52](start_span)[span_52](end_span),
+  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" }[span_53](start_span)[span_53](end_span),
+  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" }[span_54](start_span)[span_54](end_span),
+  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" }[span_55](start_span)[span_55](end_span),
+  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" }[span_56](start_span)[span_56](end_span),
+  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" }[span_57](start_span)[span_57](end_span),
+  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }[span_58](start_span)[span_58](end_span)
 };
 
 function remapBalisesObject(obj) {
@@ -419,6 +488,13 @@ const balisesFileInput = document.getElementById("balisesFileInput");
 const uploadBalisesBtn = document.getElementById("uploadBalisesBtn");
 const balisesInfoText = document.getElementById("balisesInfoText");
 const balisesStatusMessage = document.getElementById("balisesStatusMessage");
+
+// Modale Pop-up
+const resultModal = document.getElementById("resultModal");
+const popupTime = document.getElementById("popupTime");
+const popupTags = document.getElementById("popupTags");
+const popupScore = document.getElementById("popupScore");
+const closeModalBtn = document.getElementById("closeModalBtn");
 
 function showGlobalError(message, type = "error") {
   globalError.textContent = message || "";
@@ -520,7 +596,6 @@ function formatTotalSeconds(totalSec) {
   return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 }
 
-// Vérification avec la couleur unique du parcours
 function verifyTags(couleurParcours) {
   let correctes = 0;
   let tentatives = 0;
@@ -566,7 +641,18 @@ function verifyTags(couleurParcours) {
 function displayLocalResults(correctes, tentatives, pointsGagnes, minutes, secondes) {
   scoreArea.classList.remove("hidden");
   scoreArea.innerHTML = "Score : " + correctes + "/" + tentatives + " balise(s) valide(s) [+" + pointsGagnes + " pt(s)] — Temps : " + formatTime(minutes, secondes);
+
+  // Mise à jour et affichage du Pop-up
+  popupTime.textContent = formatTime(minutes, secondes);
+  popupTags.textContent = correctes + " / " + tentatives;
+  popupScore.textContent = "+" + pointsGagnes + " pt(s)";
+  resultModal.classList.remove("hidden");
 }
+
+closeModalBtn.addEventListener("click", function() {
+  resultModal.classList.add("hidden");
+  resetFormForNewEntry();
+});
 
 function slugifyClassId(name) {
   return name.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").toUpperCase();
@@ -1412,7 +1498,6 @@ async function submitStudentResult(event) {
     submitBtn.textContent = 'Envoi en cours...';
     await db.collection('lecons').doc(lessonId).collection('resultats').add(payload);
     showGlobalError('', 'success');
-    setTimeout(function() { resetFormForNewEntry(); }, 5000);
   } catch (error) {
     console.error(error);
     showGlobalError(`Impossible d'envoyer les résultats. Vérifiez la connexion.`, 'error');
