@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Course d'Orientation - Collège Claudie Haigneré</title>
+  <title>CO Connectée - v7 (Leçon 3 Shakers)</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -11,11 +11,11 @@
     }
     * { box-sizing:border-box; }
     body { margin:0; font-family:Segoe UI,Tahoma,Verdana,sans-serif; background:var(--bg); color:#1f2937; }
-    .container { max-width:1250px; margin:14px auto; padding:18px; background:rgba(255,255,255,.98); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.22); border:2px solid var(--primary); }
+    .container { max-width:1250px; margin:22px auto; padding:22px; background:rgba(255,255,255,.98); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.22); border:2px solid var(--primary); }
     h1,h2,h3 { color:var(--dark); margin-top:0; }
-    h1 { text-align:center; font-size:1.5rem; margin-bottom:16px; }
-    .topbar { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
-    .view-btn,.control-btn,.success-btn,.danger-btn,.secondary-btn,.primary-submit { border:none; border-radius:10px; padding:12px 18px; font-weight:700; cursor:pointer; }
+    h1 { text-align:center; margin-bottom:18px; }
+    .topbar { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+    .view-btn,.control-btn,.success-btn,.danger-btn,.secondary-btn,.primary-submit { border:none; border-radius:10px; padding:13px 18px; font-weight:700; cursor:pointer; }
     .view-btn { background:#dce6d8; color:var(--dark); }
     .view-btn.active { background:var(--dark); color:#fff; }
     .control-btn { background:var(--accent); color:#fff; }
@@ -24,69 +24,36 @@
     .danger-btn { background:var(--danger); color:#fff; }
     button:disabled { opacity:.55; cursor:not-allowed; }
     .hidden { display:none !important; }
-    .banner { text-align:center; padding:10px 14px; margin-bottom:14px; border-radius:12px; color:#fff; background:var(--dark); font-weight:700; font-size:0.95rem; }
-    .panel, .form-section { background:var(--soft); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:16px; }
-    .grid-5 { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; }
-    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
-    label { display:block; margin-bottom:6px; font-weight:700; font-size:0.92rem; color:var(--dark); }
-    input, select { width:100%; padding:11px; border:1px solid #b8c3b3; border-radius:10px; background:#fff; font-size:1rem; }
-    .time-input-group { display:flex; gap:8px; align-items:center; max-width:280px; }
-    .time-input-group span { font-weight:800; font-size:1.3rem; color:var(--dark); }
-    .mini-note { color:var(--muted); font-size:.88rem; margin-top:4px; }
-    .tag-group { border:2px dashed var(--primary); border-radius:12px; padding:10px; margin-bottom:10px; background:rgba(255,255,255,.5); }
-    .tag-inputs { display:grid; grid-template-columns:1fr 1fr; gap:10px; align-items:end; }
-    .primary-submit { width:100%; padding:15px; background:var(--primary); color:#fff; font-size:1.1rem; }
-    .message { margin:10px 0; font-weight:700; text-align:center; }
+    .banner { text-align:center; padding:12px 16px; margin-bottom:16px; border-radius:12px; color:#fff; background:#6b7280; font-weight:700; }
+    .panel, .form-section { background:var(--soft); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:18px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; }
+    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+    label { display:block; margin-bottom:8px; font-weight:700; color:var(--dark); }
+    input, select { width:100%; padding:12px; border:1px solid #b8c3b3; border-radius:10px; background:#fff; font-size:1rem; }
+    .time-input-group { display:flex; gap:10px; align-items:center; max-width:320px; }
+    .time-input-group span { font-weight:800; font-size:1.4rem; color:var(--dark); }
+    .mini-note { color:var(--muted); font-size:.92rem; margin-top:6px; }
+    .tag-group { border:2px dashed var(--primary); border-radius:12px; padding:12px; margin-bottom:12px; background:rgba(255,255,255,.5); }
+    .tag-inputs { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; align-items:end; }
+    .primary-submit { width:100%; padding:16px; background:var(--primary); color:#fff; font-size:1.08rem; }
+    .message { margin:10px 0; font-weight:700; }
     .error { color:#b91c1c; }
     .success { color:#166534; }
-    .dashboard-controls { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:12px; }
-    table { width:100%; border-collapse:collapse; background:#fff; font-size:0.88rem; }
-    th, td { border:1px solid #e5e7eb; padding:8px; text-align:center; vertical-align:middle; }
+    #resultsList { list-style:none; padding:0; margin:14px 0 0; }
+    #resultsList li { padding:10px 12px; border-radius:10px; margin-bottom:8px; font-weight:700; }
+    .result-correct { background:#d8f3dc; color:#1b4332; }
+    .result-incorrect { background:#ffccd5; color:#7f1d1d; }
+    .result-missing { background:#fff3cd; color:#7a5c00; }
+    #scoreArea { margin-top:14px; padding:15px; border-radius:12px; background:#e9f2e6; font-weight:800; text-align:center; color:var(--dark); }
+    .dashboard-controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
+    table { width:100%; border-collapse:collapse; background:#fff; }
+    th, td { border:1px solid #e5e7eb; padding:10px; text-align:center; vertical-align:middle; }
     th { background:var(--primary); color:#fff; }
     tr:nth-child(even) td { background:#f8faf8; }
-    .pill { display:inline-block; padding:5px 10px; border-radius:999px; font-size:.82rem; font-weight:700; }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-size:.85rem; font-weight:700; }
     .pill.active { background:#d8f3dc; color:#166534; }
     .pill.inactive { background:#fee2e2; color:#991b1b; }
-    .empty-box { padding:12px; border:1px dashed #b9c5b6; border-radius:12px; background:rgba(255,255,255,.55); color:var(--muted); text-align:center; }
-
-    /* POP-UP */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.78); backdrop-filter: blur(4px);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 2000; padding: 14px;
-    }
-    .modal-card {
-      background: #ffffff; border-radius: 24px; padding: 22px 20px;
-      width: 100%; max-width: 460px; text-align: center;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.4); border: 4px solid var(--primary);
-      animation: modalBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      max-height: 92vh; overflow-y: auto;
-    }
-    @keyframes modalBounce {
-      0% { transform: scale(0.65); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .modal-emoji { font-size: 3.5rem; line-height: 1; margin-bottom: 6px; display: inline-block; }
-    .modal-title { font-size: 1.55rem; font-weight: 900; margin: 0 0 14px; color: var(--dark); }
-    .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
-    .stat-pill { background: var(--soft); border: 1.5px solid var(--border); border-radius: 12px; padding: 8px 4px; }
-    .stat-pill-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
-    .stat-pill-val { font-size: 1.25rem; font-weight: 900; color: var(--dark); }
-    .detail-section { text-align: left; margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
-    .detail-card { border-radius: 12px; padding: 10px 12px; font-size: 0.88rem; }
-    .detail-card-ok { background: #e8f7ec; border: 1.5px solid #a3e0b2; color: #14532d; }
-    .detail-card-err { background: #fdf2f2; border: 1.5px solid #f8b4b4; color: #7f1d1d; }
-    .detail-card-title { font-size: 0.76rem; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; display: block; }
-    .sync-status-badge {
-      display: inline-block; font-size: 0.82rem; font-weight: 800;
-      padding: 5px 12px; border-radius: 999px; background: #f3f4f6;
-      color: #4b5563; margin-bottom: 14px; border: 1px solid #d1d5db;
-    }
-    .btn-continue {
-      width: 100%; padding: 15px; border: none; border-radius: 14px;
-      background: var(--dark); color: #fff; font-size: 1.08rem; font-weight: 900; cursor: pointer;
-    }
+    .empty-box { padding:14px; border:1px dashed #b9c5b6; border-radius:12px; background:rgba(255,255,255,.55); color:var(--muted); }
   </style>
 </head>
 <body>
@@ -94,20 +61,20 @@
   <h1>🌲 Course d'Orientation Connectée 🧭</h1>
 
   <div class="topbar">
-    <button id="studentViewBtn" class="view-btn active" type="button" onclick="basculerVue('eleve')">📱 Vue Élève</button>
-    <button id="teacherViewBtn" class="view-btn" type="button" onclick="basculerVue('prof')">🖥️ Vue Professeur</button>
+    <button id="studentViewBtn" class="view-btn active">📱 Vue Élève</button>
+    <button id="teacherViewBtn" class="view-btn" onclick="openTeacherAccess()">🖥️ Vue Professeur</button>
   </div>
 
-  <p id="globalError" class="message error"></p>
+  <p id="globalError" class="message error" style="text-align:center;"></p>
 
   <!-- VUE ELEVE -->
   <section id="studentView">
-    <div id="activeLessonBanner" class="banner">Séance active — Validation Shakers</div>
+    <div id="activeLessonBanner" class="banner">Connexion en cours...</div>
 
     <form id="tagForm">
       <div class="form-section">
         <h2>Identification</h2>
-        <div class="grid-5">
+        <div class="grid-4">
           <div>
             <label for="classeSelect">Classe</label>
             <select id="classeSelect" required>
@@ -125,21 +92,7 @@
             <select id="parcoursSelect" required></select>
           </div>
           <div>
-            <label for="couleurParcoursSelect">Couleur du parcours</label>
-            <select id="couleurParcoursSelect" required>
-              <option value="">Choisir la couleur</option>
-              <option value="BLEU">BLEU</option>
-              <option value="NOIR">NOIR</option>
-              <option value="ORANGE">ORANGE</option>
-              <option value="VERT">VERT</option>
-              <option value="ROSE">ROSE</option>
-              <option value="GRIS">GRIS</option>
-              <option value="ROUGE">ROUGE</option>
-              <option value="MARRON">MARRON</option>
-            </select>
-          </div>
-          <div>
-            <label for="niveauSelect">Niveau</label>
+            <label for="niveauSelect">Niveau de difficulté</label>
             <select id="niveauSelect" required>
               <option value="1" selected>🟢 Niveau 1 (1 pt)</option>
               <option value="2">🔵 Niveau 2 (2 pts)</option>
@@ -161,33 +114,41 @@
       </div>
 
       <div class="form-section">
-        <h2>Saisie des balises du parcours (5 max)</h2>
+        <h2>Saisie des balises (5 max)</h2>
         <div id="tagEntriesContainer">
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum0">Balise 1 - N°</label><input type="number" id="baliseNum0" min="1" max="150" placeholder="Ex : 70"></div>
-            <div><label for="baliseCode0">Code écrit</label><input type="text" id="baliseCode0" placeholder="Ex : 7R"></div>
+            <div><label for="baliseNum0">Balise 1 - Numéro</label><input type="number" id="baliseNum0" min="1" max="150" placeholder="Ex : 42"></div>
+            <div><label for="baliseCouleur0">Couleur</label><select id="baliseCouleur0"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
+            <div><label for="baliseCode0">Code</label><input type="text" id="baliseCode0" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum1">Balise 2 - N°</label><input type="number" id="baliseNum1" min="1" max="150" placeholder="Ex : 70"></div>
-            <div><label for="baliseCode1">Code écrit</label><input type="text" id="baliseCode1" placeholder="Ex : 7R"></div>
+            <div><label for="baliseNum1">Balise 2 - Numéro</label><input type="number" id="baliseNum1" min="1" max="150" placeholder="Ex : 42"></div>
+            <div><label for="baliseCouleur1">Couleur</label><select id="baliseCouleur1"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
+            <div><label for="baliseCode1">Code</label><input type="text" id="baliseCode1" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum2">Balise 3 - N°</label><input type="number" id="baliseNum2" min="1" max="150" placeholder="Ex : 70"></div>
-            <div><label for="baliseCode2">Code écrit</label><input type="text" id="baliseCode2" placeholder="Ex : 7R"></div>
+            <div><label for="baliseNum2">Balise 3 - Numéro</label><input type="number" id="baliseNum2" min="1" max="150" placeholder="Ex : 42"></div>
+            <div><label for="baliseCouleur2">Couleur</label><select id="baliseCouleur2"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
+            <div><label for="baliseCode2">Code</label><input type="text" id="baliseCode2" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum3">Balise 4 - N°</label><input type="number" id="baliseNum3" min="1" max="150" placeholder="Ex : 70"></div>
-            <div><label for="baliseCode3">Code écrit</label><input type="text" id="baliseCode3" placeholder="Ex : 7R"></div>
+            <div><label for="baliseNum3">Balise 4 - Numéro</label><input type="number" id="baliseNum3" min="1" max="150" placeholder="Ex : 42"></div>
+            <div><label for="baliseCouleur3">Couleur</label><select id="baliseCouleur3"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
+            <div><label for="baliseCode3">Code</label><input type="text" id="baliseCode3" placeholder="Ex : 5B"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum4">Balise 5 - N°</label><input type="number" id="baliseNum4" min="1" max="150" placeholder="Ex : 70"></div>
-            <div><label for="baliseCode4">Code écrit</label><input type="text" id="baliseCode4" placeholder="Ex : 7R"></div>
+            <div><label for="baliseNum4">Balise 5 - Numéro</label><input type="number" id="baliseNum4" min="1" max="150" placeholder="Ex : 42"></div>
+            <div><label for="baliseCouleur4">Couleur</label><select id="baliseCouleur4"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
+            <div><label for="baliseCode4">Code</label><input type="text" id="baliseCode4" placeholder="Ex : 5B"></div>
           </div></div>
         </div>
       </div>
 
       <button type="submit" id="submitBtn" class="primary-submit">🚀 Vérifier et envoyer le résultat</button>
     </form>
+
+    <div id="resultsContainer"><ul id="resultsList"></ul></div>
+    <div id="scoreArea" class="hidden"></div>
   </section>
 
   <!-- ACCES PROFESSEUR -->
@@ -197,23 +158,27 @@
     <label for="teacherCodeInput">Code</label>
     <input type="password" id="teacherCodeInput" autocomplete="off" placeholder="Entrez le code">
     <p id="teacherCodeError" class="message error"></p>
-    <button type="button" id="teacherCodeSubmitBtn" class="success-btn" onclick="validerCodeProf()">Valider le code</button>
+    <button type="button" id="teacherCodeSubmitBtn" class="success-btn">Valider le code</button>
   </section>
 
   <!-- DASHBOARD PROFESSEUR -->
   <section id="teacherDashboard" class="hidden">
     <div class="panel">
       <h2>Tableau de bord professeur</h2>
-      <div id="lessonStatus" class="pill active">Séance active</div>
+      <div id="lessonStatus" class="pill inactive">Aucune leçon active</div>
       <div class="dashboard-controls" style="margin-top:12px;">
-        <button id="exportCsvBtn" class="secondary-btn" type="button">📊 Export CSV</button>
-        <button id="exportPdfBtn" class="secondary-btn" type="button">📄 Export PDF</button>
-        <button id="clearResultsBtn" class="danger-btn" type="button">🗑️ Effacer les résultats</button>
+        <button id="startLessonBtn" class="control-btn">▶️ Démarrer une leçon</button>
+        <button id="loadHistoryBtn" class="secondary-btn">🕘 Historique</button>
+        <button id="exportCsvBtn" class="secondary-btn" disabled>📊 Export CSV Bilan</button>
+        <button id="exportPdfBtn" class="secondary-btn" disabled>📄 Export PDF Bilan</button>
+        <button id="exportRankingBtn" class="control-btn" disabled>🏆 Classement Points</button>
+        <button id="closeLessonBtn" class="danger-btn" disabled>⛔ Clôturer la séance</button>
       </div>
     </div>
 
+    <!-- TABLEAU BILAN PAR ELEVE -->
     <div class="panel">
-      <h3>📈 Bilan individuel des élèves</h3>
+      <h3>📈 Bilan individuel des élèves sur la leçon</h3>
       <div style="overflow-x:auto;">
         <table>
           <thead>
@@ -236,6 +201,28 @@
     </div>
 
     <div class="panel">
+      <h3>Codes des Balises</h3>
+      <p class="mini-note" id="balisesInfoText">Chargement du statut des balises...</p>
+
+      <label for="sheetUrlInput" style="margin-top:10px;">Lien ou ID Google Sheets (Partagé en lecture)</label>
+      <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/.../edit">
+      
+      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:12px;">
+        <button id="syncSheetBtn" class="success-btn">🔄 Synchroniser Google Sheets</button>
+      </div>
+
+      <hr style="border:0; border-top:1px dashed var(--border); margin:14px 0;">
+
+      <label for="balisesFileInput">Ou importer un fichier local (CSV / TXT)</label>
+      <input type="file" id="balisesFileInput" accept=".csv,.txt">
+      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:0;">
+        <button id="uploadBalisesBtn" class="secondary-btn">💾 Importer fichier local</button>
+      </div>
+
+      <p id="balisesStatusMessage" class="message"></p>
+    </div>
+
+    <div class="panel">
       <h3>Gestion des classes Pronote</h3>
       <div class="grid-2">
         <div>
@@ -248,627 +235,1209 @@
         </div>
       </div>
       <div class="dashboard-controls" style="justify-content:flex-start; margin-top:12px; margin-bottom:0;">
-        <button id="createClassBtn" class="success-btn" type="button">➕ Créer / mettre à jour la classe</button>
+        <button id="createClassBtn" class="success-btn">➕ Créer / mettre à jour la classe</button>
+        <button id="refreshClassesBtn" class="secondary-btn">🔄 Actualiser</button>
       </div>
+      <p class="mini-note">Les classes et les élèves sont enregistrés en ligne dans Firestore.</p>
       <p id="classManagerMessage" class="message"></p>
     </div>
 
     <div class="panel">
       <h3>Classes enregistrées</h3>
-      <div id="classesListContainer" class="empty-box">Chargement des classes...</div>
+      <div id="classesListContainer" class="empty-box">Aucune classe enregistrée.</div>
+    </div>
+
+    <div id="historyPanel" class="panel hidden">
+      <h3>Historique des leçons</h3>
+      <div style="margin-bottom:10px;"><button id="closeHistoryBtn" class="secondary-btn">Fermer</button></div>
+      <div style="overflow:auto;">
+        <table>
+          <thead><tr><th>Nom</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </section>
 </div>
 
-<!-- POP-UP RESULTAT ELEVE -->
-<div id="resultModal" class="modal-overlay hidden">
-  <div class="modal-card" id="modalCard">
-    <div class="modal-emoji" id="popupEmoji">🏆</div>
-    <h2 class="modal-title" id="popupTitle">Parcours parfait !</h2>
-
-    <div class="stats-row">
-      <div class="stat-pill">
-        <div class="stat-pill-label">Balises</div>
-        <div class="stat-pill-val" id="popupScoreTags">0 / 0</div>
-      </div>
-      <div class="stat-pill">
-        <div class="stat-pill-label">Points</div>
-        <div class="stat-pill-val" id="popupPoints" style="color:#1b4332;">+0</div>
-      </div>
-      <div class="stat-pill">
-        <div class="stat-pill-label">Temps</div>
-        <div class="stat-pill-val" id="popupTime">00:00</div>
-      </div>
-    </div>
-
-    <div class="detail-section">
-      <div class="detail-card detail-card-ok" id="popupOkCard">
-        <span class="detail-card-title">✅ Balises correctes</span>
-        <div id="popupOkList">Aucune</div>
-      </div>
-      <div class="detail-card detail-card-err" id="popupErrCard">
-        <span class="detail-card-title">❌ Erreurs ou manquantes</span>
-        <div id="popupErrList">Aucune</div>
-      </div>
-    </div>
-
-    <div>
-      <span id="popupSendStatus" class="sync-status-badge">⏳ Envoi en cours...</span>
-    </div>
-
-    <button type="button" id="closeModalBtn" class="btn-continue">Continuer ➡️</button>
-  </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
-// --- NAVIGATION IMMEDIATE (FONCTIONNE PARTOUT) ---
+const DONNEES_SHEET_DEFAUT = {
+  8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
+  9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
+  10: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
+  11: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" },
+  12: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" },
+  13: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" },
+  14: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" },
+  15: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" },
+  16: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" },
+  17: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" },
+  18: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" },
+  19: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" },
+  20: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" },
+  21: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" },
+  22: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" },
+  23: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" },
+  24: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" },
+  25: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" },
+  26: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" },
+  27: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" },
+  28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },
+  29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" },
+  30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },
+  31: { BLEU: "5V", NOIR: "PF", ORANGE: "WM", VERT: "28", ROSE: "QL", GRIS: "PE", ROUGE: "EV", MARRON: "DQ" },
+  32: { BLEU: "UI", NOIR: "52", ORANGE: "VR", VERT: "8V", ROSE: "BJ", GRIS: "FP", ROUGE: "46", MARRON: "VF" },
+  33: { BLEU: "RJ", NOIR: "RI", ORANGE: "FL", VERT: "WR", ROSE: "93", GRIS: "GP", ROUGE: "MF", MARRON: "SG" },
+  34: { BLEU: "C4", NOIR: "HC", ORANGE: "UC", VERT: "IH", ROSE: "JL", GRIS: "YL", ROUGE: "AP", MARRON: "PV" },
+  35: { BLEU: "GF", NOIR: "BZ", ORANGE: "G0", VERT: "LK", ROSE: "4L", GRIS: "N1", ROUGE: "VD", MARRON: "3V" },
+  36: { BLEU: "VQ", NOIR: "P3", ORANGE: "3Y", VERT: "85", ROSE: "SG", GRIS: "0S", ROUGE: "8J", MARRON: "9D" },
+  37: { BLEU: "DZ", NOIR: "O3", ORANGE: "9B", VERT: "S8", ROSE: "5T", GRIS: "HD", ROUGE: "ST", MARRON: "ZP" },
+  51: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" },
+  52: { BLEU: "6H", NOIR: "1X", ORANGE: "5N", VERT: "7T", ROSE: "2P", GRIS: "4F", ROUGE: "8L", MARRON: "3M" },
+  53: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" },
+  54: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" },
+  55: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" },
+  56: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" },
+  57: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" },
+  58: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },
+  59: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },
+  60: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },
+  61: { BLEU: "7M", NOIR: "3H", ORANGE: "1K", VERT: "2W", ROSE: "5A", GRIS: "4X", ROUGE: "8F", MARRON: "6T" },
+  62: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },
+  63: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },
+  64: { BLEU: "1O", NOIR: "3G", ORANGE: "2F", VERT: "6T", ROSE: "8K", GRIS: "7M", ROUGE: "5S", MARRON: "4A" },
+  65: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },
+  66: { BLEU: "2T", NOIR: "8B", ORANGE: "7H", VERT: "4E", ROSE: "6C", GRIS: "5W", ROUGE: "1G", MARRON: "3L" },
+  67: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },
+  68: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" },
+  69: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },
+  70: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },
+  71: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" },
+  72: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },
+  73: { BLEU: "7U", NOIR: "4M", ORANGE: "8R", VERT: "3P", ROSE: "6E", GRIS: "1B", ROUGE: "5A", MARRON: "2Z" },
+  75: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },
+  76: { BLEU: "6R", NOIR: "4A", ORANGE: "1O", VERT: "3S", ROSE: "7M", GRIS: "5U", ROUGE: "8J", MARRON: "2X" },
+  77: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },
+  78: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
+  80: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
+  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
+  82: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
+  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
+  84: { BLEU: "1M", NOIR: "3H", ORANGE: "4K", VERT: "2W", ROSE: "5A", GRIS: "8X", ROUGE: "7F", MARRON: "6T" },
+  85: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },
+  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
+  87: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },
+  89: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
+  90: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
+  91: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" },
+  93: { BLEU: "7Z", NOIR: "3W", ORANGE: "1X", VERT: "2K", ROSE: "5S", GRIS: "4J", ROUGE: "8M", MARRON: "6F" },
+  95: { BLEU: "2M", NOIR: "6P", ORANGE: "8Y", VERT: "5E", ROSE: "3K", GRIS: "4N", ROUGE: "9A", MARRON: "7R" },
+  96: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },
+  98: { BLEU: "2F", NOIR: "8E", ORANGE: "7W", VERT: "4H", ROSE: "6N", GRIS: "5K", ROUGE: "1T", MARRON: "3G" },
+  100: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }
+};
+
+let DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
+const NOMBRE_BALISES_SAISIE = 5;
+const NOMBRE_PARCOURS = 50;
+const TEACHER_CODE = "16170";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD3Cu1X0_JSF1qePFRzcq-RY-MYTB32a-8",
+  authDomain: "co-rouillac.firebaseapp.com",
+  projectId: "co-rouillac",
+  storageBucket: "co-rouillac.firebasestorage.app",
+  messagingSenderId: "729910930573",
+  appId: "1:729910930573:web:f8c0e93c702416fcd446c4"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let unsubscribeFromResults = null;
+let currentActiveLessonId = null;
+let currentTeacherLesson = null;
+let currentStudentMap = {};
 let teacherAccessGranted = false;
-const TEACHER_CODE = "16170";[cite: 2]
 
-function basculerVue(vue) {
-  const studentView = document.getElementById("studentView");
-  const teacherDashboard = document.getElementById("teacherDashboard");
-  const teacherLoginContainer = document.getElementById("teacherLoginContainer");
-  const studentViewBtn = document.getElementById("studentViewBtn");
-  const teacherViewBtn = document.getElementById("teacherViewBtn");
+// DOM Elements
+const studentView = document.getElementById("studentView");
+const teacherDashboard = document.getElementById("teacherDashboard");
+const teacherLoginContainer = document.getElementById("teacherLoginContainer");
+const studentViewBtn = document.getElementById("studentViewBtn");
+const teacherViewBtn = document.getElementById("teacherViewBtn");
+const globalError = document.getElementById("globalError");
+const activeLessonBanner = document.getElementById("activeLessonBanner");
+const classeSelect = document.getElementById("classeSelect");
+const teamSelect = document.getElementById("teamSelect");
+const parcoursSelect = document.getElementById("parcoursSelect");
+const niveauSelect = document.getElementById("niveauSelect");
+const durationMinutesInput = document.getElementById("durationMinutes");
+const durationSecondsInput = document.getElementById("durationSeconds");
+const tagForm = document.getElementById("tagForm");
+const submitBtn = document.getElementById("submitBtn");
+const resultsList = document.getElementById("resultsList");
+const scoreArea = document.getElementById("scoreArea");
+const teacherCodeInput = document.getElementById("teacherCodeInput");
+const teacherCodeSubmitBtn = document.getElementById("teacherCodeSubmitBtn");
+const teacherCodeError = document.getElementById("teacherCodeError");
+const startLessonBtn = document.getElementById("startLessonBtn");
+const loadHistoryBtn = document.getElementById("loadHistoryBtn");
+const closeHistoryBtn = document.getElementById("closeHistoryBtn");
+const exportCsvBtn = document.getElementById("exportCsvBtn");
+const exportPdfBtn = document.getElementById("exportPdfBtn");
+const exportRankingBtn = document.getElementById("exportRankingBtn");
+const closeLessonBtn = document.getElementById("closeLessonBtn");
+const lessonStatus = document.getElementById("lessonStatus");
+const resultsTableBody = document.getElementById("resultsTableBody");
+const historyPanel = document.getElementById("historyPanel");
+const historyTableBody = document.getElementById("historyTableBody");
+const newClassNameInput = document.getElementById("newClassNameInput");
+const classCsvInput = document.getElementById("classCsvInput");
+const createClassBtn = document.getElementById("createClassBtn");
+const refreshClassesBtn = document.getElementById("refreshClassesBtn");
+const classesListContainer = document.getElementById("classesListContainer");
+const classManagerMessage = document.getElementById("classManagerMessage");
 
+const sheetUrlInput = document.getElementById("sheetUrlInput");
+const syncSheetBtn = document.getElementById("syncSheetBtn");
+const balisesFileInput = document.getElementById("balisesFileInput");
+const uploadBalisesBtn = document.getElementById("uploadBalisesBtn");
+const balisesInfoText = document.getElementById("balisesInfoText");
+const balisesStatusMessage = document.getElementById("balisesStatusMessage");
+
+function showGlobalError(message, type = "error") {
+  globalError.textContent = message || "";
+  globalError.className = "message " + type;
+}
+
+function setClassManagerMessage(message, type = "success") {
+  classManagerMessage.textContent = message || "";
+  classManagerMessage.className = "message " + type;
+}
+
+function setBalisesStatus(message, type = "success") {
+  balisesStatusMessage.textContent = message || "";
+  balisesStatusMessage.className = "message " + type;
+}
+
+function clearMessages() {
+  showGlobalError("");
+  setClassManagerMessage("");
+  setBalisesStatus("");
+}
+
+function showView(viewName) {
   studentView.classList.add("hidden");
   teacherDashboard.classList.add("hidden");
   teacherLoginContainer.classList.add("hidden");
   studentViewBtn.classList.remove("active");
   teacherViewBtn.classList.remove("active");
 
-  if (vue === "eleve") {
+  if (viewName === "student") {
     studentView.classList.remove("hidden");
     studentViewBtn.classList.add("active");
-  } else if (vue === "prof") {
-    if (teacherAccessGranted) {
-      teacherDashboard.classList.remove("hidden");
-      teacherViewBtn.classList.add("active");
-      loadClassesOverview();
-    } else {
-      teacherLoginContainer.classList.remove("hidden");
-      teacherViewBtn.classList.add("active");
-    }
-  }
-}
-
-function validerCodeProf() {
-  const code = document.getElementById("teacherCodeInput").value.trim();
-  const err = document.getElementById("teacherCodeError");
-  if (code === TEACHER_CODE) {[cite: 2]
-    teacherAccessGranted = true;
-    err.textContent = "";
-    document.getElementById("teacherCodeInput").value = "";
-    basculerVue("prof");
+  } else if (viewName === "teacher") {
+    teacherDashboard.classList.remove("hidden");
+    teacherViewBtn.classList.add("active");
   } else {
-    err.textContent = "Code incorrect.";
+    teacherLoginContainer.classList.remove("hidden");
+    teacherViewBtn.classList.add("active");
   }
 }
 
-document.getElementById("teacherCodeInput").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") { e.preventDefault(); validerCodeProf(); }
+window.openTeacherAccess = function() {
+  showView(teacherAccessGranted ? "teacher" : "teacherLogin");
+};
+
+studentViewBtn.addEventListener("click", function() { showView("student"); });
+teacherViewBtn.addEventListener("click", function() { window.openTeacherAccess(); });
+teacherCodeSubmitBtn.addEventListener("click", function() {
+  if (teacherCodeInput.value === TEACHER_CODE) {
+    teacherAccessGranted = true;
+    teacherCodeError.textContent = "";
+    teacherCodeInput.value = "";
+    showView("teacher");
+    loadClassesOverview();
+    if (currentActiveLessonId) openLesson(currentActiveLessonId);
+  } else {
+    teacherCodeError.textContent = "Code incorrect.";
+  }
+});
+teacherCodeInput.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    teacherCodeSubmitBtn.click();
+  }
 });
 
-// --- GRILLE OFFICIELLE TERRAIN (AUCUN DECALAGE) ---
-const DONNEES_SHEET = {
-  1: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
-  2: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
-  3: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
-  4: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" },
-  5: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" },
-  6: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" },
-  7: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" },
-  8: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" },
-  9: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" },
-  10: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" },
-  11: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" },
-  12: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" },
-  13: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" },
-  14: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" },
-  15: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" },
-  16: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" },
-  17: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" },
-  18: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" },
-  19: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" },
-  20: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" },
-  21: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },
-  22: { BLEU: "VD", NOIR: "P3", ORANGE: "3Y", VERT: "85", ROSE: "SG", GRIS: "0S", ROUGE: "8J", MARRON: "9D" },
-  23: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },
-  24: { BLEU: "5V", NOIR: "PF", ORANGE: "WM", VERT: "28", ROSE: "QL", GRIS: "PE", ROUGE: "EV", MARRON: "DQ" },
-  25: { BLEU: "UI", NOIR: "52", ORANGE: "VR", VERT: "8V", ROSE: "BJ", GRIS: "FP", ROUGE: "46", MARRON: "VF" },
-  26: { BLEU: "RJ", NOIR: "RI", ORANGE: "FL", VERT: "WR", ROSE: "93", GRIS: "GP", ROUGE: "MF", MARRON: "SG" },
-  27: { BLEU: "C4", NOIR: "HC", ORANGE: "UC", VERT: "IH", ROSE: "JL", GRIS: "YL", ROUGE: "AP", MARRON: "PV" },
-  28: { BLEU: "GF", NOIR: "BZ", ORANGE: "G0", VERT: "LK", ROSE: "4L", GRIS: "N1", ROUGE: "VD", MARRON: "3V" },
-  29: { BLEU: "VQ", NOIR: "P3", ORANGE: "3Y", VERT: "85", ROSE: "SG", GRIS: "0S", ROUGE: "8J", MARRON: "9D" },
-  30: { BLEU: "DZ", NOIR: "O3", ORANGE: "9B", VERT: "S8", ROSE: "5T", GRIS: "HD", ROUGE: "ST", MARRON: "ZP" },
-  40: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },
-  41: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },
-  42: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },
-  43: { BLEU: "7M", NOIR: "3H", ORANGE: "1K", VERT: "2W", ROSE: "5A", GRIS: "4X", ROUGE: "8F", MARRON: "6T" },
-  44: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },
-  45: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },
-  46: { BLEU: "1O", NOIR: "3G", ORANGE: "2F", VERT: "6T", ROSE: "8K", GRIS: "7M", ROUGE: "5S", MARRON: "4A" },
-  47: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },
-  48: { BLEU: "2T", NOIR: "8B", ORANGE: "7H", VERT: "4E", ROSE: "6C", GRIS: "5W", ROUGE: "1G", MARRON: "3L" },
-  49: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },
-  51: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },
-  52: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },
-  54: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },
-  56: { BLEU: "5C", NOIR: "7J", ORANGE: "2D", VERT: "8R", ROSE: "3B", GRIS: "1L", ROUGE: "4Y", MARRON: "6P" },
-  57: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },
-  58: { BLEU: "6R", NOIR: "4A", ORANGE: "1O", VERT: "3S", ROSE: "7M", GRIS: "5U", ROUGE: "8J", MARRON: "2X" },
-  59: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },
-  60: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
-  61: { BLEU: "7P", NOIR: "6K", ORANGE: "8J", VERT: "1X", ROSE: "5O", GRIS: "3R", ROUGE: "2Z", MARRON: "4M" },
-  62: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
-  63: { BLEU: "6X", NOIR: "8C", ORANGE: "5A", VERT: "7N", ROSE: "2T", GRIS: "1S", ROUGE: "3K", MARRON: "4W" },
-  64: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
-  65: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
-  66: { BLEU: "1M", NOIR: "3H", ORANGE: "4K", VERT: "2W", ROSE: "5A", GRIS: "8X", ROUGE: "7F", MARRON: "6T" },
-  67: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },
-  69: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },
-  70: { BLEU: "6Y", NOIR: "1X", ORANGE: "7R", VERT: "3J", ROSE: "8U", GRIS: "5D", ROUGE: "2P", MARRON: "4Z" },
-  71: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
-  72: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
-  73: { BLEU: "4E", NOIR: "7M", ORANGE: "6P", VERT: "1Z", ROSE: "2R", GRIS: "8Y", ROUGE: "3B", MARRON: "5U" },
-  74: { BLEU: "2A", NOIR: "5D", ORANGE: "8G", VERT: "4L", ROSE: "7H", GRIS: "1T", ROUGE: "6N", MARRON: "3C" },
-  75: { BLEU: "7Z", NOIR: "3W", ORANGE: "1X", VERT: "2K", ROSE: "5S", GRIS: "4J", ROUGE: "8M", MARRON: "6F" },
-  76: { BLEU: "5L", NOIR: "6O", ORANGE: "4B", VERT: "7U", ROSE: "3P", GRIS: "2E", ROUGE: "1D", MARRON: "8R" },
-  78: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },
-  79: { BLEU: "3C", NOIR: "2J", ORANGE: "8D", VERT: "5R", ROSE: "7B", GRIS: "6L", ROUGE: "4Y", MARRON: "1P" },
-  80: { BLEU: "2F", NOIR: "8E", ORANGE: "7W", VERT: "4H", ROSE: "6N", GRIS: "5K", ROUGE: "1T", MARRON: "3G" },
-  81: { BLEU: "8R", NOIR: "7A", ORANGE: "6O", VERT: "1S", ROSE: "5M", GRIS: "4U", ROUGE: "3J", MARRON: "2X" },
-  82: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" },
-  83: { BLEU: "6S", NOIR: "5L", ORANGE: "4T", VERT: "2G", ROSE: "1W", GRIS: "3F", ROUGE: "8A", MARRON: "7N" },
-  84: { BLEU: "5P", NOIR: "4K", ORANGE: "1J", VERT: "8X", ROSE: "3O", GRIS: "2R", ROUGE: "7Z", MARRON: "6M" },
-  85: { BLEU: "4G", NOIR: "1U", ORANGE: "3E", VERT: "7B", ROSE: "2Y", GRIS: "8H", ROUGE: "6L", MARRON: "5D" },
-  86: { BLEU: "1X", NOIR: "3C", ORANGE: "6A", VERT: "4N", ROSE: "8T", GRIS: "2S", ROUGE: "7K", MARRON: "5W" },
-  87: { BLEU: "4B", NOIR: "2F", ORANGE: "3Z", VERT: "5M", ROSE: "6J", GRIS: "7P", ROUGE: "1U", MARRON: "8O" },
-  88: { BLEU: "5N", NOIR: "7R", ORANGE: "2L", VERT: "8D", ROSE: "3E", GRIS: "1G", ROUGE: "4C", MARRON: "6Y" },
-  89: { BLEU: "8M", NOIR: "1H", ORANGE: "7K", VERT: "6W", ROSE: "2A", GRIS: "4X", ROUGE: "5F", MARRON: "3T" }
-};
-
-// --- CONFIGURATION FIREBASE FIRESTORE ---
-const firebaseConfig = {
-  apiKey: "AIzaSyD3Cu1X0_JSF1qePFRzcq-RY-MYTB32a-8",[cite: 2]
-  authDomain: "co-rouillac.firebaseapp.com",[cite: 2]
-  projectId: "co-rouillac",[cite: 2]
-  storageBucket: "co-rouillac.firebasestorage.app",[cite: 2]
-  messagingSenderId: "729910930573",[cite: 2]
-  appId: "1:729910930573:web:f8c0e93c702416fcd446c4"[cite: 2]
-};
-
-try { firebase.initializeApp(firebaseConfig); } catch(e) {}
-const db = firebase.firestore();
-
-let currentStudentMap = {};[cite: 2]
-
-function timeoutPromise(promise, ms = 3500) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms))
-  ]);
+function populateParcours() {
+  parcoursSelect.innerHTML = '<option value="">Choisir un parcours </option>';
+  for (let i = 1; i <= NOMBRE_PARCOURS; i++) {
+    const option = document.createElement("option");
+    option.value = "Parcours " + i;
+    option.textContent = "Parcours " + i;
+    parcoursSelect.appendChild(option);
+  }
 }
 
-// --- RECUPERATION DES CLASSES ET ELEVES (FIRESTORE + CACHE) ---
-const classeSelect = document.getElementById("classeSelect");
-const teamSelect = document.getElementById("teamSelect");
-const classesListContainer = document.getElementById("classesListContainer");
+function resetFormForNewEntry() {
+  tagForm.reset();
+  resultsList.innerHTML = "";
+  scoreArea.innerHTML = "";
+  scoreArea.classList.add("hidden");
+  teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
+  parcoursSelect.selectedIndex = 0;
+  niveauSelect.value = "1";
+}
+
+function formatTime(minutes, secondes) {
+  return String(minutes).padStart(2, "0") + ":" + String(secondes).padStart(2, "0");
+}
+
+function formatTotalSeconds(totalSec) {
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  if (h > 0) {
+    return h + "h " + String(m).padStart(2, "0") + "m " + String(s).padStart(2, "0") + "s";
+  }
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+function verifyTags() {
+  let correctes = 0;
+  let tentatives = 0;
+  const listeTrouvees = [];
+  const listeErreurs = [];
+  resultsList.innerHTML = "";
+
+  for (let i = 0; i < NOMBRE_BALISES_SAISIE; i++) {
+    const num = document.getElementById("baliseNum" + i).value;
+    const couleur = document.getElementById("baliseCouleur" + i).value;
+    const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();
+    if (!num && !couleur && !code) continue;
+    tentatives++;
+
+    let message = "";
+    let resultClass = "result-missing";
+
+    if (num && couleur && code) {
+      const numInt = parseInt(num, 10);
+      if (DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleur] === code) {
+        message = "Balise " + num + " (" + couleur + ") : ✅ CORRECT";
+        resultClass = "result-correct";
+        correctes++;
+        listeTrouvees.push(num);
+      } else {
+        message = "Balise " + num + " (" + couleur + ") : ❌ INCORRECT";
+        resultClass = "result-incorrect";
+        listeErreurs.push(num);
+      }
+    } else {
+      message = "Balise " + (i + 1) + " : ⚠️ Informations incomplètes";
+      resultClass = "result-missing";
+      listeErreurs.push(num || ("B" + (i + 1)));
+    }
+
+    const li = document.createElement("li");
+    li.className = resultClass;
+    li.textContent = message;
+    resultsList.appendChild(li);
+  }
+  return { correctes, tentatives, listeTrouvees, listeErreurs };
+}
+
+function displayLocalResults(correctes, tentatives, pointsGagnes, minutes, secondes) {
+  scoreArea.classList.remove("hidden");
+  scoreArea.innerHTML = "Score : " + correctes + "/" + tentatives + " balise(s) valide(s) [+" + pointsGagnes + " pt(s)] — Temps : " + formatTime(minutes, secondes);
+}
+
+function slugifyClassId(name) {
+  return name.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").toUpperCase();
+}
+
+function detectDelimiter(text) {
+  const firstLine = (text || "").split(/\r?\n/).find(line => line.trim().length > 0) || "";
+  const candidates = [";", ",", "\t"];
+  let best = ";";
+  let bestCount = -1;
+  candidates.forEach(function(delim) {
+    const count = firstLine.split(delim).length;
+    if (count > bestCount) { best = delim; bestCount = count; }
+  });
+  return best;
+}
+
+function splitCSVLine(line, delimiter) {
+  const result = [];
+  let current = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    const next = line[i + 1];
+    if (char === '"') {
+      if (inQuotes && next === '"') { current += '"'; i++; }
+      else { inQuotes = !inQuotes; }
+    } else if (char === delimiter && !inQuotes) {
+      result.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  result.push(current.trim());
+  return result.map(value => value.replace(/^"|"$/g, "").trim());
+}
+
+function normalizeHeader(value) {
+  return (value || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function findHeaderIndex(headers, possibleNames) {
+  const normalized = headers.map(normalizeHeader);
+  return normalized.findIndex(function(h) { return possibleNames.includes(h); });
+}
+
+function parseBalisesCSV(text) {
+  const cleanText = (text || "").replace(/^\uFEFF/, "").trim();
+  if (!cleanText) throw new Error("Le fichier est vide.");
+
+  const delimiter = detectDelimiter(cleanText);
+  const lines = cleanText.split(/\r?\n/).filter(line => line.trim().length > 0);
+  if (lines.length < 2) throw new Error("Le fichier doit comporter une ligne d'en-tête et au moins une balise.");
+
+  const headers = splitCSVLine(lines[0], delimiter).map(h => h.trim().toUpperCase());
+  const numIndex = headers.findIndex(h => ["BALISE", "NUMERO", "NUM", "ID", "N°"].includes(h.normalize("NFD").replace(/[̀-ͯ]/g, "")));
+  if (numIndex === -1) throw new Error("Impossible de trouver la colonne 'Balise' ou 'Numéro'.");
+
+  const colors = ["BLEU", "NOIR", "ORANGE", "VERT", "ROSE", "GRIS", "ROUGE", "MARRON"];
+  const colorMap = {};
+  colors.forEach(col => {
+    const idx = headers.indexOf(col);
+    if (idx !== -1) colorMap[col] = idx;
+  });
+
+  if (Object.keys(colorMap).length === 0) {
+    throw new Error("Aucune colonne de couleur valide trouvée (BLEU, NOIR, ORANGE, VERT, etc.).");
+  }
+
+  const result = {};
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCSVLine(lines[i], delimiter);
+    const num = parseInt(cols[numIndex], 10);
+    if (isNaN(num)) continue;
+
+    result[num] = {};
+    colors.forEach(col => {
+      const idx = colorMap[col];
+      if (idx !== undefined && cols[idx] !== undefined) {
+        const val = cols[idx].trim().toUpperCase();
+        if (val) result[num][col] = val;
+      }
+    });
+  }
+
+  if (Object.keys(result).length === 0) {
+    throw new Error("Aucune balise valide n'a pu être extraite.");
+  }
+  return result;
+}
+
+function extractSheetId(urlOrId) {
+  const trimmed = (urlOrId || "").trim();
+  const match = trimmed.match(/\/d\/([a-zA-Z0-9-_]+)/);
+  if (match && match[1]) return match[1];
+  if (/^[a-zA-Z0-9-_]{20,}$/.test(trimmed)) return trimmed;
+  return null;
+}
+
+async function syncBalisesFromGoogleSheet() {
+  setBalisesStatus("");
+  const inputVal = sheetUrlInput.value.trim();
+  const sheetId = extractSheetId(inputVal);
+
+  if (!sheetId) {
+    setBalisesStatus("URL ou ID Google Sheet invalide. Vérifiez le lien partagé.", "error");
+    return;
+  }
+
+  const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+
+  try {
+    syncSheetBtn.disabled = true;
+    setBalisesStatus("Téléchargement et lecture de la feuille...", "success");
+
+    const response = await fetch(csvUrl);
+    if (!response.ok) {
+      throw new Error(`Accès refusé (${response.status}). Assurez-vous que le fichier est partagé avec : "Tous les utilisateurs disposant du lien" en Lecteur.`);
+    }
+
+    const csvText = await response.text();
+    const parsedData = parseBalisesCSV(csvText);
+    const count = Object.keys(parsedData).length;
+
+    setBalisesStatus("Enregistrement dans la base...", "success");
+    await db.collection("config").doc("balisesData").set({
+      balises: JSON.stringify(parsedData),
+      count: count,
+      source: "Google Sheets",
+      sheetId: sheetId,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    setBalisesStatus(`✅ ${count} balises synchronisées depuis Google Sheets !`, "success");
+  } catch (error) {
+    console.error(error);
+    setBalisesStatus("Erreur : " + (error.message || error), "error");
+  } finally {
+    syncSheetBtn.disabled = false;
+  }
+}
+
+async function uploadLocalBalisesFile() {
+  setBalisesStatus("");
+  const file = balisesFileInput.files[0];
+  if (!file) {
+    setBalisesStatus("Sélectionnez un fichier CSV ou TXT.", "error");
+    return;
+  }
+
+  try {
+    uploadBalisesBtn.disabled = true;
+    setBalisesStatus("Lecture du fichier...", "success");
+    const text = await readSelectedFile(file);
+    const parsedData = parseBalisesCSV(text);
+    const count = Object.keys(parsedData).length;
+
+    await db.collection("config").doc("balisesData").set({
+      balises: JSON.stringify(parsedData),
+      count: count,
+      source: file.name,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    setBalisesStatus(`✅ ${count} balises importées depuis ${file.name}.`, "success");
+    balisesFileInput.value = "";
+  } catch (error) {
+    console.error(error);
+    setBalisesStatus("Erreur : " + (error.message || error), "error");
+  } finally {
+    uploadBalisesBtn.disabled = false;
+  }
+}
+
+function listenToBalisesConfig() {
+  db.collection("config").doc("balisesData").onSnapshot(function(doc) {
+    if (doc.exists && doc.data().balises) {
+      try {
+        const data = JSON.parse(doc.data().balises);
+        DONNEES_SHEET = data;
+        const count = Object.keys(data).length;
+        const source = doc.data().source || "En ligne";
+        balisesInfoText.textContent = `Codes actifs : ${count} balises chargées (Source : ${source}).`;
+        if (doc.data().sheetId && !sheetUrlInput.value) {
+          sheetUrlInput.value = `https://docs.google.com/spreadsheets/d/${doc.data().sheetId}/edit`;
+        }
+      } catch (err) {
+        console.error("Erreur de parsing des balises distantes", err);
+      }
+    } else {
+      DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
+      balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises (Grille par défaut intégrée).`;
+    }
+  });
+}
+
+syncSheetBtn.addEventListener("click", syncBalisesFromGoogleSheet);
+uploadBalisesBtn.addEventListener("click", uploadLocalBalisesFile);
+
+function parsePronoteCSV(text) {
+  const cleanText = (text || "").replace(/^﻿/, "").trim();
+  if (!cleanText) throw new Error("Le fichier est vide.");
+
+  const delimiter = detectDelimiter(cleanText);
+  const lines = cleanText.split(/\r?\n/).filter(line => line.trim().length > 0);
+  if (lines.length < 2) throw new Error("Le fichier doit contenir un en-tête et au moins une ligne élève.");
+
+  const headers = splitCSVLine(lines[0], delimiter);
+  const elevesIndex = findHeaderIndex(headers, ["eleves", "eleve", "listeeleves"]);
+  const nomIndex = findHeaderIndex(headers, ["nom", "elevenom", "nomdeleleve", "lastname"]);
+  const prenomIndex = findHeaderIndex(headers, ["prenom", "prenoms", "eleveprenom", "prenomdeleleve", "firstname"]);
+
+  const students = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const cols = splitCSVLine(lines[i], delimiter);
+
+    if (elevesIndex !== -1) {
+      const fullName = (cols[elevesIndex] || "").trim();
+      if (!fullName) continue;
+
+      const parts = fullName.split(/\s+/).filter(Boolean);
+      if (parts.length === 0) continue;
+
+      let prenom = parts.pop() || "";
+      let nom = parts.join(" ").trim();
+
+      if (!nom) {
+        nom = prenom;
+        prenom = "";
+      }
+
+      students.push({ nom: nom, prenom: prenom, nomComplet: fullName });
+      continue;
+    }
+
+    if (nomIndex !== -1 || prenomIndex !== -1) {
+      const nom = nomIndex !== -1 ? (cols[nomIndex] || "").trim() : "";
+      const prenom = prenomIndex !== -1 ? (cols[prenomIndex] || "").trim() : "";
+      if (!nom && !prenom) continue;
+      students.push({
+        nom: nom,
+        prenom: prenom,
+        nomComplet: ((nom ? nom.toUpperCase() : "") + " " + prenom).trim()
+      });
+    }
+  }
+
+  const seen = new Set();
+  const dedup = [];
+  students.forEach(function(student) {
+    const key = (student.nomComplet || (student.nom + "__" + student.prenom)).toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      dedup.push(student);
+    }
+  });
+
+  dedup.sort(function(a, b) {
+    return (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr");
+  });
+
+  if (dedup.length === 0) throw new Error("Aucun élève exploitable trouvé dans le fichier.");
+  return dedup;
+}
+
+function readSelectedFile(file) {
+  return new Promise(function(resolve, reject) {
+    const reader = new FileReader();
+    reader.onload = function() { resolve(reader.result); };
+    reader.onerror = function() { reject(new Error("Impossible de lire le fichier.")); };
+    reader.readAsText(file, "utf-8");
+  });
+}
+
+async function replaceStudentsForClass(classId, className, students, sourceFileName) {
+  const classRef = db.collection("classes").doc(classId);
+  const existingStudentsSnap = await classRef.collection("eleves").get();
+  let batch = db.batch();
+  let count = 0;
+  for (const doc of existingStudentsSnap.docs) {
+    batch.delete(doc.ref);
+    count++;
+    if (count === 400) { await batch.commit(); batch = db.batch(); count = 0; }
+  }
+  if (count > 0) await batch.commit();
+
+  await classRef.set({
+    classId: classId,
+    className: className,
+    active: true,
+    source: "Pronote CSV",
+    sourceFileName: sourceFileName || "",
+    studentCount: students.length,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+
+  batch = db.batch();
+  count = 0;
+  for (const student of students) {
+    const ref = classRef.collection("eleves").doc();
+    batch.set(ref, {
+      classId: classId,
+      className: className,
+      nom: student.nom,
+      prenom: student.prenom,
+      nomComplet: student.nomComplet,
+      active: true,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    count++;
+    if (count === 400) { await batch.commit(); batch = db.batch(); count = 0; }
+  }
+  if (count > 0) await batch.commit();
+}
+
+async function deleteClassFully(classId) {
+  const classRef = db.collection("classes").doc(classId);
+  const studentsSnap = await classRef.collection("eleves").get();
+  let batch = db.batch();
+  let count = 0;
+  for (const doc of studentsSnap.docs) {
+    batch.delete(doc.ref);
+    count++;
+    if (count === 400) { await batch.commit(); batch = db.batch(); count = 0; }
+  }
+  if (count > 0) await batch.commit();
+  await classRef.delete();
+}
 
 async function loadStudentClasses() {
   try {
-    const snap = await timeoutPromise(db.collection("classes").get());
-    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))[cite: 2]
-      .filter(item => item.active !== false)[cite: 2]
-      .sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[cite: 2]
-
-    classeSelect.innerHTML = '<option value="">Choisir une classe</option>';[cite: 2]
-    classes.forEach(item => {
-      const opt = document.createElement("option");[cite: 2]
-      opt.value = item.id;[cite: 2]
-      opt.textContent = item.className || item.id;[cite: 2]
-      classeSelect.appendChild(opt);[cite: 2]
+    const selected = classeSelect.value;
+    const snap = await db.collection("classes").get();
+    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(item => item.active !== false).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));
+    classeSelect.innerHTML = '<option value="">Choisir une classe</option>';
+    classes.forEach(function(item) {
+      const option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = item.className || item.id;
+      classeSelect.appendChild(option);
     });
-    localStorage.setItem("co_cached_classes", JSON.stringify(classes));
+    if (selected && classes.some(item => item.id === selected)) classeSelect.value = selected;
   } catch (error) {
-    const cached = localStorage.getItem("co_cached_classes");
-    if (cached) {
-      const classes = JSON.parse(cached);
-      classeSelect.innerHTML = '<option value="">Choisir une classe (Cache local)</option>';
-      classes.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.id;
-        opt.textContent = item.className || item.id;
-        classeSelect.appendChild(opt);
-      });
-    } else {
-      classeSelect.innerHTML = '<option value="">Sélectionner la classe</option>';
-    }
+    console.error(error);
+    classeSelect.innerHTML = '<option value="">Classes indisponibles</option>';
   }
 }
 
 async function loadStudentsForSelectedClass() {
-  const classId = classeSelect.value;[cite: 2]
-  currentStudentMap = {};[cite: 2]
+  const classId = classeSelect.value;
+  currentStudentMap = {};
   if (!classId) {
-    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';[cite: 2]
-    return;[cite: 2]
+    teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
+    return;
   }
-  teamSelect.innerHTML = '<option value="">Chargement des élèves...</option>';[cite: 2]
-  try {
-    const snap = await timeoutPromise(db.collection("classes").doc(classId).collection("eleves").get());
-    const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))[cite: 2]
-      .sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));[cite: 2]
-
-    teamSelect.innerHTML = '<option value="">Choisir un élève</option>';[cite: 2]
-    students.forEach(st => {
-      currentStudentMap[st.id] = st;[cite: 2]
-      const opt = document.createElement("option");[cite: 2]
-      opt.value = st.id;[cite: 2]
-      opt.textContent = st.nomComplet || ((st.nom || "") + " " + (st.prenom || "")).trim();[cite: 2]
-      teamSelect.appendChild(opt);[cite: 2]
-    });
-    localStorage.setItem("co_cached_students_" + classId, JSON.stringify(students));
-  } catch (error) {
-    const cached = localStorage.getItem("co_cached_students_" + classId);
-    if (cached) {
-      const students = JSON.parse(cached);
-      teamSelect.innerHTML = '<option value="">Choisir un élève (Cache local)</option>';
-      students.forEach(st => {
-        currentStudentMap[st.id] = st;
-        const opt = document.createElement("option");
-        opt.value = st.id;
-        opt.textContent = st.nomComplet || st.nom;
-        teamSelect.appendChild(opt);
-      });
-    } else {
-      teamSelect.innerHTML = '<option value="">Élèves indisponibles</option>';
-    }
-  }
+  teamSelect.innerHTML = '<option value="">Chargement des élèves...</option>';
+  const snap = await db.collection("classes").doc(classId).collection("eleves").get();
+  const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));
+  teamSelect.innerHTML = '<option value="">Choisir un élève</option>';
+  students.forEach(function(student) {
+    currentStudentMap[student.id] = student;
+    const option = document.createElement("option");
+    option.value = student.id;
+    option.textContent = student.nomComplet || ((student.nom || "") + " " + (student.prenom || "")).trim();
+    teamSelect.appendChild(option);
+  });
 }
-
-classeSelect.addEventListener("change", loadStudentsForSelectedClass);[cite: 2]
 
 async function loadClassesOverview() {
   try {
-    const snap = await timeoutPromise(db.collection("classes").get());
-    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))[cite: 2]
-      .sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[cite: 2]
-
+    const snap = await db.collection("classes").get();
+    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));
     if (docs.length === 0) {
-      classesListContainer.innerHTML = 'Aucune classe enregistrée.';
+      classesListContainer.innerHTML = '<div class="empty-box">Aucune classe enregistrée.</div>';
       return;
     }
-    let html = '<table><thead><tr><th>Classe</th><th>Effectif</th><th>Action</th></tr></thead><tbody>';
-    docs.forEach(item => {
-      html += `<tr>
-        <td style="font-weight:700;">${item.className || item.id}</td>
-        <td>${item.studentCount || 0} élève(s)</td>
-        <td><button class="danger-btn" style="padding:4px 8px; font-size:0.8rem;" onclick="supprimerClasse('${item.id}')">Supprimer</button></td>
-      </tr>`;
+    let html = '<table><thead><tr><th>Classe</th><th>Élèves</th><th>Fichier</th><th>Statut</th><th>Action</th></tr></thead><tbody>';
+    docs.forEach(function(item) {
+      html += '<tr>' +
+        '<td>' + (item.className || item.id) + '</td>' +
+        '<td>' + (item.studentCount || 0) + '</td>' +
+        '<td>' + (item.sourceFileName || '—') + '</td>' +
+        '<td><span class="pill ' + (item.active === false ? 'inactive' : 'active') + '">' + (item.active === false ? 'inactive' : 'active') + '</span></td>' +
+        '<td><button class="danger-btn delete-class-btn" data-class-id="' + item.id + '" data-class-name="' + (item.className || item.id).replace(/"/g, '&quot;') + '">Effacer classe</button></td>' +
+      '</tr>';
     });
     html += '</tbody></table>';
     classesListContainer.innerHTML = html;
-  } catch (error) {
-    classesListContainer.innerHTML = 'Connexion à la base impossible (mode autonome actif).';
-  }
-}
-
-window.supprimerClasse = async function(id) {
-  if (!confirm("Supprimer cette classe de la base ?")) return;
-  try {
-    await db.collection("classes").doc(id).delete();[cite: 2]
-    loadClassesOverview();
-    loadStudentClasses();
-  } catch(e) {
-    alert("Suppression impossible : " + e.message);
-  }
-};
-
-// Import Pronote CSV
-const newClassNameInput = document.getElementById("newClassNameInput");
-const classCsvInput = document.getElementById("classCsvInput");
-const createClassBtn = document.getElementById("createClassBtn");
-const classManagerMessage = document.getElementById("classManagerMessage");
-
-createClassBtn.addEventListener("click", async function() {
-  const className = newClassNameInput.value.trim().toUpperCase();[cite: 2]
-  const file = classCsvInput.files[0];[cite: 2]
-  if (!className || !file) {
-    classManagerMessage.textContent = "Indiquez un nom de classe et sélectionnez un fichier.";
-    classManagerMessage.className = "message error";
-    return;
-  }
-
-  const reader = new FileReader();[cite: 2]
-  reader.onload = async function(e) {
-    try {
-      const text = e.target.result;[cite: 2]
-      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);[cite: 2]
-      const students = [];[cite: 2]
-      for (let i = 1; i < lines.length; i++) {
-        const p = lines[i].split(/[;,]/).map(x => x.replace(/^"|"$/g, '').trim());[cite: 2]
-        if (p.length >= 2 && p[0] && p[1]) {
-          students.push({ nom: p[0].toUpperCase(), prenom: p[1], nomComplet: (p[0].toUpperCase() + " " + p[1]).trim() });[cite: 2]
-        } else if (p[0]) {
-          students.push({ nom: p[0], prenom: "", nomComplet: p[0].trim() });[cite: 2]
+    document.querySelectorAll('.delete-class-btn').forEach(function(btn) {
+      btn.addEventListener('click', async function() {
+        const classId = btn.dataset.classId;
+        const className = btn.dataset.className;
+        if (!confirm(`Effacer la classe "${className}" et sa liste d'élèves en ligne ?`)) return;
+        try {
+          await deleteClassFully(classId);
+          setClassManagerMessage('Classe ' + className + ' supprimée.', 'success');
+          await loadClassesOverview();
+          await loadStudentClasses();
+          if (classeSelect.value === classId) teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
+        } catch (error) {
+          console.error(error);
+          setClassManagerMessage('Suppression impossible : ' + (error.message || error), 'error');
         }
-      }
-
-      const classId = className.replace(/[^a-zA-Z0-9_-]/g, '-');[cite: 2]
-      const classRef = db.collection("classes").doc(classId);[cite: 2]
-      await classRef.set({
-        classId: classId,
-        className: className,
-        active: true,
-        studentCount: students.length,[cite: 2]
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()[cite: 2]
-      }, { merge: true });[cite: 2]
-
-      let batch = db.batch();[cite: 2]
-      students.forEach(st => {
-        const ref = classRef.collection("eleves").doc();[cite: 2]
-        batch.set(ref, { nomComplet: st.nomComplet, nom: st.nom, prenom: st.prenom, active: true });[cite: 2]
       });
-      await batch.commit();[cite: 2]
+    });
+  } catch (error) {
+    console.error(error);
+    classesListContainer.innerHTML = '<div class="empty-box">Impossible de charger les classes en ligne.</div>';
+  }
+}
 
-      newClassNameInput.value = "";[cite: 2]
-      classCsvInput.value = "";[cite: 2]
-      classManagerMessage.textContent = `Classe ${className} ajoutée avec ${students.length} élève(s).`;
-      classManagerMessage.className = "message success";[cite: 2]
-      loadClassesOverview();
-      loadStudentClasses();
-    } catch(err) {
-      classManagerMessage.textContent = "Erreur : " + err.message;
-      classManagerMessage.className = "message error";
+async function createOrUpdateClassFromCsv() {
+  clearMessages();
+  const className = newClassNameInput.value.trim();
+  const file = classCsvInput.files[0];
+  if (!className) { setClassManagerMessage('Saisissez le nom de la classe.', 'error'); return; }
+  if (!file) { setClassManagerMessage('Choisissez le fichier CSV Pronote.', 'error'); return; }
+  const classId = slugifyClassId(className);
+  if (!classId) { setClassManagerMessage('Nom de classe invalide.', 'error'); return; }
+  try {
+    createClassBtn.disabled = true;
+    setClassManagerMessage('Import en cours...', 'success');
+    const text = await readSelectedFile(file);
+    const students = parsePronoteCSV(text);
+    await replaceStudentsForClass(classId, className, students, file.name);
+    newClassNameInput.value = '';
+    classCsvInput.value = '';
+    setClassManagerMessage('Classe ' + className + ' enregistrée avec ' + students.length + ' élève(s).', 'success');
+    await loadClassesOverview();
+    await loadStudentClasses();
+  } catch (error) {
+    console.error(error);
+    setClassManagerMessage(error.message || `Erreur pendant l'import.`, 'error');
+  } finally {
+    createClassBtn.disabled = false;
+  }
+}
+
+classeSelect.addEventListener('change', loadStudentsForSelectedClass);
+createClassBtn.addEventListener('click', createOrUpdateClassFromCsv);
+refreshClassesBtn.addEventListener('click', async function() { await loadClassesOverview(); await loadStudentClasses(); });
+
+async function startLesson() {
+  clearMessages();
+  const lessonName = prompt('Entrez un nom pour cette leçon', 'Leçon 3 - Shakers');
+  if (!lessonName) return;
+  const now = new Date();
+  const lessonId = 'lecon_' + now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + '_' + lessonName.replace(/\s+/g, '-');
+  try {
+    await db.collection('lecons').doc(lessonId).set({
+      lessonId: lessonId,
+      lessonName: lessonName,
+      lessonDate: now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0'),
+      status: 'active',
+      startedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    await db.collection('config').doc('activeLesson').set({
+      lessonId: lessonId,
+      lessonName: lessonName,
+      startedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await openLesson(lessonId, lessonName);
+    alert('Leçon "' + lessonName + '" démarrée.');
+  } catch (error) {
+    console.error(error);
+    alert('Erreur lors du démarrage : ' + (error.message || error));
+  }
+}
+startLessonBtn.addEventListener('click', startLesson);
+
+// --- BILAN ELEVE AVEC SYSTEME DE POINTS SHAKERS ---
+let aggregatedSummary = [];
+
+async function openLesson(lessonId, lessonName) {
+  currentTeacherLesson = { id: lessonId, name: lessonName || lessonId };
+  if (!lessonName) {
+    const doc = await db.collection('lecons').doc(lessonId).get();
+    if (doc.exists) currentTeacherLesson.name = doc.data().lessonName || lessonId;
+  }
+  if (unsubscribeFromResults) unsubscribeFromResults();
+  lessonStatus.textContent = 'Leçon : ' + currentTeacherLesson.name;
+  lessonStatus.className = 'pill active';
+  exportCsvBtn.disabled = false;
+  exportPdfBtn.disabled = false;
+  exportRankingBtn.disabled = false;
+  closeLessonBtn.disabled = false;
+  resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">Chargement du bilan...</td></tr>';
+
+  unsubscribeFromResults = db.collection('lecons').doc(lessonId).collection('resultats').onSnapshot(function(snapshot) {
+    const docs = snapshot.docs.map(doc => doc.data());
+    
+    // Regroupement par élève
+    const studentsAgg = {};
+    docs.forEach(function(item) {
+      const key = (item.classeLabel || item.classe || 'Inconnue') + '__' + (item.eleveNomComplet || item.eleveId || 'Inconnu');
+      if (!studentsAgg[key]) {
+        studentsAgg[key] = {
+          classe: item.classeLabel || item.classe || '—',
+          eleve: item.eleveNomComplet || item.eleveId || '—',
+          pointsTotal: 0,
+          balisesTrouveesCount: 0,
+          balisesTrouveesList: [],
+          erreursCount: 0,
+          erreursList: [],
+          totalSecondes: 0,
+          passages: 0,
+          dernierTimestamp: 0
+        };
+      }
+      
+      const bonnes = item.scoreCorrectes || 0;
+      const tent = item.scoreTentatives || 0;
+      const pts = item.pointsGagnes !== undefined ? item.pointsGagnes : (bonnes * (item.niveau || 1));
+      
+      studentsAgg[key].pointsTotal += pts;
+      studentsAgg[key].balisesTrouveesCount += bonnes;
+      studentsAgg[key].erreursCount += Math.max(0, tent - bonnes);
+
+      if (Array.isArray(item.listeTrouvees)) {
+        studentsAgg[key].balisesTrouveesList.push(...item.listeTrouvees);
+      }
+      if (Array.isArray(item.listeErreurs)) {
+        studentsAgg[key].erreursList.push(...item.listeErreurs);
+      }
+      
+      const m = item.tempsMinutes || 0;
+      const s = item.tempsSecondes || 0;
+      studentsAgg[key].totalSecondes += (m * 60 + s);
+      studentsAgg[key].passages += 1;
+
+      const t = item.timestamp && item.timestamp.toDate ? item.timestamp.toDate().getTime() : 0;
+      if (t > studentsAgg[key].dernierTimestamp) {
+        studentsAgg[key].dernierTimestamp = t;
+      }
+    });
+
+    aggregatedSummary = Object.values(studentsAgg);
+
+    aggregatedSummary.sort((a, b) => {
+      const c = a.classe.localeCompare(b.classe, 'fr');
+      if (c !== 0) return c;
+      return a.eleve.localeCompare(b.eleve, 'fr');
+    });
+
+    resultsTableBody.innerHTML = '';
+    if (aggregatedSummary.length === 0) {
+      resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">Aucune donnée enregistrée pour le moment.</td></tr>';
+      return;
     }
-  };
-  reader.readAsText(file, "utf-8");[cite: 2]
+
+    aggregatedSummary.forEach(function(st) {
+      const tr = document.createElement('tr');
+      const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
+      
+      const txtTrouvees = st.balisesTrouveesList.length > 0 
+        ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(', ') + ')' 
+        : String(st.balisesTrouveesCount);
+
+      const txtErreurs = st.erreursList.length > 0 
+        ? st.erreursCount + ' (' + st.erreursList.join(', ') + ')' 
+        : String(st.erreursCount);
+
+      tr.innerHTML = 
+        '<td style="text-align:left; font-weight:700;">' + st.classe + '</td>' +
+        '<td style="text-align:left; font-weight:700; color:var(--dark);">' + st.eleve + '</td>' +
+        '<td style="font-weight:900; font-size:1.1rem; color:#1b4332; background:#d8f3dc;">' + st.pointsTotal + ' pts</td>' +
+        '<td style="font-weight:700; color:#166534;">' + txtTrouvees + '</td>' +
+        '<td style="font-weight:700; color:#b91c1c;">' + txtErreurs + '</td>' +
+        '<td style="font-weight:700;">' + formatTotalSeconds(st.totalSecondes) + '</td>' +
+        '<td>' + st.passages + '</td>' +
+        '<td style="color:var(--muted);">' + dernierHoraire + '</td>';
+      resultsTableBody.appendChild(tr);
+    });
+  }, function(error) {
+    console.error(error);
+    lessonStatus.textContent = 'Erreur Firestore';
+    lessonStatus.className = 'pill inactive';
+  });
+}
+
+async function loadHistory() {
+  historyPanel.classList.remove('hidden');
+  historyTableBody.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';
+  const snap = await db.collection('lecons').get();
+  const lessons = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => {
+    const da = a.startedAt && a.startedAt.toDate ? a.startedAt.toDate().getTime() : 0;
+    const dbb = b.startedAt && b.startedAt.toDate ? b.startedAt.toDate().getTime() : 0;
+    return dbb - da;
+  });
+  if (lessons.length === 0) {
+    historyTableBody.innerHTML = '<tr><td colspan="4">Aucune leçon enregistrée.</td></tr>';
+    return;
+  }
+  historyTableBody.innerHTML = '';
+  lessons.forEach(function(item) {
+    const tr = document.createElement('tr');
+    const dateText = item.startedAt && item.startedAt.toDate ? item.startedAt.toDate().toLocaleString('fr-FR') : (item.lessonDate || '—');
+    tr.innerHTML = '<td>' + (item.lessonName || item.id) + '</td>' +
+      '<td>' + dateText + '</td>' +
+      '<td>' + (item.status || 'active') + '</td>' +
+      '<td><button class="success-btn history-open-btn" data-id="' + item.id + '" data-name="' + (item.lessonName || item.id).replace(/"/g, '&quot;') + '">Rouvrir</button></td>';
+    historyTableBody.appendChild(tr);
+  });
+  document.querySelectorAll('.history-open-btn').forEach(function(btn) {
+    btn.addEventListener('click', async function() {
+      const lessonId = btn.dataset.id;
+      const lessonName = btn.dataset.name;
+      await db.collection('config').doc('activeLesson').set({
+        lessonId: lessonId,
+        lessonName: lessonName,
+        reopenedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      await db.collection('lecons').doc(lessonId).set({ status: 'active' }, { merge: true });
+      await openLesson(lessonId, lessonName);
+      historyPanel.classList.add('hidden');
+    });
+  });
+}
+loadHistoryBtn.addEventListener('click', loadHistory);
+closeHistoryBtn.addEventListener('click', function() { historyPanel.classList.add('hidden'); });
+
+closeLessonBtn.addEventListener('click', async function() {
+  const lessonId = currentTeacherLesson && currentTeacherLesson.id ? currentTeacherLesson.id : currentActiveLessonId;
+  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'cette séance';
+  if (!lessonId) { alert('Aucune séance active à clôturer.'); return; }
+  if (!confirm('Clôturer la séance "' + lessonName + '" ?')) return;
+  try {
+    await db.collection('lecons').doc(lessonId).set({
+      status: 'closed',
+      closedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+    await db.collection('config').doc('activeLesson').delete();
+    if (unsubscribeFromResults) { unsubscribeFromResults(); unsubscribeFromResults = null; }
+    currentActiveLessonId = null;
+    currentTeacherLesson = null;
+    lessonStatus.textContent = 'Aucune leçon active';
+    lessonStatus.className = 'pill inactive';
+    resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de résultats...</td></tr>';
+    exportCsvBtn.disabled = true;
+    exportPdfBtn.disabled = true;
+    exportRankingBtn.disabled = true;
+    closeLessonBtn.disabled = true;
+    alert('Séance clôturée.');
+  } catch (error) {
+    console.error(error);
+    alert('Clôture impossible : ' + (error.message || error));
+  }
 });
 
-// 40 parcours
-const parcoursSelect = document.getElementById("parcoursSelect");
-parcoursSelect.innerHTML = '<option value="">Choisir un parcours</option>';
-for (let i = 1; i <= 40; i++) {
-  const opt = document.createElement("option");
-  opt.value = "Parcours " + i;
-  opt.textContent = "Parcours " + i;
-  parcoursSelect.appendChild(opt);
-}
-
-// --- SOUMISSION & POP-UP COLLÈGE ---
-const tagForm = document.getElementById("tagForm");
-const resultModal = document.getElementById("resultModal");
-const modalCard = document.getElementById("modalCard");
-const popupEmoji = document.getElementById("popupEmoji");
-const popupTitle = document.getElementById("popupTitle");
-const popupScoreTags = document.getElementById("popupScoreTags");
-const popupPoints = document.getElementById("popupPoints");
-const popupTime = document.getElementById("popupTime");
-const popupOkList = document.getElementById("popupOkList");
-const popupErrList = document.getElementById("popupErrList");
-const popupOkCard = document.getElementById("popupOkCard");
-const popupErrCard = document.getElementById("popupErrCard");
-const popupSendStatus = document.getElementById("popupSendStatus");
-const closeModalBtn = document.getElementById("closeModalBtn");
-const couleurParcoursSelect = document.getElementById("couleurParcoursSelect");
-const niveauSelect = document.getElementById("niveauSelect");
-const durationMinutesInput = document.getElementById("durationMinutes");
-const durationSecondsInput = document.getElementById("durationSeconds");
-
-function formatTime(m, s) {
-  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");[cite: 2]
-}
-
-tagForm.addEventListener("submit", async function(e) {
-  e.preventDefault();[cite: 2]
-  const c = classeSelect.value;
-  const elId = teamSelect.value;
-  const elNom = teamSelect.options[teamSelect.selectedIndex] ? teamSelect.options[teamSelect.selectedIndex].text : '';
-  const p = parcoursSelect.value;
-  const col = couleurParcoursSelect.value;
-  const m = parseInt(durationMinutesInput.value, 10) || 0;
-  const s = parseInt(durationSecondsInput.value, 10) || 0;
-  const niv = parseInt(niveauSelect.value, 10) || 1;
-
-  if (!c || !elId || !p || !col) {
-    alert("Veuillez sélectionner la classe, l'élève, le parcours et sa couleur.");
-    return;
-  }
-  if (m === 0 && s === 0) {
-    alert("Le temps de course ne peut pas être zéro.");
-    return;
-  }
-
-  let justes = 0;
-  let tot = 0;
-  const okList = [];
-  const errList = [];
-
-  for (let i = 0; i < 5; i++) {
-    const num = document.getElementById("baliseNum" + i).value;
-    const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();
-    if (!num && !code) continue;
-    tot++;
-
-    const numInt = parseInt(num, 10);
-    if (num && code && DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][col] === code) {
-      justes++;
-      okList.push(`Balise ${num}`);
-    } else {
-      errList.push(num ? `Balise ${num} (code saisi : ${code || "vide"})` : `Balise ${i+1} incomplète`);
-    }
-  }
-
-  if (tot === 0) {
-    alert("Saisissez au moins une balise.");
-    return;
-  }
-
-  const pts = justes * niv;
-  const taux = (justes / tot) * 100;
-
-  if (taux === 100) {
-    popupEmoji.textContent = "🏆";
-    popupTitle.textContent = "Parcours parfait !";
-    popupTitle.style.color = "#166534";
-    modalCard.style.borderColor = "#22c55e";
-  } else if (taux >= 50) {
-    popupEmoji.textContent = "👍";
-    popupTitle.textContent = "Bien joué !";
-    popupTitle.style.color = "#1e40af";
-    modalCard.style.borderColor = "#3b82f6";
-  } else {
-    popupEmoji.textContent = "💪";
-    popupTitle.textContent = "Continue tes efforts !";
-    popupTitle.style.color = "#b45309";
-    modalCard.style.borderColor = "#f59e0b";
-  }
-
-  popupScoreTags.textContent = `${justes} / ${tot}`;
-  popupPoints.textContent = `+${pts} pt${pts > 1 ? 's' : ''}`;
-  popupTime.textContent = formatTime(m, s);
-
-  popupOkList.innerHTML = okList.length > 0 ? okList.join("<br>") : "Aucune balise validée.";
-  popupOkCard.classList.toggle("hidden", okList.length === 0);
-
-  popupErrList.innerHTML = errList.length > 0 ? errList.join("<br>") : "Zéro erreur !";
-  popupErrCard.classList.toggle("hidden", errList.length === 0);
-
-  popupSendStatus.textContent = "⏳ Enregistrement...";
-  popupSendStatus.style.background = "#fef3c7";
-  popupSendStatus.style.color = "#92400e";
-  resultModal.classList.remove("hidden");
-
-  ajouterResultatLocal({
-    classe: c, eleve: elNom, points: pts, justes: justes,
-    erreurs: (tot - justes), sec: (m * 60 + s), tempsTxt: formatTime(m, s),
-    date: new Date().toLocaleTimeString("fr-FR")
+exportCsvBtn.addEventListener('click', function() {
+  if (aggregatedSummary.length === 0) { alert('Aucun résultat à exporter.'); return; }
+  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'resultats';
+  const lines = ['Classe;Élève;Points;Balises trouvées;Détail trouvées;Erreurs;Détail erreurs;Temps total;Passages;Dernier passage'];
+  aggregatedSummary.forEach(function(st) {
+    const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
+    const row = [
+      st.classe,
+      st.eleve,
+      st.pointsTotal,
+      st.balisesTrouveesCount,
+      st.balisesTrouveesList.join(' - '),
+      st.erreursCount,
+      st.erreursList.join(' - '),
+      formatTotalSeconds(st.totalSecondes),
+      st.passages,
+      dernierHoraire
+    ];
+    lines.push(row.map(value => '"' + String(value || '').replace(/"/g, '""') + '"').join(';'));
   });
+  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'bilan_' + lessonName.replace(/\s+/g, '_') + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+});
+
+exportPdfBtn.addEventListener('click', function() {
+  if (aggregatedSummary.length === 0) { alert('Aucun résultat à exporter.'); return; }
+  const jsPDF = window.jspdf.jsPDF;
+  const doc = new jsPDF();
+  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Bilan de séance';
+  
+  doc.setFontSize(16);
+  doc.text('Bilan Élèves - ' + lessonName, 14, 18);
+  
+  const bodyData = aggregatedSummary.map(st => {
+    const txtTrouvees = st.balisesTrouveesList.length > 0 ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(',') + ')' : String(st.balisesTrouveesCount);
+    const txtErreurs = st.erreursList.length > 0 ? st.erreursCount + ' (' + st.erreursList.join(',') + ')' : String(st.erreursCount);
+    return [
+      st.classe,
+      st.eleve,
+      st.pointsTotal + ' pts',
+      txtTrouvees,
+      txtErreurs,
+      formatTotalSeconds(st.totalSecondes),
+      st.passages,
+      st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—'
+    ];
+  });
+
+  doc.autoTable({
+    startY: 24,
+    head: [['Classe', 'Élève', 'Points', 'Balises', 'Erreurs', 'Temps Total', 'Passages', 'Dernier']],
+    body: bodyData,
+    theme: 'striped',
+    headStyles: { fillColor: [88, 129, 87], halign: 'center' },
+    styles: { fontSize: 8, halign: 'center' },
+    columnStyles: {
+      0: { halign: 'left', cellWidth: 20 },
+      1: { halign: 'left', cellWidth: 35 },
+      2: { fontStyle: 'bold', cellWidth: 20 },
+      3: { cellWidth: 35 },
+      4: { cellWidth: 25 }
+    }
+  });
+  doc.save('bilan_' + lessonName.replace(/\s+/g, '_') + '.pdf');
+});
+
+// --- CLASSEMENT PDF PAR POINTS ET TEMPS ---
+exportRankingBtn.addEventListener('click', function() {
+  if (aggregatedSummary.length === 0) { alert('Aucun résultat pour établir un classement.'); return; }
+  
+  const sortedRanking = [...aggregatedSummary].sort((a, b) => {
+    if (b.pointsTotal !== a.pointsTotal) {
+      return b.pointsTotal - a.pointsTotal; // 1. Plus grand total de points
+    }
+    if (a.totalSecondes !== b.totalSecondes) {
+      return a.totalSecondes - b.totalSecondes; // 2. Plus petit temps de course
+    }
+    return a.erreursCount - b.erreursCount; // 3. Moins d'erreurs
+  });
+
+  const jsPDF = window.jspdf.jsPDF;
+  const doc = new jsPDF();
+  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Séance Shakers';
+
+  doc.setFontSize(16);
+  doc.text('Classement de la séance : ' + lessonName, 14, 18);
+  doc.setFontSize(10);
+  doc.setTextColor(100);
+  doc.text('Critères : 1. Total de points gagnés | 2. Temps de course total | 3. Nombre d\'erreurs', 14, 25);
+
+  const bodyData = sortedRanking.map((st, index) => {
+    const rang = (index + 1) === 1 ? '1er' : (index + 1) + 'e';
+    const txtTrouvees = st.balisesTrouveesList.length > 0 
+      ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(',') + ')' 
+      : String(st.balisesTrouveesCount);
+    
+    return [
+      rang,
+      st.classe,
+      st.eleve,
+      st.pointsTotal + ' pts',
+      txtTrouvees,
+      st.erreursCount,
+      formatTotalSeconds(st.totalSecondes)
+    ];
+  });
+
+  doc.autoTable({
+    startY: 30,
+    head: [['Rang', 'Classe', 'Élève', 'Points', 'Balises validées', 'Erreurs', 'Temps total']],
+    body: bodyData,
+    theme: 'striped',
+    headStyles: { fillColor: [52, 78, 65], halign: 'center' },
+    styles: { fontSize: 9, halign: 'center' },
+    columnStyles: {
+      0: { halign: 'center', fontStyle: 'bold', cellWidth: 18 },
+      1: { halign: 'left', cellWidth: 22 },
+      2: { halign: 'left', fontStyle: 'bold', cellWidth: 45 },
+      3: { halign: 'center', fontStyle: 'bold', cellWidth: 25 },
+      4: { halign: 'center', cellWidth: 35 },
+      5: { halign: 'center', cellWidth: 20 },
+      6: { halign: 'center', fontStyle: 'bold', cellWidth: 25 }
+    }
+  });
+
+  doc.save('classement_' + lessonName.replace(/\s+/g, '_') + '.pdf');
+});
+
+async function submitStudentResult(event) {
+  event.preventDefault();
+  clearMessages();
+  const lessonId = currentActiveLessonId;
+  if (!lessonId) { showGlobalError(`Aucune leçon n'est démarrée. Le professeur doit lancer ou rouvrir une séance.`, 'error'); return; }
+  const classId = classeSelect.value;
+  const classLabel = classeSelect.options[classeSelect.selectedIndex] ? classeSelect.options[classeSelect.selectedIndex].text : '';
+  const studentId = teamSelect.value;
+  const student = currentStudentMap[studentId];
+  const parcoursId = parcoursSelect.value;
+  const niveau = parseInt(niveauSelect.value, 10) || 1;
+  const durationM = durationMinutesInput.value;
+  const durationS = durationSecondsInput.value;
+  if (!classId || !studentId || !parcoursId || durationM === '' || durationS === '') { showGlobalError(`Veuillez remplir tous les champs d'identification et le temps.`, 'error'); return; }
+  const minutes = parseInt(durationM, 10);
+  const secondes = parseInt(durationS, 10);
+  if (isNaN(minutes) || isNaN(secondes) || minutes < 0 || secondes < 0 || secondes > 59) { showGlobalError('Temps invalide : secondes entre 0 et 59.', 'error'); return; }
+  if (minutes === 0 && secondes === 0) { showGlobalError('Le temps de course ne peut pas être zéro.', 'error'); return; }
+  
+  const verify = verifyTags();
+  const correctes = verify.correctes;
+  const tentatives = verify.tentatives;
+  if (tentatives === 0) { showGlobalError('Veuillez saisir au moins une balise.', 'error'); return; }
+  
+  const pointsGagnes = correctes * niveau;
+  displayLocalResults(correctes, tentatives, pointsGagnes, minutes, secondes);
+
+  const payload = {
+    lessonId: lessonId,
+    classe: classId,
+    classeLabel: classLabel,
+    eleveId: studentId,
+    eleveNomComplet: student ? student.nomComplet : (teamSelect.options[teamSelect.selectedIndex] ? teamSelect.options[teamSelect.selectedIndex].text : ''),
+    eleveNom: student ? student.nom : '',
+    elevePrenom: student ? student.prenom : '',
+    parcoursId: parcoursId,
+    niveau: niveau,
+    pointsGagnes: pointsGagnes,
+    scoreCorrectes: correctes,
+    scoreTentatives: tentatives,
+    listeTrouvees: verify.listeTrouvees || [],
+    listeErreurs: verify.listeErreurs || [],
+    tempsMinutes: minutes,
+    tempsSecondes: secondes,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+  };
 
   try {
-    await db.collection("resultats").add({
-      classe: c, eleve: elNom, points: pts, justes: justes, total: tot,
-      tempsMinutes: m, tempsSecondes: s, timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    popupSendStatus.textContent = "✅ Résultat bien envoyé";
-    popupSendStatus.style.background = "#dcfce7";
-    popupSendStatus.style.color = "#166534";
-  } catch(err) {
-    popupSendStatus.textContent = "✅ Validé (enregistré localement)";
-    popupSendStatus.style.background = "#dcfce7";
-    popupSendStatus.style.color = "#166534";
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi en cours...';
+    await db.collection('lecons').doc(lessonId).collection('resultats').add(payload);
+    showGlobalError('', 'success');
+    setTimeout(function() { resetFormForNewEntry(); }, 5000);
+  } catch (error) {
+    console.error(error);
+    showGlobalError(`Impossible d'envoyer les résultats. Vérifiez la connexion.`, 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = '🚀 Vérifier et envoyer le résultat';
   }
-});
-
-closeModalBtn.addEventListener("click", function() {
-  resultModal.classList.add("hidden");
-  tagForm.reset();
-  niveauSelect.value = "1";
-});
-
-// --- DASHBOARD PROFESSEUR & EXPORTS ---
-const STORAGE_RESULTS_KEY = "co_results_records_v4";
-function getLocalResults() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_RESULTS_KEY)) || []; } catch(e) { return []; }
 }
-function ajouterResultatLocal(res) {
-  const list = getLocalResults();
-  list.push(res);
-  localStorage.setItem(STORAGE_RESULTS_KEY, JSON.stringify(list));
-  renderTeacherDashboard();
-}
+tagForm.addEventListener('submit', submitStudentResult);
 
-const resultsTableBody = document.getElementById("resultsTableBody");
-const exportCsvBtn = document.getElementById("exportCsvBtn");
-const exportPdfBtn = document.getElementById("exportPdfBtn");
-const clearResultsBtn = document.getElementById("clearResultsBtn");
-
-function renderTeacherDashboard() {
-  const data = getLocalResults();
-  if (data.length === 0) {
-    resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de résultats...</td></tr>';
-    return;
-  }
-  const agg = {};
-  data.forEach(r => {
-    const k = r.classe + "__" + r.eleve;
-    if (!agg[k]) {
-      agg[k] = { classe: r.classe, eleve: r.eleve, pts: 0, justes: 0, err: 0, sec: 0, pass: 0, date: r.date };
+function listenToActiveLesson() {
+  db.collection('config').doc('activeLesson').onSnapshot(function(doc) {
+    if (doc.exists && doc.data().lessonId) {
+      const data = doc.data();
+      currentActiveLessonId = data.lessonId;
+      activeLessonBanner.textContent = 'Leçon en cours : ' + (data.lessonName || data.lessonId);
+      activeLessonBanner.style.backgroundColor = '#344e41';
+    } else {
+      currentActiveLessonId = null;
+      activeLessonBanner.textContent = 'Aucune leçon démarrée — attendez le professeur';
+      activeLessonBanner.style.backgroundColor = '#c1121f';
+      if (!currentTeacherLesson) {
+        lessonStatus.textContent = 'Aucune leçon active';
+        lessonStatus.className = 'pill inactive';
+      }
     }
-    agg[k].pts += r.points;
-    agg[k].justes += r.justes;
-    agg[k].err += r.erreurs;
-    agg[k].sec += r.sec;
-    agg[k].pass += 1;
-    agg[k].date = r.date;
+  }, function(error) {
+    console.error(error);
+    activeLessonBanner.textContent = 'Connexion Firestore indisponible';
+    activeLessonBanner.style.backgroundColor = '#c1121f';
   });
-
-  const list = Object.values(agg).sort((a, b) => b.pts - a.pts);
-  let html = "";
-  list.forEach(st => {
-    const m = Math.floor(st.sec / 60);
-    const s = st.sec % 60;
-    html += `<tr>
-      <td style="font-weight:700;">${st.classe}</td>
-      <td style="text-align:left; font-weight:700;">${st.eleve}</td>
-      <td style="font-weight:900; color:#1b4332; background:#d8f3dc;">${st.pts} pts</td>
-      <td style="font-weight:700; color:#166534;">${st.justes}</td>
-      <td style="font-weight:700; color:#b91c1c;">${st.err}</td>
-      <td style="font-weight:700;">${formatTime(m, s)}</td>
-      <td>${st.pass}</td>
-      <td style="color:var(--muted);">${st.date}</td>
-    </tr>`;
-  });
-  resultsTableBody.innerHTML = html;
 }
 
-clearResultsBtn.addEventListener("click", function() {
-  if (confirm("Réinitialiser les résultats de la séance ?")) {
-    localStorage.removeItem(STORAGE_RESULTS_KEY);
-    renderTeacherDashboard();
-  }
-});
-
-exportCsvBtn.addEventListener("click", function() {
-  const data = getLocalResults();
-  if (data.length === 0) { alert("Aucune donnée à exporter."); return; }
-  const lines = ['Classe;Élève;Points;Justes;Erreurs;Temps;Heure'];
-  data.forEach(r => lines.push([r.classe, r.eleve, r.points, r.justes, r.erreurs, r.tempsTxt, r.date].map(x => `"${x}"`).join(';')));
-  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `bilan_CO.csv`;
-  a.click();
-});
-
-exportPdfBtn.addEventListener("click", function() {
-  const data = getLocalResults();
-  if (data.length === 0) { alert("Aucune donnée à exporter."); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.setFontSize(15);
-  doc.text("Bilan Séance Course d'Orientation", 14, 18);
-  const rows = data.map(r => [r.classe, r.eleve, `${r.points} pts`, r.justes, r.erreurs, r.tempsTxt, r.date]);
-  doc.autoTable({
-    startY: 25,
-    head: [['Classe', 'Élève', 'Points', 'Justes', 'Erreurs', 'Temps', 'Heure']],
-    body: rows,
-    theme: 'striped',
-    headStyles: { fillColor: [88, 129, 87] }
-  });
-  doc.save(`bilan_CO.pdf`);
-});
-
-// INITIALISATION
-loadStudentClasses();
-renderTeacherDashboard();
+async function init() {
+  populateParcours();
+  showView('student');
+  listenToBalisesConfig();
+  await loadStudentClasses();
+  await loadClassesOverview();
+  listenToActiveLesson();
+}
+init();
 </script>
 </body>
 </html>
