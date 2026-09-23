@@ -479,75 +479,88 @@ document.getElementById("teacherCodeInput").addEventListener("keydown", function
 
 // --- BALISES DU TERRAIN (Renumérotées, sans 3, 62 ni 84) ---
 const DONNEES_SHEET_DEFAUT = {
-  8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
-  9: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
-  10: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
-  11: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" },
-  12: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" },
-  13: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" },
-  14: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" },
-  15: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" },
-  16: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" },
-  17: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" },
-  18: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" },
-  19: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" },
-  20: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" },
-  21: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" },
-  22: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" },
-  23: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" },
-  24: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" },
-  25: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" },
-  26: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" },
-  27: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" },
-  28: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },
-  29: { BLEU: "OX", NOIR: "57", ORANGE: "T7", VERT: "6", ROSE: "EL", GRIS: "YT", ROUGE: "VD", MARRON: "KB" },
-  30: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },
-  40: { BLEU: "3M", NOIR: "8L", ORANGE: "4F", VERT: "2P", ROSE: "7T", GRIS: "1X", ROUGE: "5N", MARRON: "6H" },
-  42: { BLEU: "7E", NOIR: "2N", ORANGE: "1G", VERT: "4D", ROSE: "6C", GRIS: "3Y", ROUGE: "8L", MARRON: "5R" },
-  43: { BLEU: "2C", NOIR: "7W", ORANGE: "8N", VERT: "1X", ROSE: "5K", GRIS: "6S", ROUGE: "3A", MARRON: "4T" },
-  44: { BLEU: "9L", NOIR: "4R", ORANGE: "2P", VERT: "6M", ROSE: "1X", GRIS: "8E", ROUGE: "3J", MARRON: "7A" },
-  45: { BLEU: "3P", NOIR: "8K", ORANGE: "4Y", VERT: "7L", ROSE: "5N", GRIS: "2C", ROUGE: "6S", MARRON: "1R" },
-  46: { BLEU: "8T", NOIR: "3A", ORANGE: "6M", VERT: "5J", ROSE: "4X", GRIS: "7L", ROUGE: "1E", MARRON: "2N" },
-  47: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },
-  48: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },
-  49: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },
-  51: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },
-  52: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },
-  54: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },
-  56: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },
-  57: { BLEU: "4F", NOIR: "1Z", ORANGE: "7T", VERT: "3H", ROSE: "8E", GRIS: "5M", ROUGE: "2R", MARRON: "6P" },
-  58: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },
-  59: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },
-  60: { BLEU: "2Y", NOIR: "9K", ORANGE: "3L", VERT: "8A", ROSE: "5D", GRIS: "6F", ROUGE: "7H", MARRON: "4M" },
-  61: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },
-  64: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },
-  66: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },
-  67: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
-  69: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
-  70: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
-  71: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
-  72: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
-  74: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },
-  75: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
-  76: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },
-  78: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
-  79: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
-  80: { BLEU: "9A", NOIR: "2Z", ORANGE: "4E", VERT: "6K", ROSE: "8H", GRIS: "7U", ROUGE: "1Y", MARRON: "3P" },
-  81: { BLEU: "4N", NOIR: "7K", ORANGE: "2W", VERT: "9D", ROSE: "6R", GRIS: "3M", ROUGE: "8P", MARRON: "5S" },
-  83: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
-  85: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },
-  86: { BLEU: "4R", NOIR: "8U", ORANGE: "5S", VERT: "1Z", ROSE: "7D", GRIS: "3J", ROUGE: "2B", MARRON: "6O" },
-  89: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }
+  1: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
+  2: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
+  3: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
+  4: { BLEU: "T8", NOIR: "HC", ORANGE: "7T", VERT: "94", ROSE: "E2", GRIS: "0R", ROUGE: "CV", MARRON: "8E" },
+  5: { BLEU: "JA", NOIR: "0E", ORANGE: "V8", VERT: "5D", ROSE: "H5", GRIS: "25", ROUGE: "BY", MARRON: "KC" },
+  6: { BLEU: "VQ", NOIR: "0Y", ORANGE: "GO", VERT: "YM", ROSE: "F0", GRIS: "CS", ROUGE: "YH", MARRON: "L0" },
+  7: { BLEU: "28", NOIR: "8A", ORANGE: "QU", VERT: "YI", ROSE: "TP", GRIS: "LZ", ROUGE: "KK", MARRON: "I7" },
+  8: { BLEU: "ZR", NOIR: "4E", ORANGE: "PK", VERT: "I8", ROSE: "4T", GRIS: "U6", ROUGE: "RQ", MARRON: "D5" },
+  9: { BLEU: "93", NOIR: "2A", ORANGE: "JP", VERT: "TM", ROSE: "EI", GRIS: "LA", ROUGE: "UF", MARRON: "C1" },
+  10: { BLEU: "K3", NOIR: "U7", ORANGE: "VP", VERT: "S8", ROSE: "9W", GRIS: "NC", ROUGE: "9C", MARRON: "KM" },
+  11: { BLEU: "CO", NOIR: "MV", ORANGE: "63", VERT: "19", ROSE: "TA", GRIS: "IG", ROUGE: "VW", MARRON: "RD" },
+  12: { BLEU: "IA", NOIR: "9T", ORANGE: "P7", VERT: "3E", ROSE: "ZG", GRIS: "5O", ROUGE: "GC", MARRON: "QP" },
+  13: { BLEU: "KC", NOIR: "ZB", ORANGE: "F2", VERT: "C3", ROSE: "O7", GRIS: "MF", ROUGE: "EY", MARRON: "4I" },
+  14: { BLEU: "BO", NOIR: "EM", ORANGE: "IT", VERT: "AV", ROSE: "CY", GRIS: "RP", ROUGE: "K5", MARRON: "DN" },
+  15: { BLEU: "AE", NOIR: "JQ", ORANGE: "II", VERT: "0T", ROSE: "V9", GRIS: "9U", ROUGE: "JR", MARRON: "LM" },
+  16: { BLEU: "XF", NOIR: "9D", ORANGE: "ME", VERT: "B1", ROSE: "8N", GRIS: "1M", ROUGE: "SX", MARRON: "PV" },
+  17: { BLEU: "A8", NOIR: "6L", ORANGE: "6K", VERT: "IT", ROSE: "2D", GRIS: "91", ROUGE: "33", MARRON: "2H" },
+  18: { BLEU: "B0", NOIR: "3G", ORANGE: "5V", VERT: "AT", ROSE: "IG", GRIS: "HZ", ROUGE: "RY", MARRON: "9V" },
+  19: { BLEU: "T0", NOIR: "FD", ORANGE: "82", VERT: "G5", ROSE: "K5", GRIS: "JK", ROUGE: "A0", MARRON: "XC" },
+  20: { BLEU: "QP", NOIR: "82", ORANGE: "VV", VERT: "XK", ROSE: "GQ", GRIS: "NB", ROUGE: "OZ", MARRON: "GU" },
+  21: { BLEU: "IN", NOIR: "W9", ORANGE: "CZ", VERT: "0A", ROSE: "JE", GRIS: "RN", ROUGE: "F1", MARRON: "CJ" },
+  22: { BLEU: "VD", NOIR: "P3", ORANGE: "3Y", VERT: "85", ROSE: "SG", GRIS: "0S", ROUGE: "8J", MARRON: "9D" },
+  23: { BLEU: "PT", NOIR: "95", ORANGE: "LU", VERT: "X0", ROSE: "DJ", GRIS: "PM", ROUGE: "G8", MARRON: "M5" },
+  24: { BLEU: "5V", NOIR: "PF", ORANGE: "WM", VERT: "28", ROSE: "QL", GRIS: "PE", ROUGE: "EV", MARRON: "DQ" },
+  25: { BLEU: "UI", NOIR: "52", ORANGE: "VR", VERT: "8V", ROSE: "BJ", GRIS: "FP", ROUGE: "46", MARRON: "VF" },
+  26: { BLEU: "RJ", NOIR: "RI", ORANGE: "FL", VERT: "WR", ROSE: "93", GRIS: "GP", ROUGE: "MF", MARRON: "SG" },
+  27: { BLEU: "C4", NOIR: "HC", ORANGE: "UC", VERT: "IH", ROSE: "JL", GRIS: "YL", ROUGE: "AP", MARRON: "PV" },
+  28: { BLEU: "GF", NOIR: "BZ", ORANGE: "G0", VERT: "LK", ROSE: "4L", GRIS: "N1", ROUGE: "VD", MARRON: "3V" },
+  29: { BLEU: "VQ", NOIR: "P3", ORANGE: "3Y", VERT: "85", ROSE: "SG", GRIS: "0S", ROUGE: "8J", MARRON: "9D" },
+  30: { BLEU: "DZ", NOIR: "O3", ORANGE: "9B", VERT: "S8", ROSE: "5T", GRIS: "HD", ROUGE: "ST", MARRON: "ZP" },
+  40: { BLEU: "1X", NOIR: "2C", ORANGE: "3A", VERT: "8N", ROSE: "4T", GRIS: "6S", ROUGE: "5K", MARRON: "7W" },
+  41: { BLEU: "4B", NOIR: "7F", ORANGE: "6Z", VERT: "1M", ROSE: "2J", GRIS: "8P", ROUGE: "3U", MARRON: "5O" },
+  42: { BLEU: "2N", NOIR: "5R", ORANGE: "8L", VERT: "4D", ROSE: "7E", GRIS: "1G", ROUGE: "6C", MARRON: "3Y" },
+  43: { BLEU: "7M", NOIR: "3H", ORANGE: "1K", VERT: "2W", ROSE: "5A", GRIS: "4X", ROUGE: "8F", MARRON: "6T" },
+  44: { BLEU: "5D", NOIR: "6S", ORANGE: "4U", VERT: "7O", ROSE: "3Z", GRIS: "2B", ROUGE: "1R", MARRON: "8J" },
+  45: { BLEU: "3W", NOIR: "8P", ORANGE: "2C", VERT: "5Y", ROSE: "6L", GRIS: "7N", ROUGE: "4H", MARRON: "1E" },
+  46: { BLEU: "1O", NOIR: "3G", ORANGE: "2F", VERT: "6T", ROSE: "8K", GRIS: "7M", ROUGE: "5S", MARRON: "4A" },
+  47: { BLEU: "3Y", NOIR: "2X", ORANGE: "8R", VERT: "5J", ROSE: "7U", GRIS: "6D", ROUGE: "4P", MARRON: "1Z" },
+  48: { BLEU: "2T", NOIR: "8B", ORANGE: "7H", VERT: "4E", ROSE: "6C", GRIS: "5W", ROUGE: "1G", MARRON: "3L" },
+  49: { BLEU: "8J", NOIR: "7N", ORANGE: "6S", VERT: "1A", ROSE: "5F", GRIS: "4O", ROUGE: "3X", MARRON: "2K" },
+  51: { BLEU: "6A", NOIR: "5D", ORANGE: "4G", VERT: "2L", ROSE: "1H", GRIS: "3T", ROUGE: "8N", MARRON: "7C" },
+  52: { BLEU: "5Z", NOIR: "4W", ORANGE: "1X", VERT: "8K", ROSE: "3S", GRIS: "2J", ROUGE: "7M", MARRON: "6F" },
+  54: { BLEU: "1K", NOIR: "3Y", ORANGE: "6N", VERT: "4C", ROSE: "8G", GRIS: "2A", ROUGE: "7W", MARRON: "5H" },
+  56: { BLEU: "5C", NOIR: "7J", ORANGE: "2D", VERT: "8R", ROSE: "3B", GRIS: "1L", ROUGE: "4Y", MARRON: "6P" },
+  57: { BLEU: "8F", NOIR: "1E", ORANGE: "7W", VERT: "6H", ROSE: "2N", GRIS: "4K", ROUGE: "5T", MARRON: "3G" },
+  58: { BLEU: "6R", NOIR: "4A", ORANGE: "1O", VERT: "3S", ROSE: "7M", GRIS: "5U", ROUGE: "8J", MARRON: "2X" },
+  59: { BLEU: "3H", NOIR: "5Z", ORANGE: "4Y", VERT: "2P", ROSE: "1D", GRIS: "8C", ROUGE: "6E", MARRON: "7B" },
+  60: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
+  61: { BLEU: "7P", NOIR: "6K", ORANGE: "8J", VERT: "1X", ROSE: "5O", GRIS: "3R", ROUGE: "2Z", MARRON: "4M" },
+  62: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
+  64: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
+  65: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
+  66: { BLEU: "1M", NOIR: "3H", ORANGE: "4K", VERT: "2W", ROSE: "5A", GRIS: "8X", ROUGE: "7F", MARRON: "6T" },
+  67: { BLEU: "7D", NOIR: "5S", ORANGE: "8U", VERT: "6O", ROSE: "1Z", GRIS: "2B", ROUGE: "4R", MARRON: "3J" },
+  69: { BLEU: "8O", NOIR: "7G", ORANGE: "6F", VERT: "5T", ROSE: "4K", GRIS: "3M", ROUGE: "2S", MARRON: "1A" },
+  70: { BLEU: "6Y", NOIR: "1X", ORANGE: "7R", VERT: "3J", ROSE: "8U", GRIS: "5D", ROUGE: "2P", MARRON: "4Z" },
+  71: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
+  72: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
+  74: { BLEU: "2A", NOIR: "5D", ORANGE: "8G", VERT: "4L", ROSE: "7H", GRIS: "1T", ROUGE: "6N", MARRON: "3C" },
+  75: { BLEU: "7Z", NOIR: "3W", ORANGE: "1X", VERT: "2K", ROSE: "5S", GRIS: "4J", ROUGE: "8M", MARRON: "6F" },
+  76: { BLEU: "5L", NOIR: "6O", ORANGE: "4B", VERT: "7U", ROSE: "3P", GRIS: "2E", ROUGE: "1D", MARRON: "8R" },
+  78: { BLEU: "1U", NOIR: "3T", ORANGE: "2M", VERT: "6F", ROSE: "8X", GRIS: "7Z", ROUGE: "5O", MARRON: "4S" },
+  79: { BLEU: "3C", NOIR: "2J", ORANGE: "8D", VERT: "5R", ROSE: "7B", GRIS: "6L", ROUGE: "4Y", MARRON: "1P" },
+  80: { BLEU: "2F", NOIR: "8E", ORANGE: "7W", VERT: "4H", ROSE: "6N", GRIS: "5K", ROUGE: "1T", MARRON: "3G" },
+  81: { BLEU: "8R", NOIR: "7A", ORANGE: "6O", VERT: "1S", ROSE: "5M", GRIS: "4U", ROUGE: "3J", MARRON: "2X" },
+  82: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" },
+  83: { BLEU: "6S", NOIR: "5L", ORANGE: "4T", VERT: "2G", ROSE: "1W", GRIS: "3F", ROUGE: "8A", MARRON: "7N" },
+  84: { BLEU: "5P", NOIR: "4K", ORANGE: "1J", VERT: "8X", ROSE: "3O", GRIS: "2R", ROUGE: "7Z", MARRON: "6M" },
+  85: { BLEU: "4G", NOIR: "1U", ORANGE: "3E", VERT: "7B", ROSE: "2Y", GRIS: "8H", ROUGE: "6L", MARRON: "5D" },
+  86: { BLEU: "1X", NOIR: "3C", ORANGE: "6A", VERT: "4N", ROSE: "8T", GRIS: "2S", ROUGE: "7K", MARRON: "5W" },
+  87: { BLEU: "4B", NOIR: "2F", ORANGE: "3Z", VERT: "5M", ROSE: "6J", GRIS: "7P", ROUGE: "1U", MARRON: "8O" },
+  88: { BLEU: "5N", NOIR: "7R", ORANGE: "2L", VERT: "8D", ROSE: "3E", GRIS: "1G", ROUGE: "4C", MARRON: "6Y" },
+  89: { BLEU: "8M", NOIR: "1H", ORANGE: "7K", VERT: "6W", ROSE: "2A", GRIS: "4X", ROUGE: "5F", MARRON: "3T" }
 };
 
 function remapBalisesObject(obj) {
+  // Les numéros de balises correspondent directement au tableau officiel.
+  // Aucune renumérotation n'est appliquée (les numéros 40, 41, ... 89 sont conservés).
   const adjusted = {};
   for (const key in obj) {
-    let num = parseInt(key, 10);
-    if (!isNaN(num)) {
-      if (num >= 51) num = num - 11;
-      adjusted[num] = obj[key];
-    }
+    const num = parseInt(key, 10);
+    if (!isNaN(num)) adjusted[num] = obj[key];
   }
   return adjusted;
 }
@@ -1004,7 +1017,6 @@ function parseBalisesCSV(text) {
     const p = lines[i].split(delim).map(x => x.replace(/^"|"$/g, "").trim());
     let num = parseInt(p[numIdx], 10);
     if (isNaN(num)) continue;
-    if (num >= 51) num -= 11;
     res[num] = {};
     colors.forEach(c => { if(colMap[c] !== undefined && p[colMap[c]]) res[num][c] = p[colMap[c]].toUpperCase(); });
   }
@@ -1048,7 +1060,7 @@ function listenToBalisesConfig() {
       } catch(e) {}
     } else {
       DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
-      balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises par défaut.`;
+      balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises par défaut (tableau officiel).`;
     }
   });
 }
