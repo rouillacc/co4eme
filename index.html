@@ -478,7 +478,8 @@ document.getElementById("teacherCodeInput").addEventListener("keydown", function
 });
 
 // --- BALISES DU TERRAIN (Renumérotées, sans 3, 62 ni 84) ---
-const DONNEES_SHEET_DEFAUT = {
+// --- GRILLE OFFICIELLE TERRAIN (CORRESPONDANCE DIRECTE SANS DECALAGE) ---
+const DONNEES_SHEET = {
   1: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
   2: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
   3: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
@@ -553,7 +554,7 @@ const DONNEES_SHEET_DEFAUT = {
   88: { BLEU: "5N", NOIR: "7R", ORANGE: "2L", VERT: "8D", ROSE: "3E", GRIS: "1G", ROUGE: "4C", MARRON: "6Y" },
   89: { BLEU: "8M", NOIR: "1H", ORANGE: "7K", VERT: "6W", ROSE: "2A", GRIS: "4X", ROUGE: "5F", MARRON: "3T" }
 };
-
+const DONNEES_SHEET_DEFAUT = DONNEES_SHEET;
 function remapBalisesObject(obj) {
   // Les numéros de balises correspondent directement au tableau officiel.
   // Aucune renumérotation n'est appliquée (les numéros 40, 41, ... 89 sont conservés).
