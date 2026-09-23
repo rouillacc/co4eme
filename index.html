@@ -49,7 +49,7 @@
     .pill.inactive { background:#fee2e2; color:#991b1b; }
     .empty-box { padding:12px; border:1px dashed #b9c5b6; border-radius:12px; background:rgba(255,255,255,.55); color:var(--muted); text-align:center; }
 
-    /* POP-UP RESULTATS ELEVE */
+    /* POP-UP */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.78); backdrop-filter: blur(4px);
@@ -111,7 +111,7 @@
           <div>
             <label for="classeSelect">Classe</label>
             <select id="classeSelect" required>
-              <option value="">Sélectionner la classe</option>
+              <option value="">Chargement des classes...</option>
             </select>
           </div>
           <div>
@@ -204,7 +204,7 @@
   <section id="teacherDashboard" class="hidden">
     <div class="panel">
       <h2>Tableau de bord professeur</h2>
-      <div id="lessonStatus" class="pill active">Séance : En cours</div>
+      <div id="lessonStatus" class="pill active">Séance active</div>
       <div class="dashboard-controls" style="margin-top:12px;">
         <button id="exportCsvBtn" class="secondary-btn" type="button">📊 Export CSV</button>
         <button id="exportPdfBtn" class="secondary-btn" type="button">📄 Export PDF</button>
@@ -255,7 +255,7 @@
 
     <div class="panel">
       <h3>Classes enregistrées</h3>
-      <div id="classesListContainer" class="empty-box">Aucune classe enregistrée.</div>
+      <div id="classesListContainer" class="empty-box">Chargement des classes...</div>
     </div>
   </section>
 </div>
@@ -300,14 +300,13 @@
   </div>
 </div>
 
-<!-- LIBRAIRIES AVEC CDN FIABLES -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
 <script>
-// --- NAVIGATION IMMEDIATE (FONCTIONNE QUEL QUE SOIT L'ETAT DU RESEAU) ---
+// --- NAVIGATION IMMEDIATE (FONCTIONNE PARTOUT) ---
 let teacherAccessGranted = false;
 const TEACHER_CODE = "16170";[cite: 2]
 
@@ -331,7 +330,7 @@ function basculerVue(vue) {
     if (teacherAccessGranted) {
       teacherDashboard.classList.remove("hidden");
       teacherViewBtn.classList.add("active");
-      renderClassesOverview();
+      loadClassesOverview();
     } else {
       teacherLoginContainer.classList.remove("hidden");
       teacherViewBtn.classList.add("active");
@@ -356,7 +355,7 @@ document.getElementById("teacherCodeInput").addEventListener("keydown", function
   if (e.key === "Enter") { e.preventDefault(); validerCodeProf(); }
 });
 
-// --- GRILLE EXACTE DU COLLEGE ---
+// --- GRILLE OFFICIELLE TERRAIN (AUCUN DECALAGE) ---
 const DONNEES_SHEET = {
   1: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
   2: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
@@ -408,6 +407,7 @@ const DONNEES_SHEET = {
   60: { BLEU: "2S", NOIR: "8L", ORANGE: "5T", VERT: "7G", ROSE: "4W", GRIS: "6F", ROUGE: "3A", MARRON: "1N" },
   61: { BLEU: "7P", NOIR: "6K", ORANGE: "8J", VERT: "1X", ROSE: "5O", GRIS: "3R", ROUGE: "2Z", MARRON: "4M" },
   62: { BLEU: "2G", NOIR: "4U", ORANGE: "3E", VERT: "1B", ROSE: "8Y", GRIS: "5H", ROUGE: "6L", MARRON: "7D" },
+  63: { BLEU: "6X", NOIR: "8C", ORANGE: "5A", VERT: "7N", ROSE: "2T", GRIS: "1S", ROUGE: "3K", MARRON: "4W" },
   64: { BLEU: "3B", NOIR: "2F", ORANGE: "1Z", VERT: "4M", ROSE: "6J", GRIS: "7P", ROUGE: "5U", MARRON: "8O" },
   65: { BLEU: "5N", NOIR: "6R", ORANGE: "7L", VERT: "8D", ROSE: "3E", GRIS: "4G", ROUGE: "1C", MARRON: "2Y" },
   66: { BLEU: "1M", NOIR: "3H", ORANGE: "4K", VERT: "2W", ROSE: "5A", GRIS: "8X", ROUGE: "7F", MARRON: "6T" },
@@ -416,6 +416,7 @@ const DONNEES_SHEET = {
   70: { BLEU: "6Y", NOIR: "1X", ORANGE: "7R", VERT: "3J", ROSE: "8U", GRIS: "5D", ROUGE: "2P", MARRON: "4Z" },
   71: { BLEU: "8T", NOIR: "4B", ORANGE: "5H", VERT: "6E", ROSE: "1C", GRIS: "3W", ROUGE: "7G", MARRON: "2L" },
   72: { BLEU: "1J", NOIR: "2N", ORANGE: "3S", VERT: "8A", ROSE: "4F", GRIS: "6O", ROUGE: "5X", MARRON: "7K" },
+  73: { BLEU: "4E", NOIR: "7M", ORANGE: "6P", VERT: "1Z", ROSE: "2R", GRIS: "8Y", ROUGE: "3B", MARRON: "5U" },
   74: { BLEU: "2A", NOIR: "5D", ORANGE: "8G", VERT: "4L", ROSE: "7H", GRIS: "1T", ROUGE: "6N", MARRON: "3C" },
   75: { BLEU: "7Z", NOIR: "3W", ORANGE: "1X", VERT: "2K", ROSE: "5S", GRIS: "4J", ROUGE: "8M", MARRON: "6F" },
   76: { BLEU: "5L", NOIR: "6O", ORANGE: "4B", VERT: "7U", ROSE: "3P", GRIS: "2E", ROUGE: "1D", MARRON: "8R" },
@@ -433,146 +434,203 @@ const DONNEES_SHEET = {
   89: { BLEU: "8M", NOIR: "1H", ORANGE: "7K", VERT: "6W", ROSE: "2A", GRIS: "4X", ROUGE: "5F", MARRON: "3T" }
 };
 
-// --- GESTION LOCALE ROBUSTE (CLASSES & BILAN) ---
-const STORAGE_CLASSES_KEY = "co_classes_data_v4";
-const STORAGE_RESULTS_KEY = "co_results_data_v4";
+// --- CONFIGURATION FIREBASE FIRESTORE ---
+const firebaseConfig = {
+  apiKey: "AIzaSyD3Cu1X0_JSF1qePFRzcq-RY-MYTB32a-8",[cite: 2]
+  authDomain: "co-rouillac.firebaseapp.com",[cite: 2]
+  projectId: "co-rouillac",[cite: 2]
+  storageBucket: "co-rouillac.firebasestorage.app",[cite: 2]
+  messagingSenderId: "729910930573",[cite: 2]
+  appId: "1:729910930573:web:f8c0e93c702416fcd446c4"[cite: 2]
+};
 
-function getLocalClasses() {
-  const raw = localStorage.getItem(STORAGE_CLASSES_KEY);
-  if (raw) {
-    try { return JSON.parse(raw); } catch(e) {}
-  }
-  return {
-    "4A": ["Lucas A.", "Emma B.", "Thomas C.", "Léa D.", "Nathan E.", "Hugo F."],
-    "4B": ["Manon G.", "Jules H.", "Camille I.", "Maxime J.", "Chloé K.", "Antoine L."]
-  };
+try { firebase.initializeApp(firebaseConfig); } catch(e) {}
+const db = firebase.firestore();
+
+let currentStudentMap = {};[cite: 2]
+
+function timeoutPromise(promise, ms = 3500) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms))
+  ]);
 }
 
-function saveLocalClasses(obj) {
-  localStorage.setItem(STORAGE_CLASSES_KEY, JSON.stringify(obj));
-  renderClasseSelects();
-  renderClassesOverview();
-}
-
-function getLocalResults() {
-  const raw = localStorage.getItem(STORAGE_RESULTS_KEY);
-  if (raw) {
-    try { return JSON.parse(raw); } catch(e) {}
-  }
-  return [];
-}
-
-function saveLocalResults(arr) {
-  localStorage.setItem(STORAGE_RESULTS_KEY, JSON.stringify(arr));
-  renderTeacherDashboard();
-}
-
+// --- RECUPERATION DES CLASSES ET ELEVES (FIRESTORE + CACHE) ---
 const classeSelect = document.getElementById("classeSelect");
 const teamSelect = document.getElementById("teamSelect");
+const classesListContainer = document.getElementById("classesListContainer");
 
-function renderClasseSelects() {
-  const classes = getLocalClasses();
-  const current = classeSelect.value;
-  classeSelect.innerHTML = '<option value="">Sélectionner la classe</option>';
-  Object.keys(classes).sort().forEach(c => {
-    const opt = document.createElement("option");
-    opt.value = c;
-    opt.textContent = c;
-    classeSelect.appendChild(opt);
-  });
-  if (current && classes[current]) {
-    classeSelect.value = current;
-    renderStudents(current);
-  } else {
-    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';
+async function loadStudentClasses() {
+  try {
+    const snap = await timeoutPromise(db.collection("classes").get());
+    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))[cite: 2]
+      .filter(item => item.active !== false)[cite: 2]
+      .sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[cite: 2]
+
+    classeSelect.innerHTML = '<option value="">Choisir une classe</option>';[cite: 2]
+    classes.forEach(item => {
+      const opt = document.createElement("option");[cite: 2]
+      opt.value = item.id;[cite: 2]
+      opt.textContent = item.className || item.id;[cite: 2]
+      classeSelect.appendChild(opt);[cite: 2]
+    });
+    localStorage.setItem("co_cached_classes", JSON.stringify(classes));
+  } catch (error) {
+    const cached = localStorage.getItem("co_cached_classes");
+    if (cached) {
+      const classes = JSON.parse(cached);
+      classeSelect.innerHTML = '<option value="">Choisir une classe (Cache local)</option>';
+      classes.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.id;
+        opt.textContent = item.className || item.id;
+        classeSelect.appendChild(opt);
+      });
+    } else {
+      classeSelect.innerHTML = '<option value="">Sélectionner la classe</option>';
+    }
   }
 }
 
-function renderStudents(className) {
-  const classes = getLocalClasses();
-  const list = classes[className] || [];
-  teamSelect.innerHTML = '<option value="">Choisir un élève</option>';
-  list.sort().forEach(st => {
-    const opt = document.createElement("option");
-    opt.value = st;
-    opt.textContent = st;
-    teamSelect.appendChild(opt);
-  });
+async function loadStudentsForSelectedClass() {
+  const classId = classeSelect.value;[cite: 2]
+  currentStudentMap = {};[cite: 2]
+  if (!classId) {
+    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';[cite: 2]
+    return;[cite: 2]
+  }
+  teamSelect.innerHTML = '<option value="">Chargement des élèves...</option>';[cite: 2]
+  try {
+    const snap = await timeoutPromise(db.collection("classes").doc(classId).collection("eleves").get());
+    const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))[cite: 2]
+      .sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));[cite: 2]
+
+    teamSelect.innerHTML = '<option value="">Choisir un élève</option>';[cite: 2]
+    students.forEach(st => {
+      currentStudentMap[st.id] = st;[cite: 2]
+      const opt = document.createElement("option");[cite: 2]
+      opt.value = st.id;[cite: 2]
+      opt.textContent = st.nomComplet || ((st.nom || "") + " " + (st.prenom || "")).trim();[cite: 2]
+      teamSelect.appendChild(opt);[cite: 2]
+    });
+    localStorage.setItem("co_cached_students_" + classId, JSON.stringify(students));
+  } catch (error) {
+    const cached = localStorage.getItem("co_cached_students_" + classId);
+    if (cached) {
+      const students = JSON.parse(cached);
+      teamSelect.innerHTML = '<option value="">Choisir un élève (Cache local)</option>';
+      students.forEach(st => {
+        currentStudentMap[st.id] = st;
+        const opt = document.createElement("option");
+        opt.value = st.id;
+        opt.textContent = st.nomComplet || st.nom;
+        teamSelect.appendChild(opt);
+      });
+    } else {
+      teamSelect.innerHTML = '<option value="">Élèves indisponibles</option>';
+    }
+  }
 }
 
-classeSelect.addEventListener("change", function() {
-  renderStudents(this.value);
-});
+classeSelect.addEventListener("change", loadStudentsForSelectedClass);[cite: 2]
 
-// Import Pronote
+async function loadClassesOverview() {
+  try {
+    const snap = await timeoutPromise(db.collection("classes").get());
+    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))[cite: 2]
+      .sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));[cite: 2]
+
+    if (docs.length === 0) {
+      classesListContainer.innerHTML = 'Aucune classe enregistrée.';
+      return;
+    }
+    let html = '<table><thead><tr><th>Classe</th><th>Effectif</th><th>Action</th></tr></thead><tbody>';
+    docs.forEach(item => {
+      html += `<tr>
+        <td style="font-weight:700;">${item.className || item.id}</td>
+        <td>${item.studentCount || 0} élève(s)</td>
+        <td><button class="danger-btn" style="padding:4px 8px; font-size:0.8rem;" onclick="supprimerClasse('${item.id}')">Supprimer</button></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    classesListContainer.innerHTML = html;
+  } catch (error) {
+    classesListContainer.innerHTML = 'Connexion à la base impossible (mode autonome actif).';
+  }
+}
+
+window.supprimerClasse = async function(id) {
+  if (!confirm("Supprimer cette classe de la base ?")) return;
+  try {
+    await db.collection("classes").doc(id).delete();[cite: 2]
+    loadClassesOverview();
+    loadStudentClasses();
+  } catch(e) {
+    alert("Suppression impossible : " + e.message);
+  }
+};
+
+// Import Pronote CSV
 const newClassNameInput = document.getElementById("newClassNameInput");
 const classCsvInput = document.getElementById("classCsvInput");
 const createClassBtn = document.getElementById("createClassBtn");
 const classManagerMessage = document.getElementById("classManagerMessage");
-const classesListContainer = document.getElementById("classesListContainer");
 
-createClassBtn.addEventListener("click", function() {
-  const name = newClassNameInput.value.trim().toUpperCase();
-  const file = classCsvInput.files[0];
-  if (!name || !file) {
-    classManagerMessage.textContent = "Indiquez un nom et choisissez un fichier CSV.";
+createClassBtn.addEventListener("click", async function() {
+  const className = newClassNameInput.value.trim().toUpperCase();[cite: 2]
+  const file = classCsvInput.files[0];[cite: 2]
+  if (!className || !file) {
+    classManagerMessage.textContent = "Indiquez un nom de classe et sélectionnez un fichier.";
     classManagerMessage.className = "message error";
     return;
   }
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const text = e.target.result;
-    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    const students = [];
-    for (let i = 1; i < lines.length; i++) {
-      const p = lines[i].split(/[;,]/).map(x => x.replace(/^"|"$/g, '').trim());
-      if (p.length >= 2 && p[0] && p[1]) {
-        students.push((p[0].toUpperCase() + " " + p[1]).trim());
-      } else if (p[0]) {
-        students.push(p[0].trim());
+
+  const reader = new FileReader();[cite: 2]
+  reader.onload = async function(e) {
+    try {
+      const text = e.target.result;[cite: 2]
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);[cite: 2]
+      const students = [];[cite: 2]
+      for (let i = 1; i < lines.length; i++) {
+        const p = lines[i].split(/[;,]/).map(x => x.replace(/^"|"$/g, '').trim());[cite: 2]
+        if (p.length >= 2 && p[0] && p[1]) {
+          students.push({ nom: p[0].toUpperCase(), prenom: p[1], nomComplet: (p[0].toUpperCase() + " " + p[1]).trim() });[cite: 2]
+        } else if (p[0]) {
+          students.push({ nom: p[0], prenom: "", nomComplet: p[0].trim() });[cite: 2]
+        }
       }
-    }
-    if (students.length === 0) {
-      classManagerMessage.textContent = "Aucun élève trouvé.";
+
+      const classId = className.replace(/[^a-zA-Z0-9_-]/g, '-');[cite: 2]
+      const classRef = db.collection("classes").doc(classId);[cite: 2]
+      await classRef.set({
+        classId: classId,
+        className: className,
+        active: true,
+        studentCount: students.length,[cite: 2]
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()[cite: 2]
+      }, { merge: true });[cite: 2]
+
+      let batch = db.batch();[cite: 2]
+      students.forEach(st => {
+        const ref = classRef.collection("eleves").doc();[cite: 2]
+        batch.set(ref, { nomComplet: st.nomComplet, nom: st.nom, prenom: st.prenom, active: true });[cite: 2]
+      });
+      await batch.commit();[cite: 2]
+
+      newClassNameInput.value = "";[cite: 2]
+      classCsvInput.value = "";[cite: 2]
+      classManagerMessage.textContent = `Classe ${className} ajoutée avec ${students.length} élève(s).`;
+      classManagerMessage.className = "message success";[cite: 2]
+      loadClassesOverview();
+      loadStudentClasses();
+    } catch(err) {
+      classManagerMessage.textContent = "Erreur : " + err.message;
       classManagerMessage.className = "message error";
-      return;
     }
-    const cur = getLocalClasses();
-    cur[name] = [...new Set(students)];
-    saveLocalClasses(cur);
-    newClassNameInput.value = "";
-    classCsvInput.value = "";
-    classManagerMessage.textContent = `Classe ${name} enregistrée avec ${students.length} élève(s).`;
-    classManagerMessage.className = "message success";
   };
-  reader.readAsText(file, "utf-8");
+  reader.readAsText(file, "utf-8");[cite: 2]
 });
-
-function renderClassesOverview() {
-  const cur = getLocalClasses();
-  const keys = Object.keys(cur).sort();
-  if (keys.length === 0) {
-    classesListContainer.innerHTML = "Aucune classe enregistrée.";
-    return;
-  }
-  let html = "<table><thead><tr><th>Classe</th><th>Effectif</th><th>Action</th></tr></thead><tbody>";
-  keys.forEach(c => {
-    html += `<tr>
-      <td style="font-weight:700;">${c}</td>
-      <td>${cur[c].length} élève(s)</td>
-      <td><button class="danger-btn" style="padding:4px 8px; font-size:0.8rem;" onclick="supprimerClasse('${c}')">Supprimer</button></td>
-    </tr>`;
-  });
-  html += "</tbody></table>";
-  classesListContainer.innerHTML = html;
-}
-
-window.supprimerClasse = function(c) {
-  if (!confirm(`Supprimer la classe ${c} ?`)) return;
-  const cur = getLocalClasses();
-  delete cur[c];
-  saveLocalClasses(cur);
-};
 
 // 40 parcours
 const parcoursSelect = document.getElementById("parcoursSelect");
@@ -584,7 +642,7 @@ for (let i = 1; i <= 40; i++) {
   parcoursSelect.appendChild(opt);
 }
 
-// --- SOUMISSION DU FORMULAIRE ET POP-UP RÉSULTAT ÉLÈVE ---
+// --- SOUMISSION & POP-UP COLLÈGE ---
 const tagForm = document.getElementById("tagForm");
 const resultModal = document.getElementById("resultModal");
 const modalCard = document.getElementById("modalCard");
@@ -605,20 +663,21 @@ const durationMinutesInput = document.getElementById("durationMinutes");
 const durationSecondsInput = document.getElementById("durationSeconds");
 
 function formatTime(m, s) {
-  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+  return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");[cite: 2]
 }
 
-tagForm.addEventListener("submit", function(e) {
-  e.preventDefault();
+tagForm.addEventListener("submit", async function(e) {
+  e.preventDefault();[cite: 2]
   const c = classeSelect.value;
-  const el = teamSelect.value;
+  const elId = teamSelect.value;
+  const elNom = teamSelect.options[teamSelect.selectedIndex] ? teamSelect.options[teamSelect.selectedIndex].text : '';
   const p = parcoursSelect.value;
   const col = couleurParcoursSelect.value;
   const m = parseInt(durationMinutesInput.value, 10) || 0;
   const s = parseInt(durationSecondsInput.value, 10) || 0;
   const niv = parseInt(niveauSelect.value, 10) || 1;
 
-  if (!c || !el || !p || !col) {
+  if (!c || !elId || !p || !col) {
     alert("Veuillez sélectionner la classe, l'élève, le parcours et sa couleur.");
     return;
   }
@@ -682,34 +741,50 @@ tagForm.addEventListener("submit", function(e) {
   popupErrList.innerHTML = errList.length > 0 ? errList.join("<br>") : "Zéro erreur !";
   popupErrCard.classList.toggle("hidden", errList.length === 0);
 
-  popupSendStatus.textContent = "✅ Résultat validé et enregistré";
-  popupSendStatus.style.background = "#dcfce7";
-  popupSendStatus.style.color = "#166534";
+  popupSendStatus.textContent = "⏳ Enregistrement...";
+  popupSendStatus.style.background = "#fef3c7";
+  popupSendStatus.style.color = "#92400e";
   resultModal.classList.remove("hidden");
 
-  // Enregistrement dans les résultats
-  const res = getLocalResults();
-  res.push({
-    classe: c,
-    eleve: el,
-    points: pts,
-    justes: justes,
-    erreurs: (tot - justes),
-    sec: (m * 60 + s),
-    tempsTxt: formatTime(m, s),
+  ajouterResultatLocal({
+    classe: c, eleve: elNom, points: pts, justes: justes,
+    erreurs: (tot - justes), sec: (m * 60 + s), tempsTxt: formatTime(m, s),
     date: new Date().toLocaleTimeString("fr-FR")
   });
-  saveLocalResults(res);
+
+  try {
+    await db.collection("resultats").add({
+      classe: c, eleve: elNom, points: pts, justes: justes, total: tot,
+      tempsMinutes: m, tempsSecondes: s, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    popupSendStatus.textContent = "✅ Résultat bien envoyé";
+    popupSendStatus.style.background = "#dcfce7";
+    popupSendStatus.style.color = "#166534";
+  } catch(err) {
+    popupSendStatus.textContent = "✅ Validé (enregistré localement)";
+    popupSendStatus.style.background = "#dcfce7";
+    popupSendStatus.style.color = "#166534";
+  }
 });
 
 closeModalBtn.addEventListener("click", function() {
   resultModal.classList.add("hidden");
   tagForm.reset();
   niveauSelect.value = "1";
-  renderClasseSelects();
 });
 
 // --- DASHBOARD PROFESSEUR & EXPORTS ---
+const STORAGE_RESULTS_KEY = "co_results_records_v4";
+function getLocalResults() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_RESULTS_KEY)) || []; } catch(e) { return []; }
+}
+function ajouterResultatLocal(res) {
+  const list = getLocalResults();
+  list.push(res);
+  localStorage.setItem(STORAGE_RESULTS_KEY, JSON.stringify(list));
+  renderTeacherDashboard();
+}
+
 const resultsTableBody = document.getElementById("resultsTableBody");
 const exportCsvBtn = document.getElementById("exportCsvBtn");
 const exportPdfBtn = document.getElementById("exportPdfBtn");
@@ -756,7 +831,8 @@ function renderTeacherDashboard() {
 
 clearResultsBtn.addEventListener("click", function() {
   if (confirm("Réinitialiser les résultats de la séance ?")) {
-    saveLocalResults([]);
+    localStorage.removeItem(STORAGE_RESULTS_KEY);
+    renderTeacherDashboard();
   }
 });
 
@@ -790,8 +866,8 @@ exportPdfBtn.addEventListener("click", function() {
   doc.save(`bilan_CO.pdf`);
 });
 
-// INITIALISATION NON BLOQUANTE AU CHARGEMENT
-renderClasseSelects();
+// INITIALISATION
+loadStudentClasses();
 renderTeacherDashboard();
 </script>
 </body>
