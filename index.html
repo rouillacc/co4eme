@@ -24,7 +24,7 @@
     .danger-btn { background:var(--danger); color:#fff; }
     button:disabled { opacity:.55; cursor:not-allowed; }
     .hidden { display:none !important; }
-    .banner { text-align:center; padding:10px 14px; margin-bottom:14px; border-radius:12px; color:#fff; background:#6b7280; font-weight:700; font-size:0.95rem; }
+    .banner { text-align:center; padding:10px 14px; margin-bottom:14px; border-radius:12px; color:#fff; background:var(--dark); font-weight:700; font-size:0.95rem; }
     .panel, .form-section { background:var(--soft); border:1px solid var(--border); border-radius:14px; padding:16px; margin-bottom:16px; }
     .grid-5 { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; }
     .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
@@ -49,127 +49,38 @@
     .pill.inactive { background:#fee2e2; color:#991b1b; }
     .empty-box { padding:12px; border:1px dashed #b9c5b6; border-radius:12px; background:rgba(255,255,255,.55); color:var(--muted); text-align:center; }
 
-    /* POPUP RESULTATS ELEVE */
+    /* POP-UP */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.78);
-      backdrop-filter: blur(4px);
+      background: rgba(0,0,0,0.78); backdrop-filter: blur(4px);
       display: flex; align-items: center; justify-content: center;
       z-index: 2000; padding: 14px;
     }
     .modal-card {
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 22px 20px;
-      width: 100%;
-      max-width: 460px;
-      text-align: center;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.4);
-      border: 4px solid var(--primary);
-      animation: modalBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      max-height: 92vh;
-      overflow-y: auto;
+      background: #ffffff; border-radius: 24px; padding: 22px 20px;
+      width: 100%; max-width: 460px; text-align: center;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.4); border: 4px solid var(--primary);
+      max-height: 92vh; overflow-y: auto;
     }
-    @keyframes modalBounce {
-      0% { transform: scale(0.65); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-    .modal-emoji {
-      font-size: 3.8rem;
-      line-height: 1;
-      margin-bottom: 6px;
-      display: inline-block;
-      animation: heartBeat 1.2s infinite ease-in-out;
-    }
-    @keyframes heartBeat {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    .modal-title {
-      font-size: 1.55rem;
-      font-weight: 900;
-      margin: 0 0 14px;
-      color: var(--dark);
-    }
-    .stats-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .stat-pill {
-      background: var(--soft);
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 8px 4px;
-    }
-    .stat-pill-label {
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 2px;
-    }
-    .stat-pill-val {
-      font-size: 1.25rem;
-      font-weight: 900;
-      color: var(--dark);
-    }
-    .detail-section {
-      text-align: left;
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .detail-card {
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 0.88rem;
-    }
-    .detail-card-ok {
-      background: #e8f7ec;
-      border: 1.5px solid #a3e0b2;
-      color: #14532d;
-    }
-    .detail-card-err {
-      background: #fdf2f2;
-      border: 1.5px solid #f8b4b4;
-      color: #7f1d1d;
-    }
-    .detail-card-title {
-      font-size: 0.76rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      display: block;
-    }
+    .modal-emoji { font-size: 3.5rem; line-height: 1; margin-bottom: 6px; display: inline-block; }
+    .modal-title { font-size: 1.55rem; font-weight: 900; margin: 0 0 14px; color: var(--dark); }
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .stat-pill { background: var(--soft); border: 1.5px solid var(--border); border-radius: 12px; padding: 8px 4px; }
+    .stat-pill-label { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; }
+    .stat-pill-val { font-size: 1.25rem; font-weight: 900; color: var(--dark); }
+    .detail-section { text-align: left; margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; }
+    .detail-card { border-radius: 12px; padding: 10px 12px; font-size: 0.88rem; }
+    .detail-card-ok { background: #e8f7ec; border: 1.5px solid #a3e0b2; color: #14532d; }
+    .detail-card-err { background: #fdf2f2; border: 1.5px solid #f8b4b4; color: #7f1d1d; }
+    .detail-card-title { font-size: 0.76rem; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; display: block; }
     .sync-status-badge {
-      display: inline-block;
-      font-size: 0.82rem;
-      font-weight: 800;
-      padding: 5px 12px;
-      border-radius: 999px;
-      background: #f3f4f6;
-      color: #4b5563;
-      margin-bottom: 14px;
-      border: 1px solid #d1d5db;
+      display: inline-block; font-size: 0.82rem; font-weight: 800;
+      padding: 5px 12px; border-radius: 999px; background: #f3f4f6;
+      color: #4b5563; margin-bottom: 14px; border: 1px solid #d1d5db;
     }
     .btn-continue {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 14px;
-      background: var(--dark);
-      color: #fff;
-      font-size: 1.08rem;
-      font-weight: 900;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .btn-continue:active {
-      transform: scale(0.98);
-      background: #23352c;
+      width: 100%; padding: 15px; border: none; border-radius: 14px;
+      background: var(--dark); color: #fff; font-size: 1.08rem; font-weight: 900; cursor: pointer;
     }
   </style>
 </head>
@@ -186,7 +97,7 @@
 
   <!-- VUE ELEVE -->
   <section id="studentView">
-    <div id="activeLessonBanner" class="banner">Connexion en cours...</div>
+    <div id="activeLessonBanner" class="banner">Séance active — Validation Shakers</div>
 
     <form id="tagForm">
       <div class="form-section">
@@ -195,7 +106,7 @@
           <div>
             <label for="classeSelect">Classe</label>
             <select id="classeSelect" required>
-              <option value="">Chargement des classes...</option>
+              <option value="">Sélectionner la classe</option>
             </select>
           </div>
           <div>
@@ -288,20 +199,16 @@
   <section id="teacherDashboard" class="hidden">
     <div class="panel">
       <h2>Tableau de bord professeur</h2>
-      <div id="lessonStatus" class="pill inactive">Aucune leçon active</div>
+      <div id="lessonStatus" class="pill active">Séance : En cours</div>
       <div class="dashboard-controls" style="margin-top:12px;">
-        <button id="startLessonBtn" class="control-btn" type="button">▶️ Démarrer une leçon</button>
-        <button id="loadHistoryBtn" class="secondary-btn" type="button">🕘 Historique</button>
-        <button id="exportCsvBtn" class="secondary-btn" type="button" disabled>📊 Export CSV Bilan</button>
-        <button id="exportPdfBtn" class="secondary-btn" type="button" disabled>📄 Export PDF Bilan</button>
-        <button id="exportRankingBtn" class="control-btn" type="button" disabled>🏆 Classement Points</button>
-        <button id="closeLessonBtn" class="danger-btn" type="button" disabled>⛔ Clôturer la séance</button>
+        <button id="exportCsvBtn" class="secondary-btn" type="button">📊 Export CSV</button>
+        <button id="exportPdfBtn" class="secondary-btn" type="button">📄 Export PDF</button>
+        <button id="clearResultsBtn" class="danger-btn" type="button">🗑️ Effacer les résultats</button>
       </div>
     </div>
 
-    <!-- TABLEAU BILAN PAR ELEVE -->
     <div class="panel">
-      <h3>📈 Bilan individuel des élèves sur la leçon</h3>
+      <h3>📈 Bilan individuel des élèves</h3>
       <div style="overflow-x:auto;">
         <table>
           <thead>
@@ -324,28 +231,6 @@
     </div>
 
     <div class="panel">
-      <h3>Codes des Balises</h3>
-      <p class="mini-note" id="balisesInfoText">Chargement du statut des balises...</p>
-
-      <label for="sheetUrlInput" style="margin-top:10px;">Lien ou ID Google Sheets (Partagé en lecture)</label>
-      <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/.../edit">
-      
-      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:12px;">
-        <button id="syncSheetBtn" class="success-btn" type="button">🔄 Synchroniser Google Sheets</button>
-      </div>
-
-      <hr style="border:0; border-top:1px dashed var(--border); margin:14px 0;">
-
-      <label for="balisesFileInput">Ou importer un fichier local (CSV / TXT)</label>
-      <input type="file" id="balisesFileInput" accept=".csv,.txt">
-      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:0;">
-        <button id="uploadBalisesBtn" class="secondary-btn" type="button">💾 Importer fichier local</button>
-      </div>
-
-      <p id="balisesStatusMessage" class="message"></p>
-    </div>
-
-    <div class="panel">
       <h3>Gestion des classes Pronote</h3>
       <div class="grid-2">
         <div>
@@ -359,7 +244,6 @@
       </div>
       <div class="dashboard-controls" style="justify-content:flex-start; margin-top:12px; margin-bottom:0;">
         <button id="createClassBtn" class="success-btn" type="button">➕ Créer / mettre à jour la classe</button>
-        <button id="refreshClassesBtn" class="secondary-btn" type="button">🔄 Actualiser</button>
       </div>
       <p id="classManagerMessage" class="message"></p>
     </div>
@@ -367,17 +251,6 @@
     <div class="panel">
       <h3>Classes enregistrées</h3>
       <div id="classesListContainer" class="empty-box">Aucune classe enregistrée.</div>
-    </div>
-
-    <div id="historyPanel" class="panel hidden">
-      <h3>Historique des leçons</h3>
-      <div style="margin-bottom:10px;"><button id="closeHistoryBtn" class="secondary-btn" type="button">Fermer</button></div>
-      <div style="overflow:auto;">
-        <table>
-          <thead><tr><th>Nom</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
-          <tbody id="historyTableBody"></tbody>
-        </table>
-      </div>
     </div>
   </section>
 </div>
@@ -422,14 +295,16 @@
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<!-- LIBRAIRIES AVEC FALLBACK -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
 <script>
-// --- NAVIGATION IMMEDIATE INTERFACE SANS BLOCAGE ---
+// --- NAVIGATION IMMEDIATE (FONCTIONNE QUEL QUE SOIT L'ETAT DU RESEAU) ---
 let teacherAccessGranted = false;
-const TEACHER_CODE = "16170";[cite: 2]
+const TEACHER_CODE = "16170";
 
 function basculerVue(vue) {
   const studentView = document.getElementById("studentView");
@@ -451,8 +326,7 @@ function basculerVue(vue) {
     if (teacherAccessGranted) {
       teacherDashboard.classList.remove("hidden");
       teacherViewBtn.classList.add("active");
-      loadClassesOverview();
-      if (currentActiveLessonId) openLesson(currentActiveLessonId);
+      renderClassesOverview();
     } else {
       teacherLoginContainer.classList.remove("hidden");
       teacherViewBtn.classList.add("active");
@@ -463,7 +337,7 @@ function basculerVue(vue) {
 function validerCodeProf() {
   const code = document.getElementById("teacherCodeInput").value.trim();
   const err = document.getElementById("teacherCodeError");
-  if (code === TEACHER_CODE) {[cite: 2]
+  if (code === TEACHER_CODE) {
     teacherAccessGranted = true;
     err.textContent = "";
     document.getElementById("teacherCodeInput").value = "";
@@ -477,8 +351,8 @@ document.getElementById("teacherCodeInput").addEventListener("keydown", function
   if (e.key === "Enter") { e.preventDefault(); validerCodeProf(); }
 });
 
-// --- GRILLE OFFICIELLE DES BALISES REELLES (SANS DECALAGE) ---
-const DONNEES_SHEET_DEFAUT = {
+// --- GRILLE EXACTE DU COLLEGE ---
+const DONNEES_SHEET = {
   1: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
   2: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
   3: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
@@ -554,66 +428,159 @@ const DONNEES_SHEET_DEFAUT = {
   89: { BLEU: "8M", NOIR: "1H", ORANGE: "7K", VERT: "6W", ROSE: "2A", GRIS: "4X", ROUGE: "5F", MARRON: "3T" }
 };
 
-let DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
-const NOMBRE_BALISES_SAISIE = 5;
-const NOMBRE_PARCOURS = 40;
+// --- GESTION DES CLASSES & RESULTATS ---
+const STORAGE_CLASSES_KEY = "co_classes_data_v3";
+const STORAGE_RESULTS_KEY = "co_results_data_v3";
 
-// --- FIREBASE FIRESTORE ---
-const firebaseConfig = {
-  apiKey: "AIzaSyD3Cu1X0_JSF1qePFRzcq-RY-MYTB32a-8",
-  authDomain: "co-rouillac.firebaseapp.com",
-  projectId: "co-rouillac",
-  storageBucket: "co-rouillac.firebasestorage.app",
-  messagingSenderId: "729910930573",
-  appId: "1:729910930573:web:f8c0e93c702416fcd446c4"
-};
+function getLocalClasses() {
+  const raw = localStorage.getItem(STORAGE_CLASSES_KEY);
+  if (raw) {
+    try { return JSON.parse(raw); } catch(e) {}
+  }
+  return {
+    "4A": ["Lucas A.", "Emma B.", "Thomas C.", "Léa D.", "Nathan E.", "Hugo F."],
+    "4B": ["Manon G.", "Jules H.", "Camille I.", "Maxime J.", "Chloé K.", "Antoine L."]
+  };
+}
 
-try { firebase.initializeApp(firebaseConfig); } catch(e) {}
-const db = firebase.firestore();
+function saveLocalClasses(obj) {
+  localStorage.setItem(STORAGE_CLASSES_KEY, JSON.stringify(obj));
+  renderClasseSelects();
+  renderClassesOverview();
+}
 
-let unsubscribeFromResults = null;
-let currentActiveLessonId = null;
-let currentTeacherLesson = null;
-let currentStudentMap = {};
+function getLocalResults() {
+  const raw = localStorage.getItem(STORAGE_RESULTS_KEY);
+  if (raw) {
+    try { return JSON.parse(raw); } catch(e) {}
+  }
+  return [];
+}
 
-// DOM
-const globalError = document.getElementById("globalError");
-const activeLessonBanner = document.getElementById("activeLessonBanner");
+function saveLocalResults(arr) {
+  localStorage.setItem(STORAGE_RESULTS_KEY, JSON.stringify(arr));
+  renderTeacherDashboard();
+}
+
 const classeSelect = document.getElementById("classeSelect");
 const teamSelect = document.getElementById("teamSelect");
-const parcoursSelect = document.getElementById("parcoursSelect");
-const couleurParcoursSelect = document.getElementById("couleurParcoursSelect");
-const niveauSelect = document.getElementById("niveauSelect");
-const durationMinutesInput = document.getElementById("durationMinutes");
-const durationSecondsInput = document.getElementById("durationSeconds");
-const tagForm = document.getElementById("tagForm");
-const submitBtn = document.getElementById("submitBtn");
-const lessonStatus = document.getElementById("lessonStatus");
-const resultsTableBody = document.getElementById("resultsTableBody");
-const historyPanel = document.getElementById("historyPanel");
-const historyTableBody = document.getElementById("historyTableBody");
+
+function renderClasseSelects() {
+  const classes = getLocalClasses();
+  const current = classeSelect.value;
+  classeSelect.innerHTML = '<option value="">Sélectionner la classe</option>';
+  Object.keys(classes).sort().forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    classeSelect.appendChild(opt);
+  });
+  if (current && classes[current]) {
+    classeSelect.value = current;
+    renderStudents(current);
+  } else {
+    teamSelect.innerHTML = '<option value="">Choisir d\'abord une classe</option>';
+  }
+}
+
+function renderStudents(className) {
+  const classes = getLocalClasses();
+  const list = classes[className] || [];
+  teamSelect.innerHTML = '<option value="">Choisir un élève</option>';
+  list.sort().forEach(st => {
+    const opt = document.createElement("option");
+    opt.value = st;
+    opt.textContent = st;
+    teamSelect.appendChild(opt);
+  });
+}
+
+classeSelect.addEventListener("change", function() {
+  renderStudents(this.value);
+});
+
+// Import Pronote
 const newClassNameInput = document.getElementById("newClassNameInput");
 const classCsvInput = document.getElementById("classCsvInput");
 const createClassBtn = document.getElementById("createClassBtn");
-const refreshClassesBtn = document.getElementById("refreshClassesBtn");
-const classesListContainer = document.getElementById("classesListContainer");
 const classManagerMessage = document.getElementById("classManagerMessage");
-const startLessonBtn = document.getElementById("startLessonBtn");
-const loadHistoryBtn = document.getElementById("loadHistoryBtn");
-const closeHistoryBtn = document.getElementById("closeHistoryBtn");
-const exportCsvBtn = document.getElementById("exportCsvBtn");
-const exportPdfBtn = document.getElementById("exportPdfBtn");
-const exportRankingBtn = document.getElementById("exportRankingBtn");
-const closeLessonBtn = document.getElementById("closeLessonBtn");
+const classesListContainer = document.getElementById("classesListContainer");
 
-const sheetUrlInput = document.getElementById("sheetUrlInput");
-const syncSheetBtn = document.getElementById("syncSheetBtn");
-const balisesFileInput = document.getElementById("balisesFileInput");
-const uploadBalisesBtn = document.getElementById("uploadBalisesBtn");
-const balisesInfoText = document.getElementById("balisesInfoText");
-const balisesStatusMessage = document.getElementById("balisesStatusMessage");
+createClassBtn.addEventListener("click", function() {
+  const name = newClassNameInput.value.trim().toUpperCase();
+  const file = classCsvInput.files[0];
+  if (!name || !file) {
+    classManagerMessage.textContent = "Indiquez un nom et choisissez un fichier.";
+    classManagerMessage.className = "message error";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    const students = [];
+    for (let i = 1; i < lines.length; i++) {
+      const p = lines[i].split(/[;,]/).map(x => x.replace(/^"|"$/g, '').trim());
+      if (p.length >= 2 && p[0] && p[1]) {
+        students.push((p[0].toUpperCase() + " " + p[1]).trim());
+      } else if (p[0]) {
+        students.push(p[0].trim());
+      }
+    }
+    if (students.length === 0) {
+      classManagerMessage.textContent = "Aucun élève trouvé.";
+      classManagerMessage.className = "message error";
+      return;
+    }
+    const cur = getLocalClasses();
+    cur[name] = [...new Set(students)];
+    saveLocalClasses(cur);
+    newClassNameInput.value = "";
+    classCsvInput.value = "";
+    classManagerMessage.textContent = `Classe ${name} enregistrée (${students.length} élèves).`;
+    classManagerMessage.className = "message success";
+  };
+  reader.readAsText(file, "utf-8");
+});
 
-// Modale Pop-up
+function renderClassesOverview() {
+  const cur = getLocalClasses();
+  const keys = Object.keys(cur).sort();
+  if (keys.length === 0) {
+    classesListContainer.innerHTML = "Aucune classe enregistrée.";
+    return;
+  }
+  let html = "<table><thead><tr><th>Classe</th><th>Effectif</th><th>Action</th></tr></thead><tbody>";
+  keys.forEach(c => {
+    html += `<tr>
+      <td style="font-weight:700;">${c}</td>
+      <td>${cur[c].length} élève(s)</td>
+      <td><button class="danger-btn" style="padding:4px 8px; font-size:0.8rem;" onclick="supprimerClasse('${c}')">Supprimer</button></td>
+    </tr>`;
+  });
+  html += "</tbody></table>";
+  classesListContainer.innerHTML = html;
+}
+
+window.supprimerClasse = function(c) {
+  if (!confirm(`Supprimer la classe ${c} ?`)) return;
+  const cur = getLocalClasses();
+  delete cur[c];
+  saveLocalClasses(cur);
+};
+
+// Parcours
+const parcoursSelect = document.getElementById("parcoursSelect");
+parcoursSelect.innerHTML = '<option value="">Choisir un parcours</option>';
+for (let i = 1; i <= 40; i++) {
+  const opt = document.createElement("option");
+  opt.value = "Parcours " + i;
+  opt.textContent = "Parcours " + i;
+  parcoursSelect.appendChild(opt);
+}
+
+// --- SOUMISSION & POPUP ---
+const tagForm = document.getElementById("tagForm");
 const resultModal = document.getElementById("resultModal");
 const modalCard = document.getElementById("modalCard");
 const popupEmoji = document.getElementById("popupEmoji");
@@ -627,496 +594,68 @@ const popupOkCard = document.getElementById("popupOkCard");
 const popupErrCard = document.getElementById("popupErrCard");
 const popupSendStatus = document.getElementById("popupSendStatus");
 const closeModalBtn = document.getElementById("closeModalBtn");
+const couleurParcoursSelect = document.getElementById("couleurParcoursSelect");
+const niveauSelect = document.getElementById("niveauSelect");
+const durationMinutesInput = document.getElementById("durationMinutes");
+const durationSecondsInput = document.getElementById("durationSeconds");
 
-function showGlobalError(msg, type = "error") {
-  globalError.textContent = msg || "";
-  globalError.className = "message " + type;
-}
-
-function setClassManagerMessage(msg, type = "success") {
-  classManagerMessage.textContent = msg || "";
-  classManagerMessage.className = "message " + type;
-}
-
-function setBalisesStatus(msg, type = "success") {
-  balisesStatusMessage.textContent = msg || "";
-  balisesStatusMessage.className = "message " + type;
-}
-
-function populateParcours() {
-  parcoursSelect.innerHTML = '<option value="">Choisir un parcours</option>';
-  for (let i = 1; i <= NOMBRE_PARCOURS; i++) {
-    const opt = document.createElement("option");
-    opt.value = "Parcours " + i;
-    opt.textContent = "Parcours " + i;
-    parcoursSelect.appendChild(opt);
-  }
-}
-
-function formatTime(minutes, secondes) {
-  return String(minutes).padStart(2, "0") + ":" + String(secondes).padStart(2, "0");
-}
-
-function formatTotalSeconds(totalSec) {
-  const m = Math.floor(totalSec / 60);
-  const s = totalSec % 60;
+function formatTime(m, s) {
   return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 }
 
-function resetFormForNewEntry() {
-  tagForm.reset();
-  teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
-  parcoursSelect.selectedIndex = 0;
-  couleurParcoursSelect.selectedIndex = 0;
-  niveauSelect.value = "1";
-  if (classeSelect.value) {
-    loadStudentsForSelectedClass();
-  }
-}
+tagForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const c = classeSelect.value;
+  const el = teamSelect.value;
+  const p = parcoursSelect.value;
+  const col = couleurParcoursSelect.value;
+  const m = parseInt(durationMinutesInput.value, 10) || 0;
+  const s = parseInt(durationSecondsInput.value, 10) || 0;
+  const niv = parseInt(niveauSelect.value, 10) || 1;
 
-function promiseWithTimeout(promise, ms = 4000) {
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms))
-  ]);
-}
-
-// --- CHARGEMENT DES CLASSES FIRESTORE ---
-async function loadStudentClasses() {
-  try {
-    const selected = classeSelect.value;
-    const snap = await promiseWithTimeout(db.collection("classes").get());
-    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(item => item.active !== false).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));
-    classeSelect.innerHTML = '<option value="">Choisir une classe</option>';
-    classes.forEach(function(item) {
-      const option = document.createElement("option");
-      option.value = item.id;
-      option.textContent = item.className || item.id;
-      classeSelect.appendChild(option);
-    });
-    if (selected && classes.some(item => item.id === selected)) classeSelect.value = selected;
-    localStorage.setItem("cached_classes_co", JSON.stringify(classes));
-  } catch (error) {
-    const cached = localStorage.getItem("cached_classes_co");
-    if (cached) {
-      const classes = JSON.parse(cached);
-      classeSelect.innerHTML = '<option value="">Choisir une classe (Cache)</option>';
-      classes.forEach(function(item) {
-        const option = document.createElement("option");
-        option.value = item.id;
-        option.textContent = item.className || item.id;
-        classeSelect.appendChild(option);
-      });
-    } else {
-      classeSelect.innerHTML = '<option value="">Classes indisponibles (Vérifier réseau)</option>';
-    }
-  }
-}
-
-async function loadStudentsForSelectedClass() {
-  const classId = classeSelect.value;
-  currentStudentMap = {};
-  if (!classId) {
-    teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
+  if (!c || !el || !p || !col) {
+    alert("Veuillez sélectionner la classe, l'élève, le parcours et sa couleur.");
     return;
   }
-  teamSelect.innerHTML = '<option value="">Chargement des élèves...</option>';
-  try {
-    const snap = await promiseWithTimeout(db.collection("classes").doc(classId).collection("eleves").get());
-    const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));
-    teamSelect.innerHTML = '<option value="">Choisir un élève</option>';
-    students.forEach(function(student) {
-      currentStudentMap[student.id] = student;
-      const option = document.createElement("option");
-      option.value = student.id;
-      option.textContent = student.nomComplet || ((student.nom || "") + " " + (student.prenom || "")).trim();
-      teamSelect.appendChild(option);
-    });
-    localStorage.setItem("cached_students_co_" + classId, JSON.stringify(students));
-  } catch(e) {
-    const cached = localStorage.getItem("cached_students_co_" + classId);
-    if (cached) {
-      const students = JSON.parse(cached);
-      teamSelect.innerHTML = '<option value="">Choisir un élève (Cache)</option>';
-      students.forEach(function(student) {
-        currentStudentMap[student.id] = student;
-        const option = document.createElement("option");
-        option.value = student.id;
-        option.textContent = student.nomComplet || student.nom;
-        teamSelect.appendChild(option);
-      });
-    }
-  }
-}
-
-classeSelect.addEventListener('change', loadStudentsForSelectedClass);
-
-async function loadClassesOverview() {
-  try {
-    const snap = await promiseWithTimeout(db.collection("classes").get());
-    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));
-    if (docs.length === 0) {
-      classesListContainer.innerHTML = '<div class="empty-box">Aucune classe enregistrée.</div>';
-      return;
-    }
-    let html = '<table><thead><tr><th>Classe</th><th>Élèves</th><th>Statut</th><th>Action</th></tr></thead><tbody>';
-    docs.forEach(function(item) {
-      html += '<tr>' +
-        '<td><b>' + (item.className || item.id) + '</b></td>' +
-        '<td>' + (item.studentCount || 0) + '</td>' +
-        '<td><span class="pill ' + (item.active === false ? 'inactive' : 'active') + '">' + (item.active === false ? 'inactive' : 'active') + '</span></td>' +
-        '<td><button class="danger-btn delete-class-btn" data-class-id="' + item.id + '" data-class-name="' + (item.className || item.id).replace(/"/g, '&quot;') + '" style="padding:4px 8px; font-size:0.8rem;">Effacer</button></td>' +
-      '</tr>';
-    });
-    html += '</tbody></table>';
-    classesListContainer.innerHTML = html;
-    document.querySelectorAll('.delete-class-btn').forEach(function(btn) {
-      btn.addEventListener('click', async function() {
-        const classId = btn.dataset.classId;
-        const className = btn.dataset.className;
-        if (!confirm(`Effacer la classe "${className}" et sa liste d'élèves en ligne ?`)) return;
-        try {
-          await db.collection("classes").doc(classId).delete();
-          loadClassesOverview();
-          loadStudentClasses();
-        } catch (error) {
-          alert('Suppression impossible : ' + error);
-        }
-      });
-    });
-  } catch (error) {
-    classesListContainer.innerHTML = '<div class="empty-box">Impossible de charger les classes.</div>';
-  }
-}
-
-// --- IMPORT PRONOTE CSV ---
-function parsePronoteCSV(text) {
-  const cleanText = (text || "").replace(/^﻿/, "").trim();
-  if (!cleanText) throw new Error("Le fichier est vide.");
-  const lines = cleanText.split(/\r?\n/).filter(line => line.trim().length > 0);
-  if (lines.length < 2) throw new Error("Le fichier doit contenir un en-tête et au moins une ligne.");
-  const students = [];
-  for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(/[;,]/).map(v => v.replace(/^"|"$/g, "").trim());
-    if (cols.length >= 2 && cols[0] && cols[1]) {
-      students.push({ nom: cols[0].toUpperCase(), prenom: cols[1], nomComplet: cols[0].toUpperCase() + " " + cols[1] });
-    } else if (cols[0]) {
-      students.push({ nom: cols[0], prenom: "", nomComplet: cols[0] });
-    }
-  }
-  return students;
-}
-
-createClassBtn.addEventListener('click', async function() {
-  const className = newClassNameInput.value.trim().toUpperCase();
-  const file = classCsvInput.files[0];
-  if (!className || !file) {
-    setClassManagerMessage('Indiquez le nom et choisissez le fichier.', 'error');
-    return;
-  }
-  try {
-    createClassBtn.disabled = true;
-    setClassManagerMessage('Import en cours...', 'success');
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-      try {
-        const students = parsePronoteCSV(e.target.result);
-        const classId = className.replace(/[^a-zA-Z0-9_-]/g, '-');
-        const classRef = db.collection("classes").doc(classId);
-        await classRef.set({
-          classId: classId,
-          className: className,
-          active: true,
-          studentCount: students.length,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge: true });
-        let batch = db.batch();
-        students.forEach(st => {
-          const ref = classRef.collection("eleves").doc();
-          batch.set(ref, { nomComplet: st.nomComplet, nom: st.nom, prenom: st.prenom, active: true });
-        });
-        await batch.commit();
-        newClassNameInput.value = '';
-        classCsvInput.value = '';
-        setClassManagerMessage('Classe ' + className + ' enregistrée avec ' + students.length + ' élève(s).', 'success');
-        loadClassesOverview();
-        loadStudentClasses();
-      } catch (err) {
-        setClassManagerMessage(err.message, 'error');
-      } finally {
-        createClassBtn.disabled = false;
-      }
-    };
-    reader.readAsText(file, "utf-8");
-  } catch(e) {
-    createClassBtn.disabled = false;
-  }
-});
-refreshClassesBtn.addEventListener('click', async function() { await loadClassesOverview(); await loadStudentClasses(); });
-
-// --- GESTION PROFESSEUR ---
-startLessonBtn.addEventListener('click', async function() {
-  const lessonName = prompt('Nom de la séance :', 'Leçon Shakers');
-  if (!lessonName) return;
-  const now = new Date();
-  const lessonId = 'lecon_' + now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + '_' + lessonName.replace(/\s+/g, '-');
-  try {
-    await db.collection('lecons').doc(lessonId).set({
-      lessonId: lessonId,
-      lessonName: lessonName,
-      lessonDate: now.toLocaleDateString('fr-FR'),
-      status: 'active',
-      startedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
-    await db.collection('config').doc('activeLesson').set({
-      lessonId: lessonId,
-      lessonName: lessonName,
-      startedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    openLesson(lessonId, lessonName);
-  } catch (error) {
-    alert('Erreur démarrage : ' + error);
-  }
-});
-
-closeLessonBtn.addEventListener('click', async function() {
-  if (!currentActiveLessonId) return;
-  if (!confirm('Clôturer la séance en cours ?')) return;
-  await db.collection('lecons').doc(currentActiveLessonId).set({ status: 'closed' }, { merge: true });
-  await db.collection('config').doc('activeLesson').delete();
-  currentActiveLessonId = null;
-  currentTeacherLesson = null;
-  lessonStatus.textContent = 'Aucune leçon active';
-  lessonStatus.className = 'pill inactive';
-  resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de résultats...</td></tr>';
-  exportCsvBtn.disabled = true;
-  exportPdfBtn.disabled = true;
-  exportRankingBtn.disabled = true;
-  closeLessonBtn.disabled = true;
-});
-
-let aggregatedSummary = [];
-function openLesson(lessonId, lessonName) {
-  currentTeacherLesson = { id: lessonId, name: lessonName || lessonId };
-  if (unsubscribeFromResults) unsubscribeFromResults();
-  lessonStatus.textContent = 'Leçon : ' + currentTeacherLesson.name;
-  lessonStatus.className = 'pill active';
-  exportCsvBtn.disabled = false;
-  exportPdfBtn.disabled = false;
-  exportRankingBtn.disabled = false;
-  closeLessonBtn.disabled = false;
-
-  unsubscribeFromResults = db.collection('lecons').doc(lessonId).collection('resultats').onSnapshot(function(snapshot) {
-    const docs = snapshot.docs.map(doc => doc.data());
-    const studentsAgg = {};
-    docs.forEach(function(item) {
-      const key = (item.classeLabel || item.classe || '—') + '__' + (item.eleveNomComplet || item.eleveId || '—');
-      if (!studentsAgg[key]) {
-        studentsAgg[key] = {
-          classe: item.classeLabel || item.classe || '—',
-          eleve: item.eleveNomComplet || item.eleveId || '—',
-          pointsTotal: 0,
-          balisesTrouveesCount: 0,
-          erreursCount: 0,
-          totalSecondes: 0,
-          passages: 0,
-          dernierTimestamp: 0
-        };
-      }
-      const bonnes = item.scoreCorrectes || 0;
-      const tent = item.scoreTentatives || 0;
-      studentsAgg[key].pointsTotal += (item.pointsGagnes !== undefined ? item.pointsGagnes : (bonnes * (item.niveau || 1)));
-      studentsAgg[key].balisesTrouveesCount += bonnes;
-      studentsAgg[key].erreursCount += Math.max(0, tent - bonnes);
-      studentsAgg[key].totalSecondes += ((item.tempsMinutes || 0) * 60 + (item.tempsSecondes || 0));
-      studentsAgg[key].passages += 1;
-      const t = item.timestamp && item.timestamp.toDate ? item.timestamp.toDate().getTime() : 0;
-      if (t > studentsAgg[key].dernierTimestamp) studentsAgg[key].dernierTimestamp = t;
-    });
-
-    aggregatedSummary = Object.values(studentsAgg).sort((a,b) => b.pointsTotal - a.pointsTotal);
-    resultsTableBody.innerHTML = '';
-    if (aggregatedSummary.length === 0) {
-      resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de résultats...</td></tr>';
-      return;
-    }
-    aggregatedSummary.forEach(function(st) {
-      const tr = document.createElement('tr');
-      const dernier = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
-      tr.innerHTML = 
-        '<td style="text-align:left; font-weight:700;">' + st.classe + '</td>' +
-        '<td style="text-align:left; font-weight:700;">' + st.eleve + '</td>' +
-        '<td style="font-weight:900; background:#d8f3dc; color:#1b4332;">' + st.pointsTotal + ' pts</td>' +
-        '<td style="font-weight:700; color:#166534;">' + st.balisesTrouveesCount + '</td>' +
-        '<td style="font-weight:700; color:#b91c1c;">' + st.erreursCount + '</td>' +
-        '<td style="font-weight:700;">' + formatTotalSeconds(st.totalSecondes) + '</td>' +
-        '<td>' + st.passages + '</td>' +
-        '<td style="color:var(--muted);">' + dernier + '</td>';
-      resultsTableBody.appendChild(tr);
-    });
-  });
-}
-
-// --- HISTORIQUE ---
-loadHistoryBtn.addEventListener('click', async function() {
-  historyPanel.classList.remove('hidden');
-  historyTableBody.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';
-  const snap = await db.collection('lecons').get();
-  const lessons = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  historyTableBody.innerHTML = '';
-  lessons.forEach(function(item) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td>' + (item.lessonName || item.id) + '</td>' +
-      '<td>' + (item.lessonDate || '—') + '</td>' +
-      '<td>' + (item.status || 'active') + '</td>' +
-      '<td><button class="success-btn history-open-btn" data-id="' + item.id + '" data-name="' + (item.lessonName || item.id).replace(/"/g, '&quot;') + '" style="padding:4px 8px; font-size:0.8rem;">Rouvrir</button></td>';
-    historyTableBody.appendChild(tr);
-  });
-  document.querySelectorAll('.history-open-btn').forEach(function(btn) {
-    btn.addEventListener('click', async function() {
-      await db.collection('config').doc('activeLesson').set({ lessonId: btn.dataset.id, lessonName: btn.dataset.name });
-      await db.collection('lecons').doc(btn.dataset.id).set({ status: 'active' }, { merge: true });
-      openLesson(btn.dataset.id, btn.dataset.name);
-      historyPanel.classList.add('hidden');
-    });
-  });
-});
-closeHistoryBtn.addEventListener('click', function() { historyPanel.classList.add('hidden'); });
-
-// --- GESTION CODES BALISES CSV & GOOGLE SHEETS SANS DECALAGE ---
-function detectDelimiter(text) {
-  const line = (text || "").split(/\r?\n/).find(l => l.trim().length > 0) || "";
-  return [";", ",", "\t"].reduce((best, delim) => (line.split(delim).length > line.split(best).length ? delim : best), ";");
-}
-function parseBalisesCSV(text) {
-  const clean = (text || "").replace(/^\uFEFF/, "").trim();
-  const delim = detectDelimiter(clean);
-  const lines = clean.split(/\r?\n/).filter(l => l.trim().length > 0);
-  const headers = lines[0].split(delim).map(h => h.trim().toUpperCase());
-  const numIdx = headers.findIndex(h => ["BALISE", "NUMERO", "NUM", "ID"].includes(h));
-  const colors = ["BLEU", "NOIR", "ORANGE", "VERT", "ROSE", "GRIS", "ROUGE", "MARRON"];
-  const colMap = {};
-  colors.forEach(c => { const i = headers.indexOf(c); if(i !== -1) colMap[c] = i; });
-  const res = {};
-  for (let i = 1; i < lines.length; i++) {
-    const p = lines[i].split(delim).map(x => x.replace(/^"|"$/g, "").trim());
-    let num = parseInt(p[numIdx], 10);
-    if (isNaN(num)) continue;
-    res[num] = {};
-    colors.forEach(c => { if(colMap[c] !== undefined && p[colMap[c]]) res[num][c] = p[colMap[c]].toUpperCase(); });
-  }
-  return res;
-}
-syncSheetBtn.addEventListener("click", async function() {
-  const url = sheetUrlInput.value.trim();
-  const m = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-  const id = m ? m[1] : url;
-  if (!id) return setBalisesStatus("Lien invalide", "error");
-  try {
-    setBalisesStatus("Téléchargement...", "success");
-    const resp = await fetch(`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv`);
-    const text = await resp.text();
-    const parsed = parseBalisesCSV(text);
-    await db.collection("config").doc("balisesData").set({
-      balises: JSON.stringify(parsed), count: Object.keys(parsed).length, source: "Google Sheets", sheetId: id
-    });
-    setBalisesStatus(`✅ ${Object.keys(parsed).length} balises synchronisées !`, "success");
-  } catch(e) { setBalisesStatus("Erreur : " + e.message, "error"); }
-});
-uploadBalisesBtn.addEventListener("click", function() {
-  const f = balisesFileInput.files[0];
-  if(!f) return setBalisesStatus("Choisir un fichier", "error");
-  const r = new FileReader();
-  r.onload = async function(e) {
-    try {
-      const parsed = parseBalisesCSV(e.target.result);
-      await db.collection("config").doc("balisesData").set({ balises: JSON.stringify(parsed), count: Object.keys(parsed).length, source: f.name });
-      setBalisesStatus(`✅ ${Object.keys(parsed).length} balises importées !`, "success");
-    } catch(err) { setBalisesStatus("Erreur : " + err.message, "error"); }
-  };
-  r.readAsText(f, "utf-8");
-});
-function listenToBalisesConfig() {
-  db.collection("config").doc("balisesData").onSnapshot(function(doc) {
-    if (doc.exists && doc.data().balises) {
-      try {
-        DONNEES_SHEET = JSON.parse(doc.data().balises);
-        balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises chargées.`;
-      } catch(e) {}
-    } else {
-      DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
-      balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises par défaut.`;
-    }
-  });
-}
-
-// --- SOUMISSION DU FORMULAIRE ET POP-UP RÉSULTAT ÉLÈVE ---
-tagForm.addEventListener('submit', async function(event) {
-  event.preventDefault();
-  showGlobalError("");
-
-  const classId = classeSelect.value;
-  const classLabel = classeSelect.options[classeSelect.selectedIndex] ? classeSelect.options[classeSelect.selectedIndex].text : '';
-  const studentId = teamSelect.value;
-  const student = currentStudentMap[studentId];
-  const parcoursId = parcoursSelect.value;
-  const couleurParcours = couleurParcoursSelect.value;
-  const niveau = parseInt(niveauSelect.value, 10) || 1;
-  const durationM = durationMinutesInput.value;
-  const durationS = durationSecondsInput.value;
-
-  if (!classId || !studentId || !parcoursId || !couleurParcours || durationM === '' || durationS === '') {
-    showGlobalError("Veuillez remplir tous les champs et le temps.");
-    return;
-  }
-  const minutes = parseInt(durationM, 10);
-  const secondes = parseInt(durationS, 10);
-  if (isNaN(minutes) || isNaN(secondes) || minutes < 0 || secondes < 0 || secondes > 59) {
-    showGlobalError("Temps invalide (secondes entre 0 et 59).");
-    return;
-  }
-  if (minutes === 0 && secondes === 0) {
-    showGlobalError("Le temps de course ne peut pas être nul.");
+  if (m === 0 && s === 0) {
+    alert("Le temps de course ne peut pas être zéro.");
     return;
   }
 
-  // Vérification exacte
-  let correctes = 0;
-  let tentatives = 0;
-  const valides = [];
-  const erreurs = [];
+  let justes = 0;
+  let tot = 0;
+  const okList = [];
+  const errList = [];
 
-  for (let i = 0; i < NOMBRE_BALISES_SAISIE; i++) {
+  for (let i = 0; i < 5; i++) {
     const num = document.getElementById("baliseNum" + i).value;
     const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();
     if (!num && !code) continue;
-    tentatives++;
+    tot++;
 
     const numInt = parseInt(num, 10);
-    if (num && code && DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleurParcours] === code) {
-      correctes++;
-      valides.push(`Balise ${num}`);
+    if (num && code && DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][col] === code) {
+      justes++;
+      okList.push(`Balise ${num}`);
     } else {
-      const errInfo = num ? `Balise ${num} (code saisi : ${code || "vide"})` : `Balise ${i + 1} incomplète`;
-      erreurs.push(errInfo);
+      errList.push(num ? `Balise ${num} (code saisi : ${code || "vide"})` : `Balise ${i+1} incomplète`);
     }
   }
 
-  if (tentatives === 0) {
-    showGlobalError("Veuillez saisir au moins une balise.");
+  if (tot === 0) {
+    alert("Saisissez au moins une balise.");
     return;
   }
 
-  const pointsGagnes = correctes * niveau;
-  const tauxReussite = (correctes / tentatives) * 100;
+  const pts = justes * niv;
+  const taux = (justes / tot) * 100;
 
-  // Animation et message adapté aux collégiens
-  if (tauxReussite === 100) {
+  if (taux === 100) {
     popupEmoji.textContent = "🏆";
     popupTitle.textContent = "Parcours parfait !";
     popupTitle.style.color = "#166534";
     modalCard.style.borderColor = "#22c55e";
-  } else if (tauxReussite >= 50) {
+  } else if (taux >= 50) {
     popupEmoji.textContent = "👍";
     popupTitle.textContent = "Bien joué !";
     popupTitle.style.color = "#1e40af";
@@ -1128,135 +667,137 @@ tagForm.addEventListener('submit', async function(event) {
     modalCard.style.borderColor = "#f59e0b";
   }
 
-  popupScoreTags.textContent = `${correctes} / ${tentatives}`;
-  popupPoints.textContent = `+${pointsGagnes} pt${pointsGagnes > 1 ? 's' : ''}`;
-  popupTime.textContent = formatTime(minutes, secondes);
+  popupScoreTags.textContent = `${justes} / ${tot}`;
+  popupPoints.textContent = `+${pts} pt${pts > 1 ? 's' : ''}`;
+  popupTime.textContent = formatTime(m, s);
 
-  if (valides.length > 0) {
-    popupOkList.innerHTML = valides.join("<br>");
-    popupOkCard.classList.remove("hidden");
-  } else {
-    popupOkList.innerHTML = "Aucune balise validée sur ce passage.";
-  }
+  popupOkList.innerHTML = okList.length > 0 ? okList.join("<br>") : "Aucune balise validée.";
+  popupOkCard.classList.toggle("hidden", okList.length === 0);
 
-  if (erreurs.length > 0) {
-    popupErrList.innerHTML = erreurs.join("<br>");
-    popupErrCard.classList.remove("hidden");
-  } else {
-    popupErrList.innerHTML = "Aucune erreur, zéro faute !";
-  }
+  popupErrList.innerHTML = errList.length > 0 ? errList.join("<br>") : "Zéro erreur !";
+  popupErrCard.classList.toggle("hidden", errList.length === 0);
 
-  popupSendStatus.textContent = "⏳ Envoi du résultat en cours...";
-  popupSendStatus.style.background = "#fef3c7";
-  popupSendStatus.style.color = "#92400e";
+  popupSendStatus.textContent = "✅ Résultat validé et enregistré";
+  popupSendStatus.style.background = "#dcfce7";
+  popupSendStatus.style.color = "#166534";
   resultModal.classList.remove("hidden");
 
-  // Envoi Firestore
-  const payload = {
-    lessonId: currentActiveLessonId || "hors_ligne",
-    classe: classId,
-    classeLabel: classLabel,
-    eleveId: studentId,
-    eleveNomComplet: student ? student.nomComplet : (teamSelect.options[teamSelect.selectedIndex] ? teamSelect.options[teamSelect.selectedIndex].text : ''),
-    parcoursId: parcoursId,
-    couleurParcours: couleurParcours,
-    niveau: niveau,
-    pointsGagnes: pointsGagnes,
-    scoreCorrectes: correctes,
-    scoreTentatives: tentatives,
-    tempsMinutes: minutes,
-    tempsSecondes: secondes,
-    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-  };
+  // Enregistrement dans les bilans
+  const res = getLocalResults();
+  res.push({
+    classe: c,
+    eleve: el,
+    points: pts,
+    justes: justes,
+    erreurs: (tot - justes),
+    sec: (m * 60 + s),
+    tempsTxt: formatTime(m, s),
+    date: new Date().toLocaleTimeString("fr-FR")
+  });
+  saveLocalResults(res);
 
-  if (currentActiveLessonId) {
-    try {
-      submitBtn.disabled = true;
-      await db.collection('lecons').doc(currentActiveLessonId).collection('resultats').add(payload);
-      popupSendStatus.textContent = "✅ Résultat bien envoyé au professeur";
-      popupSendStatus.style.background = "#dcfce7";
-      popupSendStatus.style.color = "#166534";
-    } catch (err) {
-      console.error(err);
-      popupSendStatus.textContent = "⚠️ Échec d'envoi réseau (résultat validé en local)";
-      popupSendStatus.style.background = "#fee2e2";
-      popupSendStatus.style.color = "#991b1b";
-    } finally {
-      submitBtn.disabled = false;
+  // Tentative envoi Firestore en arrière-plan sans bloquer
+  try {
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+      db.collection('resultats_directs').add({
+        classe: c, eleve: el, points: pts, justes: justes, total: tot,
+        tempsMinutes: m, tempsSecondes: s, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
     }
-  } else {
-    popupSendStatus.textContent = "⚠️ Résultat validé (aucune séance prof ouverte)";
-    popupSendStatus.style.background = "#f3f4f6";
-    popupSendStatus.style.color = "#4b5563";
+  } catch(e) {}
+});
+
+closeModalBtn.addEventListener("click", function() {
+  resultModal.classList.add("hidden");
+  tagForm.reset();
+  niveauSelect.value = "1";
+  renderClasseSelects();
+});
+
+// --- DASHBOARD PROFESSEUR & EXPORTS ---
+const resultsTableBody = document.getElementById("resultsTableBody");
+const exportCsvBtn = document.getElementById("exportCsvBtn");
+const exportPdfBtn = document.getElementById("exportPdfBtn");
+const clearResultsBtn = document.getElementById("clearResultsBtn");
+
+function renderTeacherDashboard() {
+  const data = getLocalResults();
+  if (data.length === 0) {
+    resultsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--muted);">En attente de résultats...</td></tr>';
+    return;
+  }
+  const agg = {};
+  data.forEach(r => {
+    const k = r.classe + "__" + r.eleve;
+    if (!agg[k]) {
+      agg[k] = { classe: r.classe, eleve: r.eleve, pts: 0, justes: 0, err: 0, sec: 0, pass: 0, date: r.date };
+    }
+    agg[k].pts += r.points;
+    agg[k].justes += r.justes;
+    agg[k].err += r.erreurs;
+    agg[k].sec += r.sec;
+    agg[k].pass += 1;
+    agg[k].date = r.date;
+  });
+
+  const list = Object.values(agg).sort((a, b) => b.pts - a.pts);
+  let html = "";
+  list.forEach(st => {
+    const m = Math.floor(st.sec / 60);
+    const s = st.sec % 60;
+    html += `<tr>
+      <td style="font-weight:700;">${st.classe}</td>
+      <td style="text-align:left; font-weight:700;">${st.eleve}</td>
+      <td style="font-weight:900; color:#1b4332; background:#d8f3dc;">${st.pts} pts</td>
+      <td style="font-weight:700; color:#166534;">${st.justes}</td>
+      <td style="font-weight:700; color:#b91c1c;">${st.err}</td>
+      <td style="font-weight:700;">${formatTime(m, s)}</td>
+      <td>${st.pass}</td>
+      <td style="color:var(--muted);">${st.date}</td>
+    </tr>`;
+  });
+  resultsTableBody.innerHTML = html;
+}
+
+clearResultsBtn.addEventListener("click", function() {
+  if (confirm("Réinitialiser les résultats de la séance ?")) {
+    saveLocalResults([]);
   }
 });
 
-closeModalBtn.addEventListener('click', function() {
-  resultModal.classList.add("hidden");
-  resetFormForNewEntry();
-});
-
-// --- ECOUTE DE LA LECON ACTIVE ---
-function listenToActiveLesson() {
-  db.collection('config').doc('activeLesson').onSnapshot(function(doc) {
-    if (doc.exists && doc.data().lessonId) {
-      const data = doc.data();
-      currentActiveLessonId = data.lessonId;
-      activeLessonBanner.textContent = 'Leçon en cours : ' + (data.lessonName || data.lessonId);
-      activeLessonBanner.style.backgroundColor = '#344e41';
-    } else {
-      currentActiveLessonId = null;
-      activeLessonBanner.textContent = 'Aucune leçon démarrée — attendez le professeur';
-      activeLessonBanner.style.backgroundColor = '#c1121f';
-      if (!currentTeacherLesson) {
-        lessonStatus.textContent = 'Aucune leçon active';
-        lessonStatus.className = 'pill inactive';
-      }
-    }
-  }, function(error) {
-    console.error(error);
-    activeLessonBanner.textContent = 'Connexion réseau instable (Mode autonome)';
-    activeLessonBanner.style.backgroundColor = '#6b7280';
-  });
-}
-
-// --- EXPORT PDF / CSV ---
-exportCsvBtn.addEventListener('click', function() {
-  if (aggregatedSummary.length === 0) return;
-  const lines = ['Classe;Élève;Points;Balises;Erreurs;Temps;Passages'];
-  aggregatedSummary.forEach(st => {
-    lines.push([st.classe, st.eleve, st.pointsTotal, st.balisesTrouveesCount, st.erreursCount, formatTotalSeconds(st.totalSecondes), st.passages].map(v => `"${v}"`).join(';'));
-  });
-  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type:'text/csv;charset=utf-8;' });
+exportCsvBtn.addEventListener("click", function() {
+  const data = getLocalResults();
+  if (data.length === 0) { alert("Aucune donnée à exporter."); return; }
+  const lines = ['Classe;Élève;Points;Justes;Erreurs;Temps;Heure'];
+  data.forEach(r => lines.push([r.classe, r.eleve, r.points, r.justes, r.erreurs, r.tempsTxt, r.date].map(x => `"${x}"`).join(';')));
+  const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `bilan_co_${new Date().toISOString().slice(0,10)}.csv`;
+  a.download = `bilan_CO.csv`;
   a.click();
 });
 
-exportPdfBtn.addEventListener('click', function() {
-  if (aggregatedSummary.length === 0) return;
+exportPdfBtn.addEventListener("click", function() {
+  const data = getLocalResults();
+  if (data.length === 0) { alert("Aucune donnée à exporter."); return; }
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.setFontSize(15);
   doc.text("Bilan Séance Course d'Orientation", 14, 18);
-  const data = aggregatedSummary.map(st => [st.classe, st.eleve, `${st.pointsTotal} pts`, st.balisesTrouveesCount, st.erreursCount, formatTotalSeconds(st.totalSecondes), st.passages]);
+  const rows = data.map(r => [r.classe, r.eleve, `${r.points} pts`, r.justes, r.erreurs, r.tempsTxt, r.date]);
   doc.autoTable({
     startY: 25,
-    head: [['Classe', 'Élève', 'Points', 'Justes', 'Erreurs', 'Temps', 'Passages']],
-    body: data,
+    head: [['Classe', 'Élève', 'Points', 'Justes', 'Erreurs', 'Temps', 'Heure']],
+    body: rows,
     theme: 'striped',
     headStyles: { fillColor: [88, 129, 87] }
   });
-  doc.save(`bilan_co_${new Date().toISOString().slice(0,10)}.pdf`);
+  doc.save(`bilan_CO.pdf`);
 });
 
-// INITIALISATION NON BLOQUANTE
-populateParcours();
-basculerVue('eleve');
-listenToBalisesConfig();
-loadStudentClasses();
-listenToActiveLesson();
+// INITIALISATION NON BLOQUANTE AU CHARGEMENT
+renderClasseSelects();
+renderTeacherDashboard();
 </script>
 </body>
 </html>
