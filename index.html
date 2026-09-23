@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - Collège Claudie Haigneré</title>
+  <title>Course d'Orientation - Collège Claudie Haigneré</title>
   <style>
     :root {
       --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
@@ -11,7 +11,7 @@
     }
     * { box-sizing:border-box; }
     body { margin:0; font-family:Segoe UI,Tahoma,Verdana,sans-serif; background:var(--bg); color:#1f2937; }
-    .container { max-width:1250px; margin:16px auto; padding:18px; background:rgba(255,255,255,.98); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.22); border:2px solid var(--primary); }
+    .container { max-width:1250px; margin:14px auto; padding:18px; background:rgba(255,255,255,.98); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.22); border:2px solid var(--primary); }
     h1,h2,h3 { color:var(--dark); margin-top:0; }
     h1 { text-align:center; font-size:1.5rem; margin-bottom:16px; }
     .topbar { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
@@ -49,7 +49,7 @@
     .pill.inactive { background:#fee2e2; color:#991b1b; }
     .empty-box { padding:12px; border:1px dashed #b9c5b6; border-radius:12px; background:rgba(255,255,255,.55); color:var(--muted); text-align:center; }
 
-    /* POPUP ENCOURAGEANT ELEVE */
+    /* POPUP RESULTATS ELEVE */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.78);
@@ -248,24 +248,24 @@
         <h2>Saisie des balises du parcours (5 max)</h2>
         <div id="tagEntriesContainer">
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum0">Balise 1 - N°</label><input type="number" id="baliseNum0" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode0">Code écrit</label><input type="text" id="baliseCode0" placeholder="Ex : 5B"></div>
+            <div><label for="baliseNum0">Balise 1 - N°</label><input type="number" id="baliseNum0" min="1" max="150" placeholder="Ex : 70"></div>
+            <div><label for="baliseCode0">Code écrit</label><input type="text" id="baliseCode0" placeholder="Ex : 7R"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum1">Balise 2 - N°</label><input type="number" id="baliseNum1" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode1">Code écrit</label><input type="text" id="baliseCode1" placeholder="Ex : 5B"></div>
+            <div><label for="baliseNum1">Balise 2 - N°</label><input type="number" id="baliseNum1" min="1" max="150" placeholder="Ex : 70"></div>
+            <div><label for="baliseCode1">Code écrit</label><input type="text" id="baliseCode1" placeholder="Ex : 7R"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum2">Balise 3 - N°</label><input type="number" id="baliseNum2" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode2">Code écrit</label><input type="text" id="baliseCode2" placeholder="Ex : 5B"></div>
+            <div><label for="baliseNum2">Balise 3 - N°</label><input type="number" id="baliseNum2" min="1" max="150" placeholder="Ex : 70"></div>
+            <div><label for="baliseCode2">Code écrit</label><input type="text" id="baliseCode2" placeholder="Ex : 7R"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum3">Balise 4 - N°</label><input type="number" id="baliseNum3" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode3">Code écrit</label><input type="text" id="baliseCode3" placeholder="Ex : 5B"></div>
+            <div><label for="baliseNum3">Balise 4 - N°</label><input type="number" id="baliseNum3" min="1" max="150" placeholder="Ex : 70"></div>
+            <div><label for="baliseCode3">Code écrit</label><input type="text" id="baliseCode3" placeholder="Ex : 7R"></div>
           </div></div>
           <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum4">Balise 5 - N°</label><input type="number" id="baliseNum4" min="1" max="150" placeholder="Ex : 40"></div>
-            <div><label for="baliseCode4">Code écrit</label><input type="text" id="baliseCode4" placeholder="Ex : 5B"></div>
+            <div><label for="baliseNum4">Balise 5 - N°</label><input type="number" id="baliseNum4" min="1" max="150" placeholder="Ex : 70"></div>
+            <div><label for="baliseCode4">Code écrit</label><input type="text" id="baliseCode4" placeholder="Ex : 7R"></div>
           </div></div>
         </div>
       </div>
@@ -382,7 +382,7 @@
   </section>
 </div>
 
-<!-- POP-UP RESULTAT ELEVE (COLLÈGE) -->
+<!-- POP-UP RESULTAT ELEVE -->
 <div id="resultModal" class="modal-overlay hidden">
   <div class="modal-card" id="modalCard">
     <div class="modal-emoji" id="popupEmoji">🏆</div>
@@ -427,9 +427,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
-// --- NAVIGATION IMMEDIATE INTERFACE ---
+// --- NAVIGATION IMMEDIATE INTERFACE SANS BLOCAGE ---
 let teacherAccessGranted = false;
-const TEACHER_CODE = "16170";
+const TEACHER_CODE = "16170";[cite: 2]
 
 function basculerVue(vue) {
   const studentView = document.getElementById("studentView");
@@ -463,7 +463,7 @@ function basculerVue(vue) {
 function validerCodeProf() {
   const code = document.getElementById("teacherCodeInput").value.trim();
   const err = document.getElementById("teacherCodeError");
-  if (code === TEACHER_CODE) {
+  if (code === TEACHER_CODE) {[cite: 2]
     teacherAccessGranted = true;
     err.textContent = "";
     document.getElementById("teacherCodeInput").value = "";
@@ -477,9 +477,8 @@ document.getElementById("teacherCodeInput").addEventListener("keydown", function
   if (e.key === "Enter") { e.preventDefault(); validerCodeProf(); }
 });
 
-// --- BALISES DU TERRAIN (Renumérotées, sans 3, 62 ni 84) ---
-// --- GRILLE OFFICIELLE TERRAIN (CORRESPONDANCE DIRECTE SANS DECALAGE) ---
-const DONNEES_SHEET = {
+// --- GRILLE OFFICIELLE DES BALISES REELLES (SANS DECALAGE) ---
+const DONNEES_SHEET_DEFAUT = {
   1: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
   2: { BLEU: "8H", NOIR: "MV", ORANGE: "HA", VERT: "BL", ROSE: "PT", GRIS: "3I", ROUGE: "BP", MARRON: "O8" },
   3: { BLEU: "NK", NOIR: "I5", ORANGE: "A5", VERT: "CX", ROSE: "6J", GRIS: "1T", ROUGE: "B6", MARRON: "7T" },
@@ -554,23 +553,12 @@ const DONNEES_SHEET = {
   88: { BLEU: "5N", NOIR: "7R", ORANGE: "2L", VERT: "8D", ROSE: "3E", GRIS: "1G", ROUGE: "4C", MARRON: "6Y" },
   89: { BLEU: "8M", NOIR: "1H", ORANGE: "7K", VERT: "6W", ROSE: "2A", GRIS: "4X", ROUGE: "5F", MARRON: "3T" }
 };
-const DONNEES_SHEET_DEFAUT = DONNEES_SHEET;
-function remapBalisesObject(obj) {
-  // Les numéros de balises correspondent directement au tableau officiel.
-  // Aucune renumérotation n'est appliquée (les numéros 40, 41, ... 89 sont conservés).
-  const adjusted = {};
-  for (const key in obj) {
-    const num = parseInt(key, 10);
-    if (!isNaN(num)) adjusted[num] = obj[key];
-  }
-  return adjusted;
-}
 
 let DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
 const NOMBRE_BALISES_SAISIE = 5;
 const NOMBRE_PARCOURS = 40;
 
-// --- FIREBASE INITIALISATION ---
+// --- FIREBASE FIRESTORE ---
 const firebaseConfig = {
   apiKey: "AIzaSyD3Cu1X0_JSF1qePFRzcq-RY-MYTB32a-8",
   authDomain: "co-rouillac.firebaseapp.com",
@@ -580,9 +568,7 @@ const firebaseConfig = {
   appId: "1:729910930573:web:f8c0e93c702416fcd446c4"
 };
 
-try {
-  firebase.initializeApp(firebaseConfig);
-} catch(e) {}
+try { firebase.initializeApp(firebaseConfig); } catch(e) {}
 const db = firebase.firestore();
 
 let unsubscribeFromResults = null;
@@ -590,7 +576,7 @@ let currentActiveLessonId = null;
 let currentTeacherLesson = null;
 let currentStudentMap = {};
 
-// DOM Elements
+// DOM
 const globalError = document.getElementById("globalError");
 const activeLessonBanner = document.getElementById("activeLessonBanner");
 const classeSelect = document.getElementById("classeSelect");
@@ -627,7 +613,7 @@ const uploadBalisesBtn = document.getElementById("uploadBalisesBtn");
 const balisesInfoText = document.getElementById("balisesInfoText");
 const balisesStatusMessage = document.getElementById("balisesStatusMessage");
 
-// Modale
+// Modale Pop-up
 const resultModal = document.getElementById("resultModal");
 const modalCard = document.getElementById("modalCard");
 const popupEmoji = document.getElementById("popupEmoji");
@@ -688,7 +674,6 @@ function resetFormForNewEntry() {
   }
 }
 
-// Timeout de secours
 function promiseWithTimeout(promise, ms = 4000) {
   return Promise.race([
     promise,
@@ -696,7 +681,7 @@ function promiseWithTimeout(promise, ms = 4000) {
   ]);
 }
 
-// --- CHARGEMENT FIRESTORE ROBUSTE ---
+// --- CHARGEMENT DES CLASSES FIRESTORE ---
 async function loadStudentClasses() {
   try {
     const selected = classeSelect.value;
@@ -712,7 +697,6 @@ async function loadStudentClasses() {
     if (selected && classes.some(item => item.id === selected)) classeSelect.value = selected;
     localStorage.setItem("cached_classes_co", JSON.stringify(classes));
   } catch (error) {
-    console.warn("Firestore injoignable, tentative chargement cache local");
     const cached = localStorage.getItem("cached_classes_co");
     if (cached) {
       const classes = JSON.parse(cached);
@@ -805,7 +789,7 @@ async function loadClassesOverview() {
   }
 }
 
-// --- IMPORT PRONOTE ---
+// --- IMPORT PRONOTE CSV ---
 function parsePronoteCSV(text) {
   const cleanText = (text || "").replace(/^﻿/, "").trim();
   if (!cleanText) throw new Error("Le fichier est vide.");
@@ -870,7 +854,7 @@ createClassBtn.addEventListener('click', async function() {
 });
 refreshClassesBtn.addEventListener('click', async function() { await loadClassesOverview(); await loadStudentClasses(); });
 
-// --- GESTION DES LECON PROFESSEUR ---
+// --- GESTION PROFESSEUR ---
 startLessonBtn.addEventListener('click', async function() {
   const lessonName = prompt('Nom de la séance :', 'Leçon Shakers');
   if (!lessonName) return;
@@ -999,7 +983,7 @@ loadHistoryBtn.addEventListener('click', async function() {
 });
 closeHistoryBtn.addEventListener('click', function() { historyPanel.classList.add('hidden'); });
 
-// --- GESTION CODES BALISES GOOGLE SHEET & CSV ---
+// --- GESTION CODES BALISES CSV & GOOGLE SHEETS SANS DECALAGE ---
 function detectDelimiter(text) {
   const line = (text || "").split(/\r?\n/).find(l => l.trim().length > 0) || "";
   return [";", ",", "\t"].reduce((best, delim) => (line.split(delim).length > line.split(best).length ? delim : best), ";");
@@ -1056,12 +1040,12 @@ function listenToBalisesConfig() {
   db.collection("config").doc("balisesData").onSnapshot(function(doc) {
     if (doc.exists && doc.data().balises) {
       try {
-        DONNEES_SHEET = remapBalisesObject(JSON.parse(doc.data().balises));
+        DONNEES_SHEET = JSON.parse(doc.data().balises);
         balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises chargées.`;
       } catch(e) {}
     } else {
       DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
-      balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises par défaut (tableau officiel).`;
+      balisesInfoText.textContent = `Codes actifs : ${Object.keys(DONNEES_SHEET).length} balises par défaut.`;
     }
   });
 }
@@ -1096,7 +1080,7 @@ tagForm.addEventListener('submit', async function(event) {
     return;
   }
 
-  // Vérification des balises saisies
+  // Vérification exacte
   let correctes = 0;
   let tentatives = 0;
   const valides = [];
@@ -1126,7 +1110,7 @@ tagForm.addEventListener('submit', async function(event) {
   const pointsGagnes = correctes * niveau;
   const tauxReussite = (correctes / tentatives) * 100;
 
-  // Personnalisation encourageante pour collégiens
+  // Animation et message adapté aux collégiens
   if (tauxReussite === 100) {
     popupEmoji.textContent = "🏆";
     popupTitle.textContent = "Parcours parfait !";
@@ -1162,13 +1146,12 @@ tagForm.addEventListener('submit', async function(event) {
     popupErrList.innerHTML = "Aucune erreur, zéro faute !";
   }
 
-  // Statut d'envoi en direct
   popupSendStatus.textContent = "⏳ Envoi du résultat en cours...";
   popupSendStatus.style.background = "#fef3c7";
   popupSendStatus.style.color = "#92400e";
   resultModal.classList.remove("hidden");
 
-  // Envoi asynchrone Firestore
+  // Envoi Firestore
   const payload = {
     lessonId: currentActiveLessonId || "hors_ligne",
     classe: classId,
