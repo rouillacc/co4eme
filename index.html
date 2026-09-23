@@ -3,190 +3,834 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CO Connectée - v7 (Leçon 3 Shakers)</title>
+  <title>CO Connectée - EPS Collège</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:#3a5a40; --panel:#ffffff; --soft:#eef4eb; --primary:#588157; --dark:#344e41;
-      --accent:#f4a261; --danger:#c1121f; --border:#c8d2c4; --muted:#6b7280;
+      --bg: #1c2e24;
+      --bg-gradient: linear-gradient(135deg, #1b2e23 0%, #284433 50%, #152219 100%);
+      --card-bg: rgba(255, 255, 255, 0.96);
+      --section-bg: #f4f8f3;
+      --primary: #2d6a4f;
+      --primary-hover: #1b4332;
+      --primary-light: #d8f3dc;
+      --dark: #081c15;
+      --accent: #f4a261;
+      --accent-dark: #e76f51;
+      --border: #d0ded4;
+      --border-focus: #40916c;
+      --muted: #64748b;
+      --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.06), 0 2px 4px -2px rgba(0,0,0,0.04);
+      --shadow-md: 0 12px 24px -4px rgba(0,0,0,0.12), 0 4px 8px -2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 20px 35px -5px rgba(0,0,0,0.22);
     }
-    * { box-sizing:border-box; }
-    body { margin:0; font-family:Segoe UI,Tahoma,Verdana,sans-serif; background:var(--bg); color:#1f2937; }
-    .container { max-width:1250px; margin:22px auto; padding:22px; background:rgba(255,255,255,.98); border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.22); border:2px solid var(--primary); }
-    h1,h2,h3 { color:var(--dark); margin-top:0; }
-    h1 { text-align:center; margin-bottom:18px; }
-    .topbar { display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
-    .view-btn,.control-btn,.success-btn,.danger-btn,.secondary-btn,.primary-submit { border:none; border-radius:10px; padding:13px 18px; font-weight:700; cursor:pointer; }
-    .view-btn { background:#dce6d8; color:var(--dark); }
-    .view-btn.active { background:var(--dark); color:#fff; }
-    .control-btn { background:var(--accent); color:#fff; }
-    .success-btn { background:var(--primary); color:#fff; }
-    .secondary-btn { background:#dce6d8; color:var(--dark); }
-    .danger-btn { background:var(--danger); color:#fff; }
-    button:disabled { opacity:.55; cursor:not-allowed; }
-    .hidden { display:none !important; }
-    .banner { text-align:center; padding:12px 16px; margin-bottom:16px; border-radius:12px; color:#fff; background:#6b7280; font-weight:700; }
-    .panel, .form-section { background:var(--soft); border:1px solid var(--border); border-radius:14px; padding:18px; margin-bottom:18px; }
-    .grid-4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; }
-    .grid-2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
-    label { display:block; margin-bottom:8px; font-weight:700; color:var(--dark); }
-    input, select { width:100%; padding:12px; border:1px solid #b8c3b3; border-radius:10px; background:#fff; font-size:1rem; }
-    .time-input-group { display:flex; gap:10px; align-items:center; max-width:320px; }
-    .time-input-group span { font-weight:800; font-size:1.4rem; color:var(--dark); }
-    .mini-note { color:var(--muted); font-size:.92rem; margin-top:6px; }
-    .tag-group { border:2px dashed var(--primary); border-radius:12px; padding:12px; margin-bottom:12px; background:rgba(255,255,255,.5); }
-    .tag-inputs { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; align-items:end; }
-    .primary-submit { width:100%; padding:16px; background:var(--primary); color:#fff; font-size:1.08rem; }
-    .message { margin:10px 0; font-weight:700; }
-    .error { color:#b91c1c; }
-    .success { color:#166534; }
-    #resultsList { list-style:none; padding:0; margin:14px 0 0; }
-    #resultsList li { padding:10px 12px; border-radius:10px; margin-bottom:8px; font-weight:700; }
-    .result-correct { background:#d8f3dc; color:#1b4332; }
-    .result-incorrect { background:#ffccd5; color:#7f1d1d; }
-    .result-missing { background:#fff3cd; color:#7a5c00; }
-    #scoreArea { margin-top:14px; padding:15px; border-radius:12px; background:#e9f2e6; font-weight:800; text-align:center; color:var(--dark); }
-    .dashboard-controls { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
-    table { width:100%; border-collapse:collapse; background:#fff; }
-    th, td { border:1px solid #e5e7eb; padding:10px; text-align:center; vertical-align:middle; }
-    th { background:var(--primary); color:#fff; }
-    tr:nth-child(even) td { background:#f8faf8; }
-    .pill { display:inline-block; padding:6px 10px; border-radius:999px; font-size:.85rem; font-weight:700; }
-    .pill.active { background:#d8f3dc; color:#166534; }
-    .pill.inactive { background:#fee2e2; color:#991b1b; }
-    .empty-box { padding:14px; border:1px dashed #b9c5b6; border-radius:12px; background:rgba(255,255,255,.55); color:var(--muted); }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--bg-gradient);
+      background-attachment: fixed;
+      color: #1e293b;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1, h2, h3, .heading-font {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      color: var(--dark);
+    }
+    .app-card {
+      width: 100%;
+      max-width: 1220px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: var(--shadow-lg);
+      padding: 24px 28px;
+      margin: 12px auto;
+    }
+    .hero-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 22px;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eaf5ee;
+      color: #2d6a4f;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      border: 1px solid #b7e4c7;
+    }
+    .hero-title {
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      color: #12372a;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: -0.5px;
+    }
+    .hero-sub {
+      color: #52796f;
+      font-size: 0.96rem;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* Top navigation tabs */
+    .view-toggle {
+      display: inline-flex;
+      background: #e2ece5;
+      padding: 5px;
+      border-radius: 14px;
+      gap: 6px;
+      margin: 10px auto 20px;
+    }
+    .view-btn {
+      border: none;
+      background: transparent;
+      padding: 10px 22px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #2d4a3e;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .view-btn:hover { color: #081c15; background: rgba(255,255,255,0.4); }
+    .view-btn.active {
+      background: #1b4332;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(27,67,50,0.3);
+    }
+
+    /* Banner Lesson */
+    .status-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-weight: 700;
+      color: #fff;
+      background: #475569;
+      margin-bottom: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.3s ease;
+      font-size: 1rem;
+    }
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7); }
+      70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+    }
+
+    /* Sections stylisées */
+    .form-panel {
+      background: var(--section-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.8), var(--shadow-sm);
+    }
+    .section-title {
+      font-size: 1.22rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      color: #1b4332;
+      border-bottom: 2px solid #e2ede5;
+      padding-bottom: 8px;
+    }
+    .section-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #d8f3dc;
+      color: #1b4332;
+      font-size: 1.1rem;
+    }
+    .grid-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-label {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #2d4a3e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: #ffffff;
+      font-family: inherit;
+      font-size: 0.98rem;
+      color: #1e293b;
+      outline: none;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    input:focus, select:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(64, 145, 108, 0.2);
+      background: #fff;
+    }
+    .time-flex-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 340px;
+    }
+    .time-subbox {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .time-subbox label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .time-sep {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin-top: 14px;
+    }
+
+    /* Pastille de couleur de parcours dynamique */
+    .color-preview-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #1e293b;
+    }
+    .color-swatch-circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+      background: #94a3b8;
+      transition: background-color 0.25s, transform 0.2s;
+    }
+
+    /* Balises Cards 1 à 5 */
+    .tags-grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .tag-tile {
+      background: #ffffff;
+      border: 1.5px solid #d5e2d9;
+      border-radius: 16px;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, border-color 0.2s, box-shadow 0.2s;
+    }
+    .tag-tile:hover {
+      border-color: #95d5b2;
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .tag-tile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+    .tag-number-pill {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #1b4332;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tag-mini-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      background: #eaf4ed;
+      color: #2d6a4f;
+      padding: 3px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .code-input-style {
+      font-family: 'Outfit', monospace;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      background: #fbfdfb;
+    }
+
+    /* Submit Button */
+    .submit-button-primary {
+      width: 100%;
+      padding: 18px 24px;
+      border: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);
+      color: #ffffff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      box-shadow: 0 10px 20px -3px rgba(27,67,50,0.4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .submit-button-primary:hover {
+      background: linear-gradient(135deg, #378060 0%, #1e4d39 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 26px -4px rgba(27,67,50,0.5);
+    }
+    .submit-button-primary:active { transform: translateY(0); }
+
+    /* Teacher buttons */
+    .control-btn { background: #d97706; color: #fff; }
+    .control-btn:hover { background: #b45309; }
+    .success-btn { background: #2d6a4f; color: #fff; }
+    .success-btn:hover { background: #1b4332; }
+    .secondary-btn { background: #e2e8f0; color: #1e293b; }
+    .secondary-btn:hover { background: #cbd5e1; }
+    .danger-btn { background: #dc2626; color: #fff; }
+    .danger-btn:hover { background: #b91c1c; }
+    .dashboard-controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
+    th, td { border: 1px solid #e2e8f0; padding: 12px 10px; text-align: center; font-size: 0.92rem; }
+    th { background: #2d6a4f; color: #fff; font-weight: 700; font-family: 'Outfit', sans-serif; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; }
+    .pill.active { background: #d8f3dc; color: #166534; }
+    .pill.inactive { background: #fee2e2; color: #991b1b; }
+    .message { font-weight: 700; text-align: center; margin: 10px 0; }
+    .error { color: #dc2626; }
+    .success { color: #16a34a; }
+    .empty-box { padding: 16px; border: 2px dashed #cbd5e1; border-radius: 14px; text-align: center; color: var(--muted); }
+    .hidden { display: none !important; }
+
+    /* ==========================================================
+       MODAL POPUP RESULTATS AVEC PROGRESSION DE 5 SECONDES
+       ========================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.72);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 16px;
+      animation: modalFadeIn 0.25s ease-out forwards;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .modal-sheet {
+      background: #ffffff;
+      width: 100%;
+      max-width: 530px;
+      border-radius: 28px;
+      border: 4px solid #22c55e;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      padding: 30px 26px 22px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalSlideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Barre de compte à rebours 5s */
+    .auto-close-bar-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+    .auto-close-progress {
+      height: 100%;
+      width: 100%;
+      background: #22c55e;
+      transform-origin: left;
+      animation: shrinkBar 5s linear forwards;
+    }
+    @keyframes shrinkBar {
+      from { transform: scaleX(1); }
+      to { transform: scaleX(0); }
+    }
+    .modal-top-icon {
+      font-size: 4.4rem;
+      line-height: 1;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+    .modal-main-title {
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+    .modal-subtitle-text {
+      color: #64748b;
+      font-size: 0.98rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .kpi-dashboard {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .kpi-tile {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .kpi-title {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #64748b;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .kpi-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.55rem;
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .tag-recap-box {
+      background: #f1f5f9;
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-align: left;
+      margin-bottom: 20px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+    .recap-head {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 800;
+      color: #475569;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .recap-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .recap-list li {
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal-action-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: #1b4332;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.08rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(27,67,50,0.3);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .modal-action-btn:hover { background: #2d6a4f; transform: translateY(-1px); }
+    .auto-close-countdown {
+      font-size: 0.82rem;
+      color: #64748b;
+      margin-top: 10px;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>🌲 Course d'Orientation Connectée 🧭</h1>
+<div class="app-card">
+  <!-- EN-TETE PRINCIPALE -->
+  <header class="hero-header">
+    <div class="hero-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+      EPS &middot; Plein Air &middot; Numérique
+    </div>
+    <h1 class="hero-title">
+      🧭 Course d'Orientation Connectée 🌲
+    </h1>
+    <p class="hero-sub">Validation instantanée de tes parcours, balises et chrono</p>
+  </header>
 
-  <div class="topbar">
-    <button id="studentViewBtn" class="view-btn active">📱 Vue Élève</button>
-    <button id="teacherViewBtn" class="view-btn" onclick="openTeacherAccess()">🖥️ Vue Professeur</button>
+  <!-- ONGLETS DE SELECTION -->
+  <div style="display:flex; justify-content:center;">
+    <nav class="view-toggle">
+      <button id="studentViewBtn" class="view-btn active" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        📱 Espace Élève
+      </button>
+      <button id="teacherViewBtn" class="view-btn" type="button" onclick="openTeacherAccess()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        🖥️ Espace Enseignant
+      </button>
+    </nav>
   </div>
 
-  <p id="globalError" class="message error" style="text-align:center;"></p>
+  <p id="globalError" class="message error"></p>
 
-  <!-- VUE ELEVE -->
+  <!-- ========================================== -->
+  <!--               VUE ELEVE                    -->
+  <!-- ========================================== -->
   <section id="studentView">
-    <div id="activeLessonBanner" class="banner">Connexion en cours...</div>
+    <!-- Bandeau dynamique leçon active -->
+    <div id="activeLessonBanner" class="status-banner">
+      <span class="pulse-dot"></span>
+      <span>Connexion à la séance en cours...</span>
+    </div>
 
-    <form id="tagForm">
-      <div class="form-section">
-        <h2>Identification</h2>
-        <div class="grid-4">
-          <div>
-            <label for="classeSelect">Classe</label>
+    <form id="tagForm" autocomplete="off">
+      <!-- 1. IDENTIFICATION & COULEUR DU PARCOURS -->
+      <div class="form-panel">
+        <h2 class="section-title">
+          <span class="section-icon">👤</span>
+          1. Identification & Choix du Parcours
+        </h2>
+        
+        <div class="grid-fields">
+          <div class="field-group">
+            <label class="field-label" for="classeSelect">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Classe
+            </label>
             <select id="classeSelect" required>
               <option value="">Chargement des classes...</option>
             </select>
           </div>
-          <div>
-            <label for="teamSelect">Élève</label>
+
+          <div class="field-group">
+            <label class="field-label" for="teamSelect">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
+              Élève
+            </label>
             <select id="teamSelect" required>
               <option value="">Choisir d'abord une classe</option>
             </select>
           </div>
-          <div>
-            <label for="parcoursSelect">Parcours</label>
+
+          <div class="field-group">
+            <label class="field-label" for="parcoursSelect">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+              Parcours
+            </label>
             <select id="parcoursSelect" required></select>
           </div>
-          <div>
-            <label for="niveauSelect">Niveau de difficulté</label>
+
+          <!-- COULEUR GLOBALE DU PARCOURS -->
+          <div class="field-group">
+            <label class="field-label" for="parcoursCouleurGlobal" style="color: #b45309;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+              Couleur du parcours (unique)
+            </label>
+            <div style="display:flex; gap:8px;">
+              <select id="parcoursCouleurGlobal" required style="border: 2px solid var(--accent); font-weight: 700;">
+                <option value="">-- Choisir la couleur --</option>
+                <option value="BLEU">🔵 BLEU</option>
+                <option value="NOIR">⚫ NOIR</option>
+                <option value="ORANGE">🟠 ORANGE</option>
+                <option value="VERT">🟢 VERT</option>
+                <option value="ROSE">🌸 ROSE</option>
+                <option value="GRIS">⚪ GRIS</option>
+                <option value="ROUGE">🔴 ROUGE</option>
+                <option value="MARRON">🟤 MARRON</option>
+              </select>
+              <div class="color-preview-badge" title="Couleur actuelle">
+                <span id="colorSwatch" class="color-swatch-circle"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="niveauSelect">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Niveau de difficulté
+            </label>
             <select id="niveauSelect" required>
-              <option value="1" selected>🟢 Niveau 1 (1 pt)</option>
-              <option value="2">🔵 Niveau 2 (2 pts)</option>
-              <option value="3">🔴 Niveau 3 (3 pts)</option>
+              <option value="1" selected>🟢 Niveau 1 (1 pt / balise)</option>
+              <option value="2">🔵 Niveau 2 (2 pts / balise)</option>
+              <option value="3">🔴 Niveau 3 (3 pts / balise)</option>
             </select>
           </div>
         </div>
       </div>
 
-      <div class="form-section">
-        <h2>Temps de course</h2>
-        <label>Durée totale (MM:SS)</label>
-        <div class="time-input-group">
-          <input type="number" id="durationMinutes" min="0" max="99" placeholder="Min" required>
-          <span>:</span>
-          <input type="number" id="durationSeconds" min="0" max="59" placeholder="Sec" required>
+      <!-- 2. TEMPS DE COURSE -->
+      <div class="form-panel">
+        <h2 class="section-title">
+          <span class="section-icon">⏱️</span>
+          2. Temps de course
+        </h2>
+        <div class="time-flex-container">
+          <div class="time-subbox">
+            <label for="durationMinutes">Minutes</label>
+            <input type="number" id="durationMinutes" min="0" max="99" placeholder="00" required style="font-weight:700; font-size:1.15rem; text-align:center;">
+          </div>
+          <span class="time-sep">:</span>
+          <div class="time-subbox">
+            <label for="durationSeconds">Secondes</label>
+            <input type="number" id="durationSeconds" min="0" max="59" placeholder="00" required style="font-weight:700; font-size:1.15rem; text-align:center;">
+          </div>
         </div>
-        <p class="mini-note">Exemple : 08 min 45 sec</p>
+        <p class="mini-note" style="color:var(--muted); margin-top:8px;">Indique le temps exact affiché sur ton chronomètre (ex : 09 min 30 sec).</p>
       </div>
 
-      <div class="form-section">
-        <h2>Saisie des balises (5 max)</h2>
-        <div id="tagEntriesContainer">
-          <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum0">Balise 1 - Numéro</label><input type="number" id="baliseNum0" min="1" max="150" placeholder="Ex : 42"></div>
-            <div><label for="baliseCouleur0">Couleur</label><select id="baliseCouleur0"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode0">Code</label><input type="text" id="baliseCode0" placeholder="Ex : 5B"></div>
-          </div></div>
-          <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum1">Balise 2 - Numéro</label><input type="number" id="baliseNum1" min="1" max="150" placeholder="Ex : 42"></div>
-            <div><label for="baliseCouleur1">Couleur</label><select id="baliseCouleur1"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode1">Code</label><input type="text" id="baliseCode1" placeholder="Ex : 5B"></div>
-          </div></div>
-          <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum2">Balise 3 - Numéro</label><input type="number" id="baliseNum2" min="1" max="150" placeholder="Ex : 42"></div>
-            <div><label for="baliseCouleur2">Couleur</label><select id="baliseCouleur2"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode2">Code</label><input type="text" id="baliseCode2" placeholder="Ex : 5B"></div>
-          </div></div>
-          <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum3">Balise 4 - Numéro</label><input type="number" id="baliseNum3" min="1" max="150" placeholder="Ex : 42"></div>
-            <div><label for="baliseCouleur3">Couleur</label><select id="baliseCouleur3"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode3">Code</label><input type="text" id="baliseCode3" placeholder="Ex : 5B"></div>
-          </div></div>
-          <div class="tag-group"><div class="tag-inputs">
-            <div><label for="baliseNum4">Balise 5 - Numéro</label><input type="number" id="baliseNum4" min="1" max="150" placeholder="Ex : 42"></div>
-            <div><label for="baliseCouleur4">Couleur</label><select id="baliseCouleur4"><option value="">Choisir</option><option value="NOIR">NOIR</option><option value="ORANGE">ORANGE</option><option value="VERT">VERT</option><option value="ROSE">ROSE</option><option value="GRIS">GRIS</option><option value="ROUGE">ROUGE</option><option value="MARRON">MARRON</option><option value="BLEU">BLEU</option></select></div>
-            <div><label for="baliseCode4">Code</label><input type="text" id="baliseCode4" placeholder="Ex : 5B"></div>
-          </div></div>
+      <!-- 3. SAISIE DES BALISES AVEC NUMERO DE BALISE EXPLICITE -->
+      <div class="form-panel">
+        <h2 class="section-title">
+          <span class="section-icon">📍</span>
+          3. Saisie des balises trouvées (1 à 5)
+        </h2>
+        <p class="mini-note" style="color: #2d6a4f; font-weight:600; margin-bottom: 14px;">
+          ✓ La couleur choisie s'applique à l'ensemble du parcours. Renseigne uniquement le <strong>numéro de balise</strong> et le <strong>code poinçon</strong>.
+        </p>
+
+        <div class="tags-grid-cards" id="tagsCardsContainer">
+          <!-- Balise 1 -->
+          <div class="tag-tile">
+            <div class="tag-tile-header">
+              <span class="tag-number-pill">📍 Balise 1</span>
+              <span class="tag-mini-badge">N° 1</span>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseNum0">Numéro de balise</label>
+              <input type="number" id="baliseNum0" min="1" max="150" placeholder="Ex: 42">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseCode0">Code poinçon</label>
+              <input type="text" id="baliseCode0" class="code-input-style" placeholder="Ex: 5B" maxlength="8">
+            </div>
+          </div>
+
+          <!-- Balise 2 -->
+          <div class="tag-tile">
+            <div class="tag-tile-header">
+              <span class="tag-number-pill">📍 Balise 2</span>
+              <span class="tag-mini-badge">N° 2</span>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseNum1">Numéro de balise</label>
+              <input type="number" id="baliseNum1" min="1" max="150" placeholder="Ex: 42">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseCode1">Code poinçon</label>
+              <input type="text" id="baliseCode1" class="code-input-style" placeholder="Ex: 5B" maxlength="8">
+            </div>
+          </div>
+
+          <!-- Balise 3 -->
+          <div class="tag-tile">
+            <div class="tag-tile-header">
+              <span class="tag-number-pill">📍 Balise 3</span>
+              <span class="tag-mini-badge">N° 3</span>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseNum2">Numéro de balise</label>
+              <input type="number" id="baliseNum2" min="1" max="150" placeholder="Ex: 42">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseCode2">Code poinçon</label>
+              <input type="text" id="baliseCode2" class="code-input-style" placeholder="Ex: 5B" maxlength="8">
+            </div>
+          </div>
+
+          <!-- Balise 4 -->
+          <div class="tag-tile">
+            <div class="tag-tile-header">
+              <span class="tag-number-pill">📍 Balise 4</span>
+              <span class="tag-mini-badge">N° 4</span>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseNum3">Numéro de balise</label>
+              <input type="number" id="baliseNum3" min="1" max="150" placeholder="Ex: 42">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseCode3">Code poinçon</label>
+              <input type="text" id="baliseCode3" class="code-input-style" placeholder="Ex: 5B" maxlength="8">
+            </div>
+          </div>
+
+          <!-- Balise 5 -->
+          <div class="tag-tile">
+            <div class="tag-tile-header">
+              <span class="tag-number-pill">📍 Balise 5</span>
+              <span class="tag-mini-badge">N° 5</span>
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseNum4">Numéro de balise</label>
+              <input type="number" id="baliseNum4" min="1" max="150" placeholder="Ex: 42">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="baliseCode4">Code poinçon</label>
+              <input type="text" id="baliseCode4" class="code-input-style" placeholder="Ex: 5B" maxlength="8">
+            </div>
+          </div>
         </div>
       </div>
 
-      <button type="submit" id="submitBtn" class="primary-submit">🚀 Vérifier et envoyer le résultat</button>
+      <button type="submit" id="submitBtn" class="submit-button-primary">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Vérifier et enregistrer mon parcours
+      </button>
     </form>
-
-    <div id="resultsContainer"><ul id="resultsList"></ul></div>
-    <div id="scoreArea" class="hidden"></div>
   </section>
 
-  <!-- ACCES PROFESSEUR -->
-  <section id="teacherLoginContainer" class="hidden form-section">
-    <h2>Accès professeur</h2>
-    <p>Entrez le code d'accès professeur.</p>
-    <label for="teacherCodeInput">Code</label>
-    <input type="password" id="teacherCodeInput" autocomplete="off" placeholder="Entrez le code">
-    <p id="teacherCodeError" class="message error"></p>
-    <button type="button" id="teacherCodeSubmitBtn" class="success-btn">Valider le code</button>
+  <!-- ========================================== -->
+  <!--           CONNEXION PROFESSEUR             -->
+  <!-- ========================================== -->
+  <section id="teacherLoginContainer" class="hidden form-panel">
+    <h2 class="section-title">
+      <span class="section-icon">🔒</span>
+      Espace Enseignant Sécurisé
+    </h2>
+    <p style="margin-bottom:12px; color:var(--muted);">Saisis le code enseignant pour ouvrir le tableau de bord et gérer les bilans.</p>
+    <div style="max-width:320px; display:flex; flex-direction:column; gap:8px;">
+      <label class="field-label" for="teacherCodeInput">Code professeur</label>
+      <input type="password" id="teacherCodeInput" placeholder="Entrez le code" autocomplete="off">
+      <p id="teacherCodeError" class="message error" style="text-align:left;"></p>
+      <button type="button" id="teacherCodeSubmitBtn" class="success-btn" style="padding:12px; border-radius:10px; font-weight:700;">
+        Valider l'accès
+      </button>
+    </div>
   </section>
 
-  <!-- DASHBOARD PROFESSEUR -->
+  <!-- ========================================== -->
+  <!--           TABLEAU DE BORD PROFESSEUR       -->
+  <!-- ========================================== -->
   <section id="teacherDashboard" class="hidden">
-    <div class="panel">
-      <h2>Tableau de bord professeur</h2>
-      <div id="lessonStatus" class="pill inactive">Aucune leçon active</div>
-      <div class="dashboard-controls" style="margin-top:12px;">
-        <button id="startLessonBtn" class="control-btn">▶️ Démarrer une leçon</button>
-        <button id="loadHistoryBtn" class="secondary-btn">🕘 Historique</button>
-        <button id="exportCsvBtn" class="secondary-btn" disabled>📊 Export CSV Bilan</button>
-        <button id="exportPdfBtn" class="secondary-btn" disabled>📄 Export PDF Bilan</button>
-        <button id="exportRankingBtn" class="control-btn" disabled>🏆 Classement Points</button>
-        <button id="closeLessonBtn" class="danger-btn" disabled>⛔ Clôturer la séance</button>
+    <div class="form-panel">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+        <h2 class="section-title" style="margin-bottom:0; border:none; padding:0;">
+          <span class="section-icon">🖥️</span>
+          Tableau de bord de la séance
+        </h2>
+        <div id="lessonStatus" class="pill inactive">Aucune leçon active</div>
+      </div>
+      <div class="dashboard-controls">
+        <button id="startLessonBtn" class="control-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;">▶️ Démarrer une leçon</button>
+        <button id="loadHistoryBtn" class="secondary-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🕘 Historique</button>
+        <button id="exportCsvBtn" class="secondary-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;" disabled>📊 Export CSV Bilan</button>
+        <button id="exportPdfBtn" class="secondary-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;" disabled>📄 Export PDF Bilan</button>
+        <button id="exportRankingBtn" class="control-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;" disabled>🏆 Classement Points</button>
+        <button id="closeLessonBtn" class="danger-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;" disabled>⛔ Clôturer séance</button>
       </div>
     </div>
 
-    <!-- TABLEAU BILAN PAR ELEVE -->
-    <div class="panel">
-      <h3>📈 Bilan individuel des élèves sur la leçon</h3>
+    <!-- TABLEAU DES RESULTATS ELEVES -->
+    <div class="form-panel">
+      <h3 style="margin-bottom:12px; color:#1b4332;">📈 Bilan individuel des élèves en direct</h3>
       <div style="overflow-x:auto;">
         <table>
           <thead>
             <tr>
               <th style="text-align:left;">Classe</th>
               <th style="text-align:left;">Élève</th>
-              <th style="background:#2d6a4f;">Points</th>
-              <th>Balises trouvées</th>
+              <th style="background:#1b4332;">Points</th>
+              <th>Balises validées</th>
               <th>Erreurs</th>
               <th>Temps total</th>
               <th>Passages</th>
@@ -200,57 +844,60 @@
       </div>
     </div>
 
-    <div class="panel">
-      <h3>Codes des Balises</h3>
+    <!-- CODES DES BALISES -->
+    <div class="form-panel">
+      <h3 style="margin-bottom:8px; color:#1b4332;">🎯 Grille & Codes des Balises</h3>
       <p class="mini-note" id="balisesInfoText">Chargement du statut des balises...</p>
 
-      <label for="sheetUrlInput" style="margin-top:10px;">Lien ou ID Google Sheets (Partagé en lecture)</label>
-      <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/.../edit">
-      
-      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:12px;">
-        <button id="syncSheetBtn" class="success-btn">🔄 Synchroniser Google Sheets</button>
+      <div style="margin-top:12px;">
+        <label class="field-label" for="sheetUrlInput">Lien ou ID Google Sheets (Partagé en lecture)</label>
+        <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/.../edit" style="margin-bottom:8px;">
+        <button id="syncSheetBtn" class="success-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🔄 Synchroniser Google Sheets</button>
       </div>
 
-      <hr style="border:0; border-top:1px dashed var(--border); margin:14px 0;">
+      <hr style="border:0; border-top:1px dashed var(--border); margin:16px 0;">
 
-      <label for="balisesFileInput">Ou importer un fichier local (CSV / TXT)</label>
-      <input type="file" id="balisesFileInput" accept=".csv,.txt">
-      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:10px; margin-bottom:0;">
-        <button id="uploadBalisesBtn" class="secondary-btn">💾 Importer fichier local</button>
+      <div>
+        <label class="field-label" for="balisesFileInput">Ou importer un fichier local (CSV / TXT)</label>
+        <input type="file" id="balisesFileInput" accept=".csv,.txt" style="margin-bottom:8px;">
+        <button id="uploadBalisesBtn" class="secondary-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;">💾 Importer fichier local</button>
       </div>
-
       <p id="balisesStatusMessage" class="message"></p>
     </div>
 
-    <div class="panel">
-      <h3>Gestion des classes Pronote</h3>
-      <div class="grid-2">
-        <div>
-          <label for="newClassNameInput">Nom de la classe</label>
+    <!-- GESTION PRONOTE -->
+    <div class="form-panel">
+      <h3 style="margin-bottom:8px; color:#1b4332;">👥 Gestion des classes Pronote</h3>
+      <div class="grid-fields">
+        <div class="field-group">
+          <label class="field-label" for="newClassNameInput">Nom de la classe</label>
           <input type="text" id="newClassNameInput" placeholder="Ex : 4A">
         </div>
-        <div>
-          <label for="classCsvInput">Fichier CSV Pronote</label>
+        <div class="field-group">
+          <label class="field-label" for="classCsvInput">Fichier CSV Pronote</label>
           <input type="file" id="classCsvInput" accept=".csv,.txt">
         </div>
       </div>
-      <div class="dashboard-controls" style="justify-content:flex-start; margin-top:12px; margin-bottom:0;">
-        <button id="createClassBtn" class="success-btn">➕ Créer / mettre à jour la classe</button>
-        <button id="refreshClassesBtn" class="secondary-btn">🔄 Actualiser</button>
+      <div class="dashboard-controls" style="margin-top:12px;">
+        <button id="createClassBtn" class="success-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;">➕ Importer la classe</button>
+        <button id="refreshClassesBtn" class="secondary-btn" style="padding:10px 16px; border:none; border-radius:10px; font-weight:700; cursor:pointer;">🔄 Actualiser</button>
       </div>
-      <p class="mini-note">Les classes et les élèves sont enregistrés en ligne dans Firestore.</p>
       <p id="classManagerMessage" class="message"></p>
     </div>
 
-    <div class="panel">
-      <h3>Classes enregistrées</h3>
+    <!-- LISTE DES CLASSES -->
+    <div class="form-panel">
+      <h3 style="margin-bottom:8px; color:#1b4332;">Classes enregistrées</h3>
       <div id="classesListContainer" class="empty-box">Aucune classe enregistrée.</div>
     </div>
 
-    <div id="historyPanel" class="panel hidden">
-      <h3>Historique des leçons</h3>
-      <div style="margin-bottom:10px;"><button id="closeHistoryBtn" class="secondary-btn">Fermer</button></div>
-      <div style="overflow:auto;">
+    <!-- HISTORIQUE -->
+    <div id="historyPanel" class="form-panel hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="color:#1b4332;">Historique des leçons</h3>
+        <button id="closeHistoryBtn" class="secondary-btn" style="padding:6px 12px; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Fermer</button>
+      </div>
+      <div style="overflow-x:auto;">
         <table>
           <thead><tr><th>Nom</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
           <tbody id="historyTableBody"></tbody>
@@ -260,10 +907,61 @@
   </section>
 </div>
 
+<!-- ========================================================== -->
+<!--     MODALE DE RESULTATS AVEC DISPARITION AUTO EN 5S        -->
+<!-- ========================================================== -->
+<div id="resultModal" class="modal-overlay hidden">
+  <div id="modalCard" class="modal-sheet">
+    <!-- Barre de défilement 5s -->
+    <div class="auto-close-bar-wrap">
+      <div id="modalProgressBar" class="auto-close-progress"></div>
+    </div>
+
+    <div id="popupEmoji" class="modal-top-icon">🏆</div>
+    <h2 id="popupTitle" class="modal-main-title">Parcours parfait !</h2>
+    <div id="popupSubtitle" class="modal-subtitle-text">Résultat de ta course</div>
+
+    <div class="kpi-dashboard">
+      <div class="kpi-tile">
+        <span class="kpi-title">Balises Validées</span>
+        <span id="modalStatTags" class="kpi-number">5 / 5</span>
+      </div>
+      <div class="kpi-tile">
+        <span class="kpi-title">Points Gagnés</span>
+        <span id="modalStatPoints" class="kpi-number" style="color:#166534;">+15 pts</span>
+      </div>
+      <div class="kpi-tile">
+        <span class="kpi-title">Taux de réussite</span>
+        <span id="modalStatPercent" class="kpi-number">100%</span>
+      </div>
+      <div class="kpi-tile">
+        <span class="kpi-title">Temps réalisé</span>
+        <span id="modalStatTime" class="kpi-number">08:45</span>
+      </div>
+    </div>
+
+    <div class="tag-recap-box">
+      <div class="recap-head">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Détail de tes poinçons :
+      </div>
+      <ul id="modalDetailsList" class="recap-list"></ul>
+    </div>
+
+    <button type="button" id="modalCloseBtn" class="modal-action-btn">
+      <span>Passer au parcours suivant</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+    <div id="autoCloseCountdownText" class="auto-close-countdown">Fermeture automatique dans 5 secondes...</div>
+  </div>
+</div>
+
+<!-- SCRIPTS EXTERNES -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
 <script>
 const DONNEES_SHEET_DEFAUT = {
   8: { BLEU: "F2", NOIR: "G1", ORANGE: "RR", VERT: "2F", ROSE: "6C", GRIS: "7L", ROUGE: "LX", MARRON: "CL" },
@@ -341,6 +1039,17 @@ const DONNEES_SHEET_DEFAUT = {
   100: { BLEU: "7H", NOIR: "6Z", ORANGE: "5Y", VERT: "3P", ROSE: "4D", GRIS: "1C", ROUGE: "2E", MARRON: "8B" }
 };
 
+const COULEURS_HEX = {
+  BLEU: "#2563eb",
+  NOIR: "#1e293b",
+  ORANGE: "#ea580c",
+  VERT: "#16a34a",
+  ROSE: "#ec4899",
+  GRIS: "#64748b",
+  ROUGE: "#dc2626",
+  MARRON: "#854d0e"
+};
+
 let DONNEES_SHEET = Object.assign({}, DONNEES_SHEET_DEFAUT);
 const NOMBRE_BALISES_SAISIE = 5;
 const NOMBRE_PARCOURS = 50;
@@ -363,8 +1072,10 @@ let currentActiveLessonId = null;
 let currentTeacherLesson = null;
 let currentStudentMap = {};
 let teacherAccessGranted = false;
+let autoCloseModalTimer = null;
+let countdownInterval = null;
 
-// DOM Elements
+/* DOM ELEMENTS */
 const studentView = document.getElementById("studentView");
 const teacherDashboard = document.getElementById("teacherDashboard");
 const teacherLoginContainer = document.getElementById("teacherLoginContainer");
@@ -375,13 +1086,30 @@ const activeLessonBanner = document.getElementById("activeLessonBanner");
 const classeSelect = document.getElementById("classeSelect");
 const teamSelect = document.getElementById("teamSelect");
 const parcoursSelect = document.getElementById("parcoursSelect");
+const parcoursCouleurGlobal = document.getElementById("parcoursCouleurGlobal");
+const colorSwatch = document.getElementById("colorSwatch");
 const niveauSelect = document.getElementById("niveauSelect");
 const durationMinutesInput = document.getElementById("durationMinutes");
 const durationSecondsInput = document.getElementById("durationSeconds");
 const tagForm = document.getElementById("tagForm");
 const submitBtn = document.getElementById("submitBtn");
-const resultsList = document.getElementById("resultsList");
-const scoreArea = document.getElementById("scoreArea");
+
+/* MODAL ELEMENTS */
+const resultModal = document.getElementById("resultModal");
+const modalCard = document.getElementById("modalCard");
+const popupEmoji = document.getElementById("popupEmoji");
+const popupTitle = document.getElementById("popupTitle");
+const popupSubtitle = document.getElementById("popupSubtitle");
+const modalStatTags = document.getElementById("modalStatTags");
+const modalStatPoints = document.getElementById("modalStatPoints");
+const modalStatPercent = document.getElementById("modalStatPercent");
+const modalStatTime = document.getElementById("modalStatTime");
+const modalDetailsList = document.getElementById("modalDetailsList");
+const modalCloseBtn = document.getElementById("modalCloseBtn");
+const autoCloseCountdownText = document.getElementById("autoCloseCountdownText");
+const modalProgressBar = document.getElementById("modalProgressBar");
+
+/* TEACHER DASHBOARD ELEMENTS */
 const teacherCodeInput = document.getElementById("teacherCodeInput");
 const teacherCodeSubmitBtn = document.getElementById("teacherCodeSubmitBtn");
 const teacherCodeError = document.getElementById("teacherCodeError");
@@ -431,6 +1159,18 @@ function clearMessages() {
   setBalisesStatus("");
 }
 
+/* Pastille dynamique de couleur */
+parcoursCouleurGlobal.addEventListener("change", function() {
+  const col = parcoursCouleurGlobal.value;
+  if (COULEURS_HEX[col]) {
+    colorSwatch.style.backgroundColor = COULEURS_HEX[col];
+    colorSwatch.style.transform = "scale(1.2)";
+    setTimeout(() => { colorSwatch.style.transform = "scale(1)"; }, 200);
+  } else {
+    colorSwatch.style.backgroundColor = "#94a3b8";
+  }
+});
+
 function showView(viewName) {
   studentView.classList.add("hidden");
   teacherDashboard.classList.add("hidden");
@@ -454,8 +1194,9 @@ window.openTeacherAccess = function() {
   showView(teacherAccessGranted ? "teacher" : "teacherLogin");
 };
 
-studentViewBtn.addEventListener("click", function() { showView("student"); });
-teacherViewBtn.addEventListener("click", function() { window.openTeacherAccess(); });
+studentViewBtn.addEventListener("click", () => showView("student"));
+teacherViewBtn.addEventListener("click", () => window.openTeacherAccess());
+
 teacherCodeSubmitBtn.addEventListener("click", function() {
   if (teacherCodeInput.value === TEACHER_CODE) {
     teacherAccessGranted = true;
@@ -465,9 +1206,10 @@ teacherCodeSubmitBtn.addEventListener("click", function() {
     loadClassesOverview();
     if (currentActiveLessonId) openLesson(currentActiveLessonId);
   } else {
-    teacherCodeError.textContent = "Code incorrect.";
+    teacherCodeError.textContent = "Code d'accès incorrect.";
   }
 });
+
 teacherCodeInput.addEventListener("keydown", function(event) {
   if (event.key === "Enter") {
     event.preventDefault();
@@ -476,7 +1218,7 @@ teacherCodeInput.addEventListener("keydown", function(event) {
 });
 
 function populateParcours() {
-  parcoursSelect.innerHTML = '<option value="">Choisir un parcours </option>';
+  parcoursSelect.innerHTML = '<option value="">Choisir un parcours</option>';
   for (let i = 1; i <= NOMBRE_PARCOURS; i++) {
     const option = document.createElement("option");
     option.value = "Parcours " + i;
@@ -487,11 +1229,10 @@ function populateParcours() {
 
 function resetFormForNewEntry() {
   tagForm.reset();
-  resultsList.innerHTML = "";
-  scoreArea.innerHTML = "";
-  scoreArea.classList.add("hidden");
+  colorSwatch.style.backgroundColor = "#94a3b8";
   teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
   parcoursSelect.selectedIndex = 0;
+  parcoursCouleurGlobal.selectedIndex = 0;
   niveauSelect.value = "1";
 }
 
@@ -509,53 +1250,119 @@ function formatTotalSeconds(totalSec) {
   return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
 }
 
-function verifyTags() {
+function verifyTags(couleurParcours) {
   let correctes = 0;
   let tentatives = 0;
   const listeTrouvees = [];
   const listeErreurs = [];
-  resultsList.innerHTML = "";
+  const details = [];
 
   for (let i = 0; i < NOMBRE_BALISES_SAISIE; i++) {
-    const num = document.getElementById("baliseNum" + i).value;
-    const couleur = document.getElementById("baliseCouleur" + i).value;
-    const code = document.getElementById("baliseCode" + i).value.trim().toUpperCase();
-    if (!num && !couleur && !code) continue;
+    const numInput = document.getElementById("baliseNum" + i);
+    const codeInput = document.getElementById("baliseCode" + i);
+    const num = numInput ? numInput.value.trim() : "";
+    const code = codeInput ? codeInput.value.trim().toUpperCase() : "";
+
+    if (!num && !code) continue;
     tentatives++;
 
-    let message = "";
-    let resultClass = "result-missing";
+    let isSuccess = false;
+    let label = "";
 
-    if (num && couleur && code) {
+    if (num && code) {
       const numInt = parseInt(num, 10);
-      if (DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleur] === code) {
-        message = "Balise " + num + " (" + couleur + ") : ✅ CORRECT";
-        resultClass = "result-correct";
+      if (DONNEES_SHEET[numInt] && DONNEES_SHEET[numInt][couleurParcours] === code) {
         correctes++;
+        isSuccess = true;
         listeTrouvees.push(num);
+        label = `Balise ${num} : ✅ Validée (Poinçon ${code})`;
       } else {
-        message = "Balise " + num + " (" + couleur + ") : ❌ INCORRECT";
-        resultClass = "result-incorrect";
         listeErreurs.push(num);
+        label = `Balise ${num} : ❌ Poinçon incorrect (${code})`;
       }
     } else {
-      message = "Balise " + (i + 1) + " : ⚠️ Informations incomplètes";
-      resultClass = "result-missing";
       listeErreurs.push(num || ("B" + (i + 1)));
+      label = `Balise ${i + 1} : ⚠️ Incomplète (Numéro de balise ou code manquant)`;
     }
 
-    const li = document.createElement("li");
-    li.className = resultClass;
-    li.textContent = message;
-    resultsList.appendChild(li);
+    details.push({ success: isSuccess, text: label });
   }
-  return { correctes, tentatives, listeTrouvees, listeErreurs };
+
+  return { correctes, tentatives, listeTrouvees, listeErreurs, details };
 }
 
-function displayLocalResults(correctes, tentatives, pointsGagnes, minutes, secondes) {
-  scoreArea.classList.remove("hidden");
-  scoreArea.innerHTML = "Score : " + correctes + "/" + tentatives + " balise(s) valide(s) [+" + pointsGagnes + " pt(s)] — Temps : " + formatTime(minutes, secondes);
+function closeModalAndReset() {
+  if (autoCloseModalTimer) clearTimeout(autoCloseModalTimer);
+  if (countdownInterval) clearInterval(countdownInterval);
+  resultModal.classList.add("hidden");
+  resetFormForNewEntry();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+function showResultPopup(correctes, tentatives, pointsGagnes, niveau, minutes, secondes, details) {
+  const tauxReussite = (correctes / tentatives) * 100;
+
+  // Personnalisation encourageante pour collégiens demandée
+  if (tauxReussite === 100) {
+    popupEmoji.textContent = "🏆";
+    popupTitle.textContent = "Parcours parfait !";
+    popupTitle.style.color = "#166534";
+    modalCard.style.borderColor = "#22c55e";
+    modalProgressBar.style.backgroundColor = "#22c55e";
+  } else if (tauxReussite >= 50) {
+    popupEmoji.textContent = "👍";
+    popupTitle.textContent = "Bien joué !";
+    popupTitle.style.color = "#1e40af";
+    modalCard.style.borderColor = "#3b82f6";
+    modalProgressBar.style.backgroundColor = "#3b82f6";
+  } else {
+    popupEmoji.textContent = "💪";
+    popupTitle.textContent = "Continue tes efforts !";
+    popupTitle.style.color = "#b45309";
+    modalCard.style.borderColor = "#f59e0b";
+    modalProgressBar.style.backgroundColor = "#f59e0b";
+  }
+
+  popupSubtitle.textContent = `Niveau ${niveau} (${niveau} pt/balise) ; ${minutes}m ${secondes}s`;
+  modalStatTags.textContent = `${correctes} / ${tentatives}`;
+  modalStatPoints.textContent = `+${pointsGagnes} pts`;
+  modalStatPercent.textContent = `${Math.round(tauxReussite)}%`;
+  modalStatTime.textContent = formatTime(minutes, secondes);
+
+  modalDetailsList.innerHTML = "";
+  details.forEach(item => {
+    const li = document.createElement("li");
+    li.textContent = item.text;
+    li.style.color = item.success ? "#166534" : "#991b1b";
+    modalDetailsList.appendChild(li);
+  });
+
+  // Réinitialiser la barre de progression d'animation 5s
+  modalProgressBar.style.animation = 'none';
+  modalProgressBar.offsetHeight; // trigger reflow
+  modalProgressBar.style.animation = 'shrinkBar 5s linear forwards';
+
+  let remainingSeconds = 5;
+  autoCloseCountdownText.textContent = `Fermeture automatique dans ${remainingSeconds} secondes...`;
+
+  if (autoCloseModalTimer) clearTimeout(autoCloseModalTimer);
+  if (countdownInterval) clearInterval(countdownInterval);
+
+  countdownInterval = setInterval(() => {
+    remainingSeconds--;
+    if (remainingSeconds > 0) {
+      autoCloseCountdownText.textContent = `Fermeture automatique dans ${remainingSeconds} seconde${remainingSeconds > 1 ? 's' : ''}...`;
+    }
+  }, 1000);
+
+  autoCloseModalTimer = setTimeout(() => {
+    closeModalAndReset();
+  }, 5000);
+
+  resultModal.classList.remove("hidden");
+}
+
+modalCloseBtn.addEventListener("click", closeModalAndReset);
 
 function slugifyClassId(name) {
   return name.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^-+|-+$/g, "").toUpperCase();
@@ -566,7 +1373,7 @@ function detectDelimiter(text) {
   const candidates = [";", ",", "\t"];
   let best = ";";
   let bestCount = -1;
-  candidates.forEach(function(delim) {
+  candidates.forEach(delim => {
     const count = firstLine.split(delim).length;
     if (count > bestCount) { best = delim; bestCount = count; }
   });
@@ -594,26 +1401,17 @@ function splitCSVLine(line, delimiter) {
   return result.map(value => value.replace(/^"|"$/g, "").trim());
 }
 
-function normalizeHeader(value) {
-  return (value || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-}
-
-function findHeaderIndex(headers, possibleNames) {
-  const normalized = headers.map(normalizeHeader);
-  return normalized.findIndex(function(h) { return possibleNames.includes(h); });
-}
-
 function parseBalisesCSV(text) {
   const cleanText = (text || "").replace(/^\uFEFF/, "").trim();
   if (!cleanText) throw new Error("Le fichier est vide.");
 
   const delimiter = detectDelimiter(cleanText);
   const lines = cleanText.split(/\r?\n/).filter(line => line.trim().length > 0);
-  if (lines.length < 2) throw new Error("Le fichier doit comporter une ligne d'en-tête et au moins une balise.");
+  if (lines.length < 2) throw new Error("Le fichier doit comporter un en-tête et au moins une ligne de balise.");
 
   const headers = splitCSVLine(lines[0], delimiter).map(h => h.trim().toUpperCase());
   const numIndex = headers.findIndex(h => ["BALISE", "NUMERO", "NUM", "ID", "N°"].includes(h.normalize("NFD").replace(/[̀-ͯ]/g, "")));
-  if (numIndex === -1) throw new Error("Impossible de trouver la colonne 'Balise' ou 'Numéro'.");
+  if (numIndex === -1) throw new Error("Colonne 'Balise' ou 'Numéro' introuvable.");
 
   const colors = ["BLEU", "NOIR", "ORANGE", "VERT", "ROSE", "GRIS", "ROUGE", "MARRON"];
   const colorMap = {};
@@ -623,7 +1421,7 @@ function parseBalisesCSV(text) {
   });
 
   if (Object.keys(colorMap).length === 0) {
-    throw new Error("Aucune colonne de couleur valide trouvée (BLEU, NOIR, ORANGE, VERT, etc.).");
+    throw new Error("Aucune colonne de couleur valide trouvée (BLEU, NOIR, etc.).");
   }
 
   const result = {};
@@ -674,14 +1472,13 @@ async function syncBalisesFromGoogleSheet() {
 
     const response = await fetch(csvUrl);
     if (!response.ok) {
-      throw new Error(`Accès refusé (${response.status}). Assurez-vous que le fichier est partagé avec : "Tous les utilisateurs disposant du lien" en Lecteur.`);
+      throw new Error(`Accès refusé (${response.status}). Vérifiez le partage : 'Tous les utilisateurs disposant du lien' en Lecteur.`);
     }
 
     const csvText = await response.text();
     const parsedData = parseBalisesCSV(csvText);
     const count = Object.keys(parsedData).length;
 
-    setBalisesStatus("Enregistrement dans la base...", "success");
     await db.collection("config").doc("balisesData").set({
       balises: JSON.stringify(parsedData),
       count: count,
@@ -757,7 +1554,7 @@ syncSheetBtn.addEventListener("click", syncBalisesFromGoogleSheet);
 uploadBalisesBtn.addEventListener("click", uploadLocalBalisesFile);
 
 function parsePronoteCSV(text) {
-  const cleanText = (text || "").replace(/^﻿/, "").trim();
+  const cleanText = (text || "").replace(/^\uFEFF/, "").trim();
   if (!cleanText) throw new Error("Le fichier est vide.");
 
   const delimiter = detectDelimiter(cleanText);
@@ -765,41 +1562,33 @@ function parsePronoteCSV(text) {
   if (lines.length < 2) throw new Error("Le fichier doit contenir un en-tête et au moins une ligne élève.");
 
   const headers = splitCSVLine(lines[0], delimiter);
-  const elevesIndex = findHeaderIndex(headers, ["eleves", "eleve", "listeeleves"]);
-  const nomIndex = findHeaderIndex(headers, ["nom", "elevenom", "nomdeleleve", "lastname"]);
-  const prenomIndex = findHeaderIndex(headers, ["prenom", "prenoms", "eleveprenom", "prenomdeleleve", "firstname"]);
+  const findIdx = (names) => headers.map(h => (h||"").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, ""))
+                                    .findIndex(h => names.includes(h));
+
+  const elevesIndex = findIdx(["eleves", "eleve", "listeeleves"]);
+  const nomIndex = findIdx(["nom", "elevenom", "nomdeleleve", "lastname"]);
+  const prenomIndex = findIdx(["prenom", "prenoms", "eleveprenom", "prenomdeleleve", "firstname"]);
 
   const students = [];
 
   for (let i = 1; i < lines.length; i++) {
     const cols = splitCSVLine(lines[i], delimiter);
-
     if (elevesIndex !== -1) {
       const fullName = (cols[elevesIndex] || "").trim();
       if (!fullName) continue;
-
       const parts = fullName.split(/\s+/).filter(Boolean);
       if (parts.length === 0) continue;
-
       let prenom = parts.pop() || "";
-      let nom = parts.join(" ").trim();
-
-      if (!nom) {
-        nom = prenom;
-        prenom = "";
-      }
-
-      students.push({ nom: nom, prenom: prenom, nomComplet: fullName });
+      let nom = parts.join(" ").trim() || prenom;
+      students.push({ nom, prenom, nomComplet: fullName });
       continue;
     }
-
     if (nomIndex !== -1 || prenomIndex !== -1) {
       const nom = nomIndex !== -1 ? (cols[nomIndex] || "").trim() : "";
       const prenom = prenomIndex !== -1 ? (cols[prenomIndex] || "").trim() : "";
       if (!nom && !prenom) continue;
       students.push({
-        nom: nom,
-        prenom: prenom,
+        nom, prenom,
         nomComplet: ((nom ? nom.toUpperCase() : "") + " " + prenom).trim()
       });
     }
@@ -807,7 +1596,7 @@ function parsePronoteCSV(text) {
 
   const seen = new Set();
   const dedup = [];
-  students.forEach(function(student) {
+  students.forEach(student => {
     const key = (student.nomComplet || (student.nom + "__" + student.prenom)).toLowerCase();
     if (!seen.has(key)) {
       seen.add(key);
@@ -815,19 +1604,16 @@ function parsePronoteCSV(text) {
     }
   });
 
-  dedup.sort(function(a, b) {
-    return (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr");
-  });
-
+  dedup.sort((a, b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));
   if (dedup.length === 0) throw new Error("Aucun élève exploitable trouvé dans le fichier.");
   return dedup;
 }
 
 function readSelectedFile(file) {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = function() { resolve(reader.result); };
-    reader.onerror = function() { reject(new Error("Impossible de lire le fichier.")); };
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("Impossible de lire le fichier."));
     reader.readAsText(file, "utf-8");
   });
 }
@@ -892,9 +1678,11 @@ async function loadStudentClasses() {
   try {
     const selected = classeSelect.value;
     const snap = await db.collection("classes").get();
-    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(item => item.active !== false).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));
+    const classes = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                             .filter(item => item.active !== false)
+                             .sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));
     classeSelect.innerHTML = '<option value="">Choisir une classe</option>';
-    classes.forEach(function(item) {
+    classes.forEach(item => {
       const option = document.createElement("option");
       option.value = item.id;
       option.textContent = item.className || item.id;
@@ -916,9 +1704,10 @@ async function loadStudentsForSelectedClass() {
   }
   teamSelect.innerHTML = '<option value="">Chargement des élèves...</option>';
   const snap = await db.collection("classes").doc(classId).collection("eleves").get();
-  const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));
+  const students = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                            .sort((a,b) => (a.nomComplet || "").localeCompare((b.nomComplet || ""), "fr"));
   teamSelect.innerHTML = '<option value="">Choisir un élève</option>';
-  students.forEach(function(student) {
+  students.forEach(student => {
     currentStudentMap[student.id] = student;
     const option = document.createElement("option");
     option.value = student.id;
@@ -930,31 +1719,33 @@ async function loadStudentsForSelectedClass() {
 async function loadClassesOverview() {
   try {
     const snap = await db.collection("classes").get();
-    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() })).sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));
+    const docs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                          .sort((a,b) => (a.className || a.id).localeCompare((b.className || b.id), "fr"));
     if (docs.length === 0) {
       classesListContainer.innerHTML = '<div class="empty-box">Aucune classe enregistrée.</div>';
       return;
     }
     let html = '<table><thead><tr><th>Classe</th><th>Élèves</th><th>Fichier</th><th>Statut</th><th>Action</th></tr></thead><tbody>';
-    docs.forEach(function(item) {
-      html += '<tr>' +
-        '<td>' + (item.className || item.id) + '</td>' +
-        '<td>' + (item.studentCount || 0) + '</td>' +
-        '<td>' + (item.sourceFileName || '—') + '</td>' +
-        '<td><span class="pill ' + (item.active === false ? 'inactive' : 'active') + '">' + (item.active === false ? 'inactive' : 'active') + '</span></td>' +
-        '<td><button class="danger-btn delete-class-btn" data-class-id="' + item.id + '" data-class-name="' + (item.className || item.id).replace(/"/g, '&quot;') + '">Effacer classe</button></td>' +
-      '</tr>';
+    docs.forEach(item => {
+      html += `<tr>
+        <td><strong>${item.className || item.id}</strong></td>
+        <td>${item.studentCount || 0}</td>
+        <td>${item.sourceFileName || '—'}</td>
+        <td><span class="pill ${item.active === false ? 'inactive' : 'active'}">${item.active === false ? 'inactive' : 'active'}</span></td>
+        <td><button class="danger-btn delete-class-btn" data-class-id="${item.id}" data-class-name="${(item.className || item.id).replace(/"/g, '&quot;')}" style="padding:6px 12px; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Effacer</button></td>
+      </tr>`;
     });
     html += '</tbody></table>';
     classesListContainer.innerHTML = html;
-    document.querySelectorAll('.delete-class-btn').forEach(function(btn) {
-      btn.addEventListener('click', async function() {
+
+    document.querySelectorAll('.delete-class-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
         const classId = btn.dataset.classId;
         const className = btn.dataset.className;
-        if (!confirm(`Effacer la classe "${className}" et sa liste d'élèves en ligne ?`)) return;
+        if (!confirm(`Effacer la classe "${className}" et sa liste d'élèves ?`)) return;
         try {
           await deleteClassFully(classId);
-          setClassManagerMessage('Classe ' + className + ' supprimée.', 'success');
+          setClassManagerMessage(`Classe ${className} supprimée.`, 'success');
           await loadClassesOverview();
           await loadStudentClasses();
           if (classeSelect.value === classId) teamSelect.innerHTML = `<option value="">Choisir d'abord une classe</option>`;
@@ -978,6 +1769,7 @@ async function createOrUpdateClassFromCsv() {
   if (!file) { setClassManagerMessage('Choisissez le fichier CSV Pronote.', 'error'); return; }
   const classId = slugifyClassId(className);
   if (!classId) { setClassManagerMessage('Nom de classe invalide.', 'error'); return; }
+
   try {
     createClassBtn.disabled = true;
     setClassManagerMessage('Import en cours...', 'success');
@@ -986,7 +1778,7 @@ async function createOrUpdateClassFromCsv() {
     await replaceStudentsForClass(classId, className, students, file.name);
     newClassNameInput.value = '';
     classCsvInput.value = '';
-    setClassManagerMessage('Classe ' + className + ' enregistrée avec ' + students.length + ' élève(s).', 'success');
+    setClassManagerMessage(`Classe ${className} enregistrée (${students.length} élèves).`, 'success');
     await loadClassesOverview();
     await loadStudentClasses();
   } catch (error) {
@@ -999,7 +1791,7 @@ async function createOrUpdateClassFromCsv() {
 
 classeSelect.addEventListener('change', loadStudentsForSelectedClass);
 createClassBtn.addEventListener('click', createOrUpdateClassFromCsv);
-refreshClassesBtn.addEventListener('click', async function() { await loadClassesOverview(); await loadStudentClasses(); });
+refreshClassesBtn.addEventListener('click', async () => { await loadClassesOverview(); await loadStudentClasses(); });
 
 async function startLesson() {
   clearMessages();
@@ -1021,15 +1813,13 @@ async function startLesson() {
       startedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
     await openLesson(lessonId, lessonName);
-    alert('Leçon "' + lessonName + '" démarrée.');
   } catch (error) {
     console.error(error);
-    alert('Erreur lors du démarrage : ' + (error.message || error));
+    showGlobalError('Erreur lors du démarrage : ' + (error.message || error), 'error');
   }
 }
 startLessonBtn.addEventListener('click', startLesson);
 
-// --- BILAN ELEVE AVEC SYSTEME DE POINTS SHAKERS ---
 let aggregatedSummary = [];
 
 async function openLesson(lessonId, lessonName) {
@@ -1039,7 +1829,7 @@ async function openLesson(lessonId, lessonName) {
     if (doc.exists) currentTeacherLesson.name = doc.data().lessonName || lessonId;
   }
   if (unsubscribeFromResults) unsubscribeFromResults();
-  lessonStatus.textContent = 'Leçon : ' + currentTeacherLesson.name;
+  lessonStatus.textContent = 'Séance active : ' + currentTeacherLesson.name;
   lessonStatus.className = 'pill active';
   exportCsvBtn.disabled = false;
   exportPdfBtn.disabled = false;
@@ -1049,10 +1839,8 @@ async function openLesson(lessonId, lessonName) {
 
   unsubscribeFromResults = db.collection('lecons').doc(lessonId).collection('resultats').onSnapshot(function(snapshot) {
     const docs = snapshot.docs.map(doc => doc.data());
-    
-    // Regroupement par élève
     const studentsAgg = {};
-    docs.forEach(function(item) {
+    docs.forEach(item => {
       const key = (item.classeLabel || item.classe || 'Inconnue') + '__' + (item.eleveNomComplet || item.eleveId || 'Inconnu');
       if (!studentsAgg[key]) {
         studentsAgg[key] = {
@@ -1068,35 +1856,27 @@ async function openLesson(lessonId, lessonName) {
           dernierTimestamp: 0
         };
       }
-      
       const bonnes = item.scoreCorrectes || 0;
       const tent = item.scoreTentatives || 0;
       const pts = item.pointsGagnes !== undefined ? item.pointsGagnes : (bonnes * (item.niveau || 1));
-      
+
       studentsAgg[key].pointsTotal += pts;
       studentsAgg[key].balisesTrouveesCount += bonnes;
       studentsAgg[key].erreursCount += Math.max(0, tent - bonnes);
 
-      if (Array.isArray(item.listeTrouvees)) {
-        studentsAgg[key].balisesTrouveesList.push(...item.listeTrouvees);
-      }
-      if (Array.isArray(item.listeErreurs)) {
-        studentsAgg[key].erreursList.push(...item.listeErreurs);
-      }
-      
+      if (Array.isArray(item.listeTrouvees)) studentsAgg[key].balisesTrouveesList.push(...item.listeTrouvees);
+      if (Array.isArray(item.listeErreurs)) studentsAgg[key].erreursList.push(...item.listeErreurs);
+
       const m = item.tempsMinutes || 0;
       const s = item.tempsSecondes || 0;
       studentsAgg[key].totalSecondes += (m * 60 + s);
       studentsAgg[key].passages += 1;
 
       const t = item.timestamp && item.timestamp.toDate ? item.timestamp.toDate().getTime() : 0;
-      if (t > studentsAgg[key].dernierTimestamp) {
-        studentsAgg[key].dernierTimestamp = t;
-      }
+      if (t > studentsAgg[key].dernierTimestamp) studentsAgg[key].dernierTimestamp = t;
     });
 
     aggregatedSummary = Object.values(studentsAgg);
-
     aggregatedSummary.sort((a, b) => {
       const c = a.classe.localeCompare(b.classe, 'fr');
       if (c !== 0) return c;
@@ -1109,27 +1889,26 @@ async function openLesson(lessonId, lessonName) {
       return;
     }
 
-    aggregatedSummary.forEach(function(st) {
+    aggregatedSummary.forEach(st => {
       const tr = document.createElement('tr');
       const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
-      
       const txtTrouvees = st.balisesTrouveesList.length > 0 
         ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(', ') + ')' 
         : String(st.balisesTrouveesCount);
-
       const txtErreurs = st.erreursList.length > 0 
         ? st.erreursCount + ' (' + st.erreursList.join(', ') + ')' 
         : String(st.erreursCount);
 
-      tr.innerHTML = 
-        '<td style="text-align:left; font-weight:700;">' + st.classe + '</td>' +
-        '<td style="text-align:left; font-weight:700; color:var(--dark);">' + st.eleve + '</td>' +
-        '<td style="font-weight:900; font-size:1.1rem; color:#1b4332; background:#d8f3dc;">' + st.pointsTotal + ' pts</td>' +
-        '<td style="font-weight:700; color:#166534;">' + txtTrouvees + '</td>' +
-        '<td style="font-weight:700; color:#b91c1c;">' + txtErreurs + '</td>' +
-        '<td style="font-weight:700;">' + formatTotalSeconds(st.totalSecondes) + '</td>' +
-        '<td>' + st.passages + '</td>' +
-        '<td style="color:var(--muted);">' + dernierHoraire + '</td>';
+      tr.innerHTML = `
+        <td style="text-align:left; font-weight:700;">${st.classe}</td>
+        <td style="text-align:left; font-weight:700; color:#1b4332;">${st.eleve}</td>
+        <td style="font-weight:900; font-size:1.15rem; color:#166534; background:#d8f3dc;">${st.pointsTotal} pts</td>
+        <td style="font-weight:700; color:#166534;">${txtTrouvees}</td>
+        <td style="font-weight:700; color:#b91c1c;">${txtErreurs}</td>
+        <td style="font-weight:700;">${formatTotalSeconds(st.totalSecondes)}</td>
+        <td>${st.passages}</td>
+        <td style="color:var(--muted);">${dernierHoraire}</td>
+      `;
       resultsTableBody.appendChild(tr);
     });
   }, function(error) {
@@ -1153,17 +1932,19 @@ async function loadHistory() {
     return;
   }
   historyTableBody.innerHTML = '';
-  lessons.forEach(function(item) {
+  lessons.forEach(item => {
     const tr = document.createElement('tr');
     const dateText = item.startedAt && item.startedAt.toDate ? item.startedAt.toDate().toLocaleString('fr-FR') : (item.lessonDate || '—');
-    tr.innerHTML = '<td>' + (item.lessonName || item.id) + '</td>' +
-      '<td>' + dateText + '</td>' +
-      '<td>' + (item.status || 'active') + '</td>' +
-      '<td><button class="success-btn history-open-btn" data-id="' + item.id + '" data-name="' + (item.lessonName || item.id).replace(/"/g, '&quot;') + '">Rouvrir</button></td>';
+    tr.innerHTML = `
+      <td><strong>${item.lessonName || item.id}</strong></td>
+      <td>${dateText}</td>
+      <td>${item.status || 'active'}</td>
+      <td><button class="success-btn history-open-btn" data-id="${item.id}" data-name="${(item.lessonName || item.id).replace(/"/g, '&quot;')}" style="padding:6px 12px; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Rouvrir</button></td>
+    `;
     historyTableBody.appendChild(tr);
   });
-  document.querySelectorAll('.history-open-btn').forEach(function(btn) {
-    btn.addEventListener('click', async function() {
+  document.querySelectorAll('.history-open-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
       const lessonId = btn.dataset.id;
       const lessonName = btn.dataset.name;
       await db.collection('config').doc('activeLesson').set({
@@ -1178,13 +1959,13 @@ async function loadHistory() {
   });
 }
 loadHistoryBtn.addEventListener('click', loadHistory);
-closeHistoryBtn.addEventListener('click', function() { historyPanel.classList.add('hidden'); });
+closeHistoryBtn.addEventListener('click', () => historyPanel.classList.add('hidden'));
 
-closeLessonBtn.addEventListener('click', async function() {
+closeLessonBtn.addEventListener('click', async () => {
   const lessonId = currentTeacherLesson && currentTeacherLesson.id ? currentTeacherLesson.id : currentActiveLessonId;
   const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'cette séance';
-  if (!lessonId) { alert('Aucune séance active à clôturer.'); return; }
-  if (!confirm('Clôturer la séance "' + lessonName + '" ?')) return;
+  if (!lessonId) return;
+  if (!confirm(`Clôturer la séance "${lessonName}" ?`)) return;
   try {
     await db.collection('lecons').doc(lessonId).set({
       status: 'closed',
@@ -1201,18 +1982,19 @@ closeLessonBtn.addEventListener('click', async function() {
     exportPdfBtn.disabled = true;
     exportRankingBtn.disabled = true;
     closeLessonBtn.disabled = true;
-    alert('Séance clôturée.');
+    showGlobalError('Séance clôturée.', 'success');
   } catch (error) {
     console.error(error);
-    alert('Clôture impossible : ' + (error.message || error));
+    showGlobalError('Clôture impossible : ' + (error.message || error), 'error');
   }
 });
 
+/* Export CSV & PDF */
 exportCsvBtn.addEventListener('click', function() {
   if (aggregatedSummary.length === 0) { alert('Aucun résultat à exporter.'); return; }
   const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'resultats';
-  const lines = ['Classe;Élève;Points;Balises trouvées;Détail trouvées;Erreurs;Détail erreurs;Temps total;Passages;Dernier passage'];
-  aggregatedSummary.forEach(function(st) {
+  const lines = ['Classe;Élève;Points;Balises validées;Détail validées;Erreurs;Détail erreurs;Temps total;Passages;Dernier passage'];
+  aggregatedSummary.forEach(st => {
     const dernierHoraire = st.dernierTimestamp ? new Date(st.dernierTimestamp).toLocaleTimeString('fr-FR') : '—';
     const row = [
       st.classe,
@@ -1244,10 +2026,10 @@ exportPdfBtn.addEventListener('click', function() {
   const jsPDF = window.jspdf.jsPDF;
   const doc = new jsPDF();
   const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Bilan de séance';
-  
+
   doc.setFontSize(16);
   doc.text('Bilan Élèves - ' + lessonName, 14, 18);
-  
+
   const bodyData = aggregatedSummary.map(st => {
     const txtTrouvees = st.balisesTrouveesList.length > 0 ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(',') + ')' : String(st.balisesTrouveesCount);
     const txtErreurs = st.erreursList.length > 0 ? st.erreursCount + ' (' + st.erreursList.join(',') + ')' : String(st.erreursCount);
@@ -1265,52 +2047,38 @@ exportPdfBtn.addEventListener('click', function() {
 
   doc.autoTable({
     startY: 24,
-    head: [['Classe', 'Élève', 'Points', 'Balises', 'Erreurs', 'Temps Total', 'Passages', 'Dernier']],
+    head: [['Classe', 'Élève', 'Points', 'Balises validées', 'Erreurs', 'Temps Total', 'Passages', 'Dernier']],
     body: bodyData,
     theme: 'striped',
-    headStyles: { fillColor: [88, 129, 87], halign: 'center' },
-    styles: { fontSize: 8, halign: 'center' },
-    columnStyles: {
-      0: { halign: 'left', cellWidth: 20 },
-      1: { halign: 'left', cellWidth: 35 },
-      2: { fontStyle: 'bold', cellWidth: 20 },
-      3: { cellWidth: 35 },
-      4: { cellWidth: 25 }
-    }
+    headStyles: { fillColor: [45, 106, 79], halign: 'center' },
+    styles: { fontSize: 8, halign: 'center' }
   });
   doc.save('bilan_' + lessonName.replace(/\s+/g, '_') + '.pdf');
 });
 
-// --- CLASSEMENT PDF PAR POINTS ET TEMPS ---
 exportRankingBtn.addEventListener('click', function() {
-  if (aggregatedSummary.length === 0) { alert('Aucun résultat pour établir un classement.'); return; }
-  
+  if (aggregatedSummary.length === 0) { alert('Aucun résultat pour le classement.'); return; }
   const sortedRanking = [...aggregatedSummary].sort((a, b) => {
-    if (b.pointsTotal !== a.pointsTotal) {
-      return b.pointsTotal - a.pointsTotal; // 1. Plus grand total de points
-    }
-    if (a.totalSecondes !== b.totalSecondes) {
-      return a.totalSecondes - b.totalSecondes; // 2. Plus petit temps de course
-    }
-    return a.erreursCount - b.erreursCount; // 3. Moins d'erreurs
+    if (b.pointsTotal !== a.pointsTotal) return b.pointsTotal - a.pointsTotal;
+    if (a.totalSecondes !== b.totalSecondes) return a.totalSecondes - b.totalSecondes;
+    return a.erreursCount - b.erreursCount;
   });
 
   const jsPDF = window.jspdf.jsPDF;
   const doc = new jsPDF();
-  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Séance Shakers';
+  const lessonName = currentTeacherLesson && currentTeacherLesson.name ? currentTeacherLesson.name : 'Séance EPS';
 
   doc.setFontSize(16);
   doc.text('Classement de la séance : ' + lessonName, 14, 18);
   doc.setFontSize(10);
   doc.setTextColor(100);
-  doc.text('Critères : 1. Total de points gagnés | 2. Temps de course total | 3. Nombre d\'erreurs', 14, 25);
+  doc.text('Critères : 1. Points marqués | 2. Vitesse / temps total | 3. Moins d\'erreurs', 14, 25);
 
   const bodyData = sortedRanking.map((st, index) => {
-    const rang = (index + 1) === 1 ? '1er' : (index + 1) + 'e';
+    const rang = (index + 1) === 1 ? '1er 🥇' : (index + 1 === 2 ? '2e 🥈' : (index + 1 === 3 ? '3e 🥉' : (index + 1) + 'e'));
     const txtTrouvees = st.balisesTrouveesList.length > 0 
       ? st.balisesTrouveesCount + ' (' + st.balisesTrouveesList.join(',') + ')' 
       : String(st.balisesTrouveesCount);
-    
     return [
       rang,
       st.classe,
@@ -1327,10 +2095,10 @@ exportRankingBtn.addEventListener('click', function() {
     head: [['Rang', 'Classe', 'Élève', 'Points', 'Balises validées', 'Erreurs', 'Temps total']],
     body: bodyData,
     theme: 'striped',
-    headStyles: { fillColor: [52, 78, 65], halign: 'center' },
+    headStyles: { fillColor: [27, 67, 50], halign: 'center' },
     styles: { fontSize: 9, halign: 'center' },
     columnStyles: {
-      0: { halign: 'center', fontStyle: 'bold', cellWidth: 18 },
+      0: { halign: 'center', fontStyle: 'bold', cellWidth: 20 },
       1: { halign: 'left', cellWidth: 22 },
       2: { halign: 'left', fontStyle: 'bold', cellWidth: 45 },
       3: { halign: 'center', fontStyle: 'bold', cellWidth: 25 },
@@ -1339,36 +2107,66 @@ exportRankingBtn.addEventListener('click', function() {
       6: { halign: 'center', fontStyle: 'bold', cellWidth: 25 }
     }
   });
-
   doc.save('classement_' + lessonName.replace(/\s+/g, '_') + '.pdf');
 });
 
 async function submitStudentResult(event) {
   event.preventDefault();
   clearMessages();
+
   const lessonId = currentActiveLessonId;
-  if (!lessonId) { showGlobalError(`Aucune leçon n'est démarrée. Le professeur doit lancer ou rouvrir une séance.`, 'error'); return; }
+  if (!lessonId) {
+    showGlobalError(`Aucune séance n'est active. Attends que ton professeur lance la séance.`, 'error');
+    return;
+  }
+
   const classId = classeSelect.value;
   const classLabel = classeSelect.options[classeSelect.selectedIndex] ? classeSelect.options[classeSelect.selectedIndex].text : '';
   const studentId = teamSelect.value;
   const student = currentStudentMap[studentId];
   const parcoursId = parcoursSelect.value;
+  const parcoursCouleur = parcoursCouleurGlobal.value;
   const niveau = parseInt(niveauSelect.value, 10) || 1;
   const durationM = durationMinutesInput.value;
   const durationS = durationSecondsInput.value;
-  if (!classId || !studentId || !parcoursId || durationM === '' || durationS === '') { showGlobalError(`Veuillez remplir tous les champs d'identification et le temps.`, 'error'); return; }
+
+  if (!classId || !studentId || !parcoursId) {
+    showGlobalError(`Sélectionne ta classe, ton prénom et le parcours.`, 'error');
+    return;
+  }
+  if (!parcoursCouleur) {
+    showGlobalError(`Choisis la couleur du parcours dans la liste.`, 'error');
+    return;
+  }
+  if (durationM === '' || durationS === '') {
+    showGlobalError(`Indique ton temps de course (minutes et secondes).`, 'error');
+    return;
+  }
+
   const minutes = parseInt(durationM, 10);
   const secondes = parseInt(durationS, 10);
-  if (isNaN(minutes) || isNaN(secondes) || minutes < 0 || secondes < 0 || secondes > 59) { showGlobalError('Temps invalide : secondes entre 0 et 59.', 'error'); return; }
-  if (minutes === 0 && secondes === 0) { showGlobalError('Le temps de course ne peut pas être zéro.', 'error'); return; }
-  
-  const verify = verifyTags();
+  if (isNaN(minutes) || isNaN(secondes) || minutes < 0 || secondes < 0 || secondes > 59) {
+    showGlobalError('Temps invalide : secondes entre 0 et 59.', 'error');
+    return;
+  }
+  if (minutes === 0 && secondes === 0) {
+    showGlobalError('Le temps de course doit être supérieur à zéro.', 'error');
+    return;
+  }
+
+  const verify = verifyTags(parcoursCouleur);
   const correctes = verify.correctes;
   const tentatives = verify.tentatives;
-  if (tentatives === 0) { showGlobalError('Veuillez saisir au moins une balise.', 'error'); return; }
-  
+
+  if (tentatives === 0) {
+    showGlobalError('Renseigne au moins un numéro de balise avec son code poinçon.', 'error');
+    return;
+  }
+
   const pointsGagnes = correctes * niveau;
-  displayLocalResults(correctes, tentatives, pointsGagnes, minutes, secondes);
+
+  // Affichage de la pop-up motivante (se fermera automatiquement au bout de 5 secondes)
+  showResultPopup(correctes, tentatives, pointsGagnes, niveau, minutes, secondes, verify.details);
 
   const payload = {
     lessonId: lessonId,
@@ -1379,6 +2177,7 @@ async function submitStudentResult(event) {
     eleveNom: student ? student.nom : '',
     elevePrenom: student ? student.prenom : '',
     parcoursId: parcoursId,
+    couleurParcours: parcoursCouleur,
     niveau: niveau,
     pointsGagnes: pointsGagnes,
     scoreCorrectes: correctes,
@@ -1392,16 +2191,17 @@ async function submitStudentResult(event) {
 
   try {
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Envoi en cours...';
+    submitBtn.innerHTML = '<span>Enregistrement en cours...</span>';
     await db.collection('lecons').doc(lessonId).collection('resultats').add(payload);
-    showGlobalError('', 'success');
-    setTimeout(function() { resetFormForNewEntry(); }, 5000);
   } catch (error) {
     console.error(error);
-    showGlobalError(`Impossible d'envoyer les résultats. Vérifiez la connexion.`, 'error');
+    showGlobalError(`Résultat affiché, mais erreur lors de la synchronisation en ligne.`, 'error');
   } finally {
     submitBtn.disabled = false;
-    submitBtn.textContent = '🚀 Vérifier et envoyer le résultat';
+    submitBtn.innerHTML = `
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Vérifier et enregistrer mon parcours
+    `;
   }
 }
 tagForm.addEventListener('submit', submitStudentResult);
@@ -1411,12 +2211,18 @@ function listenToActiveLesson() {
     if (doc.exists && doc.data().lessonId) {
       const data = doc.data();
       currentActiveLessonId = data.lessonId;
-      activeLessonBanner.textContent = 'Leçon en cours : ' + (data.lessonName || data.lessonId);
-      activeLessonBanner.style.backgroundColor = '#344e41';
+      activeLessonBanner.innerHTML = `
+        <span class="pulse-dot"></span>
+        <span>Séance active : <strong>${data.lessonName || data.lessonId}</strong> &middot; Prêt pour la course !</span>
+      `;
+      activeLessonBanner.style.backgroundColor = '#1b4332';
     } else {
       currentActiveLessonId = null;
-      activeLessonBanner.textContent = 'Aucune leçon démarrée — attendez le professeur';
-      activeLessonBanner.style.backgroundColor = '#c1121f';
+      activeLessonBanner.innerHTML = `
+        <span style="font-size:1.1rem;">⏸️</span>
+        <span>Aucune séance en cours &middot; Attends que ton professeur démarre la leçon.</span>
+      `;
+      activeLessonBanner.style.backgroundColor = '#b45309';
       if (!currentTeacherLesson) {
         lessonStatus.textContent = 'Aucune leçon active';
         lessonStatus.className = 'pill inactive';
@@ -1425,7 +2231,7 @@ function listenToActiveLesson() {
   }, function(error) {
     console.error(error);
     activeLessonBanner.textContent = 'Connexion Firestore indisponible';
-    activeLessonBanner.style.backgroundColor = '#c1121f';
+    activeLessonBanner.style.backgroundColor = '#dc2626';
   });
 }
 
